@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="true"
+        android:key="host_name"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:title="Адрес сервера" />
+    <EditTextPreference
+        android:defaultValue="true"
+        android:inputType="number"
+        android:key="port"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:title="Порт" />
+</PreferenceScreen>
