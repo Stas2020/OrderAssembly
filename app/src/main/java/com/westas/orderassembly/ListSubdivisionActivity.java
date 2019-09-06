@@ -76,11 +76,14 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
         int itemPosition = ListSubdivisionRecyclerView.getChildLayoutPosition(view);
 
         int NumberSubdivision = list_sd.list.get(itemPosition).Number;
+        String NameSubdivision = list_sd.list.get(itemPosition).Name;
 
         Intent intent = new Intent(this, ListTransferInvoiceActivity.class);
+        intent.putExtra("NumberSubdivision",NumberSubdivision);
+        intent.putExtra("NameSubdivision",NameSubdivision);
         startActivity(intent);
 
-        Toast.makeText(this, Integer.toString(NumberSubdivision), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, Integer.toString(NumberSubdivision), Toast.LENGTH_LONG).show();
     }
 
     private void ShowSetting()

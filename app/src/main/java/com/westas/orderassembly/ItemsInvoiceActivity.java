@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Date;
 
 
 public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnClickListener, TBarcodeReader.TCallBack , TDialogQuantity.TCallBackDialogQuantity {
@@ -39,9 +40,19 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         InitRecyclerView();
         MainActivity.GetBarcodeReader().SetListren(this);
 
-        SetInvoiveInfo("12/05", "#34567362", "Никитская");
+
 
         dialog_ = new TDialogQuantity(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this);
+
+        Bundle parametr = getIntent().getExtras();
+        if(parametr!=null){
+            int num_subdivision = parametr.getInt("NumberSubdivision");
+            String name_subdivision = parametr.getString("NameSubdivision");
+            String NumberInvoice = parametr.getString("NumberInvoice");
+
+
+            SetInvoiveInfo("12/05", "№ "+NumberInvoice, name_subdivision);
+        }
 
     }
 
