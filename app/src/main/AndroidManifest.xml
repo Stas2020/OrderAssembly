@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.westas.orderassembly">
 
+    <uses-permission android:name="com.honeywell.decode.permission.DECODE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,6 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <activity android:name=".CalculationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.CalculationActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".SelectOperationActivity" />
         <activity android:name=".SettingActivity_">
             <intent-filter>
                 <action android:name="android.intent.action.SettingActivity_" />
@@ -35,7 +46,5 @@
             </intent-filter>
         </activity>
     </application>
-
-    <uses-permission android:name="com.honeywell.decode.permission.DECODE" />
 
 </manifest>

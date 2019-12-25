@@ -186,10 +186,12 @@ public class ListInvoiceItem {
     }
 
     private List<InvoiceItem> list;
+
     public InvoiceItem GetItems(int position)
     {
         return list.get(position);
     }
+
     public int GetSize()
     {
         return list.size();
@@ -200,7 +202,6 @@ public class ListInvoiceItem {
         int position = 0;
         for (InvoiceItem itm: list)
         {
-
             if (itm.Barcode.equals(code))
             {
                 itm.Quantity += quantity;
@@ -226,15 +227,12 @@ public class ListInvoiceItem {
                     list.add(0,itm);
                 }
 
-
                 return true;
             }
             position++;
         }
 
-
         return false;
-
     }
 
     public void ChangeQuantity(double quantity, String code)
@@ -242,7 +240,6 @@ public class ListInvoiceItem {
         int position = 0;
         for (InvoiceItem itm: list)
         {
-
             if (itm.Barcode.equals(code))
             {
                 itm.Quantity = quantity;

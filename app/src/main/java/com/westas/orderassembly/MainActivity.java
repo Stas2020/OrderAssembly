@@ -63,8 +63,8 @@ public class MainActivity extends Activity implements LoginFragment.TOnClickOk{
     {
         if (password.equals("0"))
         {
-            Intent ListSubdivisionActivity = new Intent("android.intent.action.ListSubdivisionActivity");
-            startActivity(ListSubdivisionActivity);
+            Intent intent = new Intent(this, SelectOperationActivity.class);
+            startActivity(intent);
         }
         else
         {

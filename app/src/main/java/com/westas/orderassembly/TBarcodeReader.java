@@ -134,6 +134,8 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
 
             Map<String, Object> properties = new HashMap<String, Object>();
             // Set Symbologies On/Off
+            properties.put(BarcodeReader.PROPERTY_RSS_ENABLED, true);
+            properties.put(BarcodeReader.PROPERTY_RSS_EXPANDED_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_CODE_128_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_GS1_128_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_QR_CODE_ENABLED, true);
@@ -142,11 +144,12 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
             properties.put(BarcodeReader.PROPERTY_UPC_A_ENABLE, true);
             properties.put(BarcodeReader.PROPERTY_EAN_13_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_AZTEC_ENABLED, false);
-            properties.put(BarcodeReader.PROPERTY_CODABAR_ENABLED, false);
+            properties.put(BarcodeReader.PROPERTY_CODABAR_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_INTERLEAVED_25_ENABLED, false);
             properties.put(BarcodeReader.PROPERTY_PDF_417_ENABLED, false);
             // Set Max Code 39 barcode length
-            properties.put(BarcodeReader.PROPERTY_CODE_39_MAXIMUM_LENGTH, 15);
+            properties.put(BarcodeReader.PROPERTY_CODE_39_MAXIMUM_LENGTH, 55);
+            //properties.put(BarcodeReader.PROPERTY_GS1_128_MAXIMUM_LENGTH, 155);
             // Turn on center decoding
             properties.put(BarcodeReader.PROPERTY_CENTER_DECODE, true);
             // Enable bad read response

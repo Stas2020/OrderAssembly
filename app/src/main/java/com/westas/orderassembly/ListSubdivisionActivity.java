@@ -35,6 +35,18 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
         toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setSubtitle("Подразделения");
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                onBackPressed();// возврат на предыдущий activity
+            }
+        });
+
     }
     private void InitRecyclerView()
     {
@@ -49,26 +61,7 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.setting:
-                ShowSetting();
-                return true;
-            case R.id.exit:
-                Exit();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
     //Клик по Item в RecyclerView
     @Override
     public void onClick(View view) {
@@ -86,14 +79,5 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
         //Toast.makeText(this, Integer.toString(NumberSubdivision), Toast.LENGTH_LONG).show();
     }
 
-    private void ShowSetting()
-    {
-        Intent SettingActivity = new Intent("android.intent.action.SettingActivity_");
-        startActivity(SettingActivity);
-    }
 
-    private void Exit()
-    {
-        onBackPressed();// возврат на предыдущий activity
-    }
 }
