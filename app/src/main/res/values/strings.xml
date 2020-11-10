@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">OrderAssembly</string>
     <string name="title_activity_scaner">Scaner</string>
+    <string name="section_subdivision">Section subdivision</string>
+    <string name="string_section_subdivision">Section subdivision</string>
 </resources>

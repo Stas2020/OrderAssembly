@@ -1,14 +1,20 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.calculator;
+
+import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
-public class CalculationActivity extends AppCompatActivity implements TBarcodeReader.TCallBack {
+import com.westas.orderassembly.MainActivity;
+import com.westas.orderassembly.R;
+import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
+
+
+public class CalculationActivity extends AppCompatActivity implements TOnReadBarcode {
 
     private Toolbar toolbar;
     private RecyclerView ListBarcodeRecyclerView;
@@ -33,7 +39,7 @@ public class CalculationActivity extends AppCompatActivity implements TBarcodeRe
 
 
     @Override
-    public void OnBarcode(final String code)
+    public void OnReadCode(final String code)
     {
         final Barcode barcode = parseBarcode.Parse(code);
 

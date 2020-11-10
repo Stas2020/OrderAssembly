@@ -1,4 +1,4 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.calculator;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,13 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.subdivision;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.westas.orderassembly.R;
+
 
 public class ListSubdivisionAdapter extends RecyclerView.Adapter<ListSubdivisionAdapter.ListSubdivisionViewHolder> {
 
@@ -48,8 +49,8 @@ public class ListSubdivisionAdapter extends RecyclerView.Adapter<ListSubdivision
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
-        holder.name_Subdivision.setText(_listSubdivision.list.get(position).Name);
-        holder.num_Subdivision.setText( Integer.toString(_listSubdivision.list.get(position).Number));
+        holder.name_Subdivision.setText(_listSubdivision.list.get(position).name);
+        holder.num_Subdivision.setText( _listSubdivision.list.get(position).uid);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

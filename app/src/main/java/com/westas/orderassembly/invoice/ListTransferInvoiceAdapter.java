@@ -1,4 +1,4 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.invoice;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
+import com.westas.orderassembly.R;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransferInvoiceAdapter.ListInvoceViewHolder> {
 
@@ -45,9 +47,9 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
     @Override
     public void onBindViewHolder(ListInvoceViewHolder holder, int position) {
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
-        holder.date_invoice.setText(dateFormat.format(listTransferInvoice.list.get(position).DateInvoice));
-        holder.number_invoice.setText( listTransferInvoice.list.get(position).Number);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        holder.date_invoice.setText(dateFormat.format(listTransferInvoice.list.get(position).date));
+        holder.number_invoice.setText( listTransferInvoice.list.get(position).uid);
     }
 
     @Override

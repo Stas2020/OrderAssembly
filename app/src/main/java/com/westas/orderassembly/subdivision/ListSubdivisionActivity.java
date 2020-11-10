@@ -1,20 +1,23 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.subdivision;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 
-public class ListSubdivisionActivity extends AppCompatActivity implements View.OnClickListener{
+import com.westas.orderassembly.invoice.ListTransferInvoiceActivity;
+import com.westas.orderassembly.MainActivity;
+import com.westas.orderassembly.R;
+import com.westas.orderassembly.rest_service.TOnResponceSubDivision;
+
+import java.io.IOException;
+
+public class ListSubdivisionActivity extends AppCompatActivity implements View.OnClickListener, TOnResponceSubDivision {
 
     private RecyclerView ListSubdivisionRecyclerView;
     private ListSubdivisionAdapter listSubdivisionAdapter;
@@ -27,7 +30,26 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_list_subdivision);
 
         InitToolbar();
+        GetListSundivision();
+
+    }
+    private void GetListSundivision()
+    {
+        MainActivity.rest_client.SetEvent(this);
+        MainActivity.rest_client.GetDataSubdivision();
+    }
+
+    @Override
+    public void OnSuccess(ListSubdivision list_subdivision) {
+
+        list_sd = list_subdivision;
         InitRecyclerView();
+    }
+    @Override
+    public void OnFailure(Throwable t) {
+        if (t instanceof IOException) {
+            Toast.makeText(this, "Ошибка при получении списка подразделений!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void InitToolbar()
@@ -53,9 +75,6 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
         ListSubdivisionRecyclerView = findViewById(R.id.listSubdivision);
         ListSubdivisionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-        list_sd = new ListSubdivision();
-
         listSubdivisionAdapter = new ListSubdivisionAdapter(list_sd, this);
         ListSubdivisionRecyclerView.setAdapter(listSubdivisionAdapter);
 
@@ -68,12 +87,12 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
 
         int itemPosition = ListSubdivisionRecyclerView.getChildLayoutPosition(view);
 
-        int NumberSubdivision = list_sd.list.get(itemPosition).Number;
-        String NameSubdivision = list_sd.list.get(itemPosition).Name;
+        String uid = list_sd.list.get(itemPosition).uid;
+        String name = list_sd.list.get(itemPosition).name;
 
         Intent intent = new Intent(this, ListTransferInvoiceActivity.class);
-        intent.putExtra("NumberSubdivision",NumberSubdivision);
-        intent.putExtra("NameSubdivision",NameSubdivision);
+        intent.putExtra("uid_subdivision",uid);
+        intent.putExtra("name_subdivision",name);
         startActivity(intent);
 
         //Toast.makeText(this, Integer.toString(NumberSubdivision), Toast.LENGTH_LONG).show();

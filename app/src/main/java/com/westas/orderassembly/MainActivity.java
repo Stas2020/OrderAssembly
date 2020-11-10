@@ -4,28 +4,21 @@ import android.app.Activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+
+import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.honeywell.aidc.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.westas.orderassembly.barcode_reader.TBarcodeReader;
+import com.westas.orderassembly.rest_service.RestClient;
 
 public class MainActivity extends Activity implements LoginFragment.TOnClickOk{
 
     private static TBarcodeReader BR;
-
-
+    public static RestClient rest_client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +27,11 @@ public class MainActivity extends Activity implements LoginFragment.TOnClickOk{
 
         BR = new TBarcodeReader();
         BR.Init(this);
+
+        rest_client = new RestClient();
+        rest_client.shared_preferance = PreferenceManager.getDefaultSharedPreferences(this);
+        rest_client.BuildRetrofit();
+
 
 
         FragmentManager fragmentManager = getFragmentManager();
@@ -51,6 +49,11 @@ public class MainActivity extends Activity implements LoginFragment.TOnClickOk{
             public void onClick(View view) {
                 // get the intent action string from AndroidManifest.xml
                 //Intent barcodeIntent = new Intent("android.intent.action.scaner");
+
+
+
+                //rest_client.GetDataSubdivision();
+                rest_client.GetInvoiceItem("123211");
 
             }
         });
@@ -79,13 +82,20 @@ public class MainActivity extends Activity implements LoginFragment.TOnClickOk{
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        if (BR != null) {
-
-            BR.Close();
+    protected void onResume() {
+        super.onResume();
+        if(rest_client != null)
+        {
+            rest_client.BuildRetrofit();
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (BR != null) {
+            BR.Close();
+        }
     }
 }

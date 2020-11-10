@@ -1,22 +1,27 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.invoice_items;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Date;
+
+import com.westas.orderassembly.MainActivity;
+import com.westas.orderassembly.R;
+import com.westas.orderassembly.dialog.TCallBackDialogQuantity;
+import com.westas.orderassembly.dialog.TDialogQuantity;
+import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
+import com.westas.orderassembly.rest_service.TOnResponceItemsInvoice;
 
 
-public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnClickListener, TBarcodeReader.TCallBack , TDialogQuantity.TCallBackDialogQuantity {
+public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnClickListener, TOnReadBarcode, TOnResponceItemsInvoice, TCallBackDialogQuantity {
+
 
     private RecyclerView ListGoodsRecyclerView;
     private ItemsInvoiceAdapter listGoodsAdapter;
@@ -35,25 +40,39 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items_invoice);
 
-
         InitToolbar();
-        InitRecyclerView();
         MainActivity.GetBarcodeReader().SetListren(this);
-
 
 
         dialog_ = new TDialogQuantity(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this);
 
         Bundle parametr = getIntent().getExtras();
         if(parametr!=null){
-            int num_subdivision = parametr.getInt("NumberSubdivision");
-            String name_subdivision = parametr.getString("NameSubdivision");
-            String NumberInvoice = parametr.getString("NumberInvoice");
+            String uid_subdivision = parametr.getString("uid_subdivision");
+            String name_subdivision = parametr.getString("name_subdivision");
+            String uid_invoice = parametr.getString("uid_invoice");
 
-
-            SetInvoiveInfo("12/05", "№ "+NumberInvoice, name_subdivision);
+            GetItemsInvoice(uid_invoice);
+            SetInvoiveInfo("12/05", "№ "+uid_subdivision, name_subdivision);
         }
 
+    }
+
+    private void GetItemsInvoice(String uid_invoice)
+    {
+        MainActivity.rest_client.SetEvent(this);
+        MainActivity.rest_client.GetInvoiceItem(uid_invoice);
+    }
+
+    @Override
+    public void OnSuccess(ListInvoiceItem items_invoice) {
+        list_invoiceItem = items_invoice;
+        InitRecyclerView();
+    }
+
+    @Override
+    public void OnFailure(Throwable t) {
+        Toast.makeText(this, "Ошибка при получении списка товаров в нвкладной!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     private void InitToolbar()
@@ -97,14 +116,9 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         linearLayoutManager = new LinearLayoutManager(this);
         ListGoodsRecyclerView.setLayoutManager(linearLayoutManager);
 
-
-        list_invoiceItem = new ListInvoiceItem();
-
         listGoodsAdapter = new ItemsInvoiceAdapter(list_invoiceItem, this);
         ListGoodsRecyclerView.setAdapter(listGoodsAdapter);
-
     }
-
 
     private void CloseInvoice()
     {
@@ -117,8 +131,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
 
         itemPosition = ListGoodsRecyclerView.getChildLayoutPosition(view);
 
-        String name = list_invoiceItem.GetItems(itemPosition).Name;
-        double quant = list_invoiceItem.GetItems(itemPosition).Quantity;
+        String name = list_invoiceItem.GetItems(itemPosition).name;
+        double quant = list_invoiceItem.GetItems(itemPosition).quantity;
 
         dialog_.Show(name,quant);
     }
@@ -126,12 +140,12 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void OnChangeQuantity(double quantity)
     {
-        list_invoiceItem.ChangeQuantity(quantity,list_invoiceItem.GetItems(itemPosition).Barcode);
+        list_invoiceItem.ChangeQuantity(quantity,list_invoiceItem.GetItems(itemPosition).barcode);
         listGoodsAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void OnBarcode(final String code)
+    public void OnReadCode(final String code)
     {
 
         String Barcode = "8763698";
@@ -165,4 +179,6 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
 
 
     }
+
+
 }

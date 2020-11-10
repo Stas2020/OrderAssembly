@@ -1,16 +1,15 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.calculator;
 
-import android.graphics.Color;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.DateFormat;
+
+import com.westas.orderassembly.R;
+
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class BarcodeAdapter extends RecyclerView.Adapter<BarcodeAdapter.BarcodeViewHolder> {
 

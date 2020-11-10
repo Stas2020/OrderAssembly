@@ -1,4 +1,4 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.barcode_reader;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,14 +22,11 @@ import java.util.Map;
 
 public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeReader.TriggerListener{
 
-    interface TCallBack
-    {
-        public void OnBarcode(String code);
-    }
+
 
     private static AidcManager manager;
     private static BarcodeReader reader;
-    private TCallBack calback_event;
+    private TOnReadBarcode read_code_event;
 
     public void Init(Context context)
     {
@@ -37,9 +34,9 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
         CreateAidcManager(context);
     }
 
-    public void SetListren(TCallBack calback)
+    public void SetListren(TOnReadBarcode calback)
     {
-        calback_event = calback;
+        read_code_event = calback;
     }
     public void Close()
     {
@@ -58,7 +55,7 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
     @Override
     public void onBarcodeEvent(final BarcodeReadEvent event) {
 
-        calback_event.OnBarcode(event.getBarcodeData());
+        read_code_event.OnReadCode(event.getBarcodeData());
     }
 
 

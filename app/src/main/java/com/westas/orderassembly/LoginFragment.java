@@ -3,12 +3,16 @@ package com.westas.orderassembly;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.os.Bundle;
+
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+
 
 public class LoginFragment extends Fragment {
 
@@ -39,7 +43,8 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
 
-        textView1 = getView().findViewById(R.id.editText2);
+       textView1 = getView().findViewById(R.id.editText2);
+       textView1.setInputType(InputType.TYPE_NULL); // disable softkey input
 
        Button button1 = getView().findViewById(R.id.button1);
        button1.setOnClickListener(new View.OnClickListener() {

@@ -4,6 +4,8 @@
     package="com.westas.orderassembly">
 
     <uses-permission android:name="com.honeywell.decode.permission.DECODE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -14,34 +16,30 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".CalculationActivity">
+        <activity android:name=".calculator.CalculationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.CalculationActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".SelectOperationActivity" />
-        <activity android:name=".SettingActivity_">
+        <activity android:name=".setting.SettingActivity_">
             <intent-filter>
                 <action android:name="android.intent.action.SettingActivity_" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ItemsInvoiceActivity" />
-        <activity android:name=".ListTransferInvoiceActivity" />
-        <activity android:name=".ListSubdivisionActivity">
+        <activity android:name=".invoice_items.ItemsInvoiceActivity" />
+        <activity android:name=".invoice.ListTransferInvoiceActivity" />
+        <activity android:name=".subdivision.ListSubdivisionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.ListSubdivisionActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

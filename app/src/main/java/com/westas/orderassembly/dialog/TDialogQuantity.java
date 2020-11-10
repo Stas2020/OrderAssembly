@@ -1,19 +1,18 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.dialog;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 
+import com.westas.orderassembly.R;
+
+
 public class TDialogQuantity
 {
-
-    interface TCallBackDialogQuantity
-    {
-        void OnChangeQuantity(double quantity);
-    }
 
     private TCallBackDialogQuantity calback_event;
     private Activity activity_;

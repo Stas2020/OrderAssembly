@@ -1,10 +1,11 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.setting;
 
-import android.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
+import com.westas.orderassembly.R;
 
 
 public class SettingActivity_ extends AppCompatActivity {
@@ -24,6 +25,7 @@ public class SettingActivity_ extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
+
                 onBackPressed();// возврат на предыдущий activity
             }
         });

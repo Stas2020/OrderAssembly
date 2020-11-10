@@ -1,7 +1,8 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.calculator;
+
+import com.westas.orderassembly.calculator.Barcode;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ParseBarcode {
 

@@ -1,17 +1,24 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.invoice;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+
+import com.westas.orderassembly.invoice_items.ItemsInvoiceActivity;
+import com.westas.orderassembly.MainActivity;
+import com.westas.orderassembly.R;
+import com.westas.orderassembly.rest_service.TOnResponceListInvoice;
 
 import java.util.Date;
 
-public class ListTransferInvoiceActivity extends AppCompatActivity implements View.OnClickListener{
+public class ListTransferInvoiceActivity extends AppCompatActivity implements View.OnClickListener, TOnResponceListInvoice {
 
     private RecyclerView ListInvoiceRecyclerView;
     private ListTransferInvoiceAdapter listInvoiceAdapter;
@@ -19,7 +26,7 @@ public class ListTransferInvoiceActivity extends AppCompatActivity implements Vi
     private Toolbar toolbar;
     private TextView subdivision_name;
 
-    int num_subdivision = -1;
+    String uid_subdivision;
     String name_subdivision;
 
     @Override
@@ -28,14 +35,14 @@ public class ListTransferInvoiceActivity extends AppCompatActivity implements Vi
         setContentView(R.layout.activity_list_transfer_invoice);
 
         InitToolbar();
-        InitRecyclerView();
 
         Bundle parametr = getIntent().getExtras();
         if(parametr!=null){
-            num_subdivision = parametr.getInt("NumberSubdivision");
-            name_subdivision = parametr.getString("NameSubdivision");
+             uid_subdivision = parametr.getString("uid_subdivision");
+             name_subdivision = parametr.getString("name_subdivision");
 
             SetNameSubdivision(name_subdivision);
+            GetListInvoice(uid_subdivision);
         }
 
 
@@ -69,12 +76,8 @@ public class ListTransferInvoiceActivity extends AppCompatActivity implements Vi
         ListInvoiceRecyclerView = findViewById(R.id.list_invoice);
         ListInvoiceRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-        list_invoice = new ListTransferInvoice();
-
         listInvoiceAdapter = new ListTransferInvoiceAdapter(list_invoice, this);
         ListInvoiceRecyclerView.setAdapter(listInvoiceAdapter);
-
     }
 
     //Клик по Item в RecyclerView
@@ -83,16 +86,31 @@ public class ListTransferInvoiceActivity extends AppCompatActivity implements Vi
 
         int itemPosition = ListInvoiceRecyclerView.getChildLayoutPosition(view);
 
-        Date DateInvoice = list_invoice.list.get(itemPosition).DateInvoice;
-        String Number = list_invoice.list.get(itemPosition).Number;
-        int toSubdivision = list_invoice.list.get(itemPosition).toSubdivision;
+        Date date_invoice = list_invoice.list.get(itemPosition).date;
+        String uid_invoice = list_invoice.list.get(itemPosition).uid;
 
         Intent intent = new Intent(this, ItemsInvoiceActivity.class);
-        intent.putExtra("NumberSubdivision",num_subdivision);
-        intent.putExtra("NameSubdivision",name_subdivision);
-        intent.putExtra("NumberInvoice",Number);
-        intent.putExtra("DateInvoice",DateInvoice);
+        intent.putExtra("uid_subdivision",uid_subdivision);
+        intent.putExtra("name_subdivision",name_subdivision);
+        intent.putExtra("uid_invoice",uid_invoice);
+        intent.putExtra("date_invoice",date_invoice);
 
         startActivity(intent);
+    }
+
+    private void GetListInvoice(String uid_sundivision)
+    {
+        MainActivity.rest_client.SetEvent(this);
+        MainActivity.rest_client.GetInvoice(uid_sundivision);
+    }
+    @Override
+    public void OnSuccess(ListTransferInvoice list_transfer_invoice) {
+        list_invoice = list_transfer_invoice;
+        InitRecyclerView();
+    }
+
+    @Override
+    public void OnFailure(Throwable t) {
+        Toast.makeText(this, "Ошибка при получении списка накладных!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }

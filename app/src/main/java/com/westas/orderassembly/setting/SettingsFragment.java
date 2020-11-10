@@ -1,8 +1,9 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.setting;
 
 import android.preference.PreferenceFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.westas.orderassembly.R;
 
 public class SettingsFragment extends PreferenceFragment {
 

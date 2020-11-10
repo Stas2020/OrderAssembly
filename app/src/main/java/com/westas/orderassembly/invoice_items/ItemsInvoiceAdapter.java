@@ -1,4 +1,4 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.invoice_items;
 
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.westas.orderassembly.R;
+
 
 public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapter.ItemsInvoiceViewHolder> {
 
@@ -51,15 +54,15 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
     @Override
     public void onBindViewHolder(ItemsInvoiceViewHolder holder, int position) {
 
-        holder.unit.setText(listInvoiceItem.GetItems(position).Unit);
-        holder.barcode.setText(listInvoiceItem.GetItems(position).Barcode);
-        holder.name.setText(listInvoiceItem.GetItems(position).Name);
-        holder.quantity.setText(Double.toString(listInvoiceItem.GetItems(position).RequiredQuantity));
-        holder.required_quantity.setText(Double.toString(listInvoiceItem.GetItems(position).Quantity));
+        holder.unit.setText(listInvoiceItem.GetItems(position).unit);
+        holder.barcode.setText(listInvoiceItem.GetItems(position).barcode);
+        holder.name.setText(listInvoiceItem.GetItems(position).name);
+        holder.quantity.setText(Double.toString(listInvoiceItem.GetItems(position).required_quantity));
+        holder.required_quantity.setText(Double.toString(listInvoiceItem.GetItems(position).quantity));
 
-        if (listInvoiceItem.GetItems(position).Verify != null)
+        if (listInvoiceItem.GetItems(position).verify != null)
         {
-            switch (listInvoiceItem.GetItems(position).Verify)
+            switch (listInvoiceItem.GetItems(position).verify)
             {
                 case less: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#c0e8ff")); break;
                 case equally: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#5cf800")); break;
