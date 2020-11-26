@@ -100,7 +100,7 @@ public class ListTransferInvoiceActivity extends AppCompatActivity implements Vi
 
     private void GetListInvoice(String uid_sundivision)
     {
-        MainActivity.rest_client.SetEvent(this);
+        MainActivity.rest_client.SetEventListInvoice(this);
         MainActivity.rest_client.GetInvoice(uid_sundivision);
     }
     @Override

@@ -47,8 +47,8 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
     @Override
     public void onBindViewHolder(ListInvoceViewHolder holder, int position) {
 
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        holder.date_invoice.setText(dateFormat.format(listTransferInvoice.list.get(position).date));
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        holder.date_invoice.setText(new SimpleDateFormat("dd MMM yyyy").format(listTransferInvoice.list.get(position).date));
         holder.number_invoice.setText( listTransferInvoice.list.get(position).uid);
     }
 

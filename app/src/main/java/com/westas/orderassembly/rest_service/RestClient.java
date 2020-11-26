@@ -14,7 +14,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+import retrofit2.http.Query;
 
 
 public class RestClient {
@@ -25,19 +25,25 @@ public class RestClient {
     TOnResponceSubDivision on_responce_subdivision;
     TOnResponceListInvoice on_responce_list_invoice;
     TOnResponceItemsInvoice on_responce_items_invoice;
+    TOnResponce on_responce;
 
-    public void SetEvent(TOnResponceSubDivision value)
+    public void SetEventSubDivision(TOnResponceSubDivision value)
     {
         on_responce_subdivision = value;
     }
-    public void SetEvent(TOnResponceListInvoice value)
+    public void SetEventListInvoice(TOnResponceListInvoice value)
     {
         on_responce_list_invoice = value;
     }
-    public void SetEvent(TOnResponceItemsInvoice value)
+    public void SetEventItemsInvoice(TOnResponceItemsInvoice value)
     {
         on_responce_items_invoice = value;
     }
+    public void SetEventResponce(TOnResponce value)
+    {
+        on_responce = value;
+    }
+
     //Создаем Retrofit
     public void BuildRetrofit()
     {
@@ -69,9 +75,9 @@ public class RestClient {
     }
 
     //Получение данных с REST сервера Подразделения
-    public void GetDataSubdivision()
+    public void GetListSubdivision()
     {
-        Call<ListSubdivision> list_subdivision = rest_api.GetDataSubdivision();
+        Call<ListSubdivision> list_subdivision = rest_api.GetListSubdivision();
         list_subdivision.enqueue(new Callback<ListSubdivision>() {
             @Override
             public void onResponse(Call<ListSubdivision> call, Response<ListSubdivision> response) {
@@ -102,13 +108,48 @@ public class RestClient {
             });
     }
 
+    //Замена количества товара в накладной
+    public void SetQuantityItem( String uid_invoice,  String uid_item,  double quantity)
+    {
+        Call<TResponce> set_quantity_item = rest_api.SetQuantityItem(uid_invoice,uid_item,quantity);
+        set_quantity_item.enqueue(new Callback<TResponce>() {
+            @Override
+            public void onResponse(Call<TResponce> call, Response<TResponce> response) {
+
+                on_responce.OnSuccessResponce(response.body());
+            }
+            @Override
+            public void onFailure(Call<TResponce> call, Throwable t) {
+
+                on_responce.OnFailureResponce(t);
+            }
+        });
+    }
+
+    //Добавление товара в накладную
+    public void AddItemToInvoice(String uid_invoice, String barcode_item, float quantity)
+    {
+        Call<TResponce> add_item = rest_api.AddItemToInvoice(uid_invoice,  barcode_item,  quantity);
+        add_item.enqueue(new Callback<TResponce>() {
+            @Override
+            public void onResponse(Call<TResponce> call, Response<TResponce> response) {
+
+                on_responce.OnSuccessResponce(response.body());
+            }
+            @Override
+            public void onFailure(Call<TResponce> call, Throwable t) {
+
+                on_responce.OnFailureResponce(t);
+            }
+        });
+    }
 
     //Получение данных с REST сервера список товаров в накладной
-    public void GetInvoiceItem(String uid_invoice)
+    public void GetItemsOfInvoice(String uid_invoice)
     {
         try
         {
-            Call<ListInvoiceItem> invoice_items = rest_api.GetInvoiceItem(uid_invoice);
+            Call<ListInvoiceItem> invoice_items = rest_api.GetItemsOfInvoice(uid_invoice);
 
             invoice_items.enqueue(new Callback<ListInvoiceItem>() {
                 @Override
@@ -124,10 +165,56 @@ public class RestClient {
         catch(Exception e)
         {
             String err_nes =  e.getMessage();
-
         }
     }
 
+    //Печать накладной
+    public void PrintInvoice(String uid_invoice)
+    {
+        try
+        {
+            Call<TResponce> print = rest_api.PrintInvoice(uid_invoice);
+
+            print.enqueue(new Callback<TResponce>() {
+                @Override
+                public void onResponse(Call<TResponce> call, Response<TResponce> response) {
+                    on_responce.OnSuccessResponce(response.body());
+                }
+                @Override
+                public void onFailure(Call<TResponce> call, Throwable t) {
+                    on_responce.OnFailureResponce(t);
+                }
+            });
+        }
+        catch(Exception e)
+        {
+            String err_nes =  e.getMessage();
+        }
+    }
+
+    //Закрытие накладной
+    public void CloseInvoice(String uid_invoice)
+    {
+        try
+        {
+            Call<TResponce> close_invoice = rest_api.CloseInvoice(uid_invoice);
+
+            close_invoice.enqueue(new Callback<TResponce>() {
+                @Override
+                public void onResponse(Call<TResponce> call, Response<TResponce> response) {
+                    on_responce.OnSuccessResponce(response.body());
+                }
+                @Override
+                public void onFailure(Call<TResponce> call, Throwable t) {
+                    on_responce.OnFailureResponce(t);
+                }
+            });
+        }
+        catch(Exception e)
+        {
+            String err_nes =  e.getMessage();
+        }
+    }
 
 
 }

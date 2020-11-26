@@ -35,8 +35,8 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
     }
     private void GetListSundivision()
     {
-        MainActivity.rest_client.SetEvent(this);
-        MainActivity.rest_client.GetDataSubdivision();
+        MainActivity.rest_client.SetEventSubDivision(this);
+        MainActivity.rest_client.GetListSubdivision();
     }
 
     @Override

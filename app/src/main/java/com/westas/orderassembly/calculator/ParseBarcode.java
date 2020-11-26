@@ -1,5 +1,6 @@
 package com.westas.orderassembly.calculator;
 
+import com.google.gson.Gson;
 import com.westas.orderassembly.calculator.Barcode;
 
 import java.text.SimpleDateFormat;
@@ -53,5 +54,12 @@ public class ParseBarcode {
             e.printStackTrace();
         }
         return res;
+    }
+    public QRCode ParseJSON(String json_str)
+    {
+        Gson gson = new Gson();
+        QRCode qr_code = gson.fromJson(json_str,QRCode.class);
+        return qr_code;
+
     }
 }

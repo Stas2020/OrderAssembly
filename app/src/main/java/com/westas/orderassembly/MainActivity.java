@@ -53,7 +53,7 @@ public class MainActivity extends Activity implements LoginFragment.TOnClickOk{
 
 
                 //rest_client.GetDataSubdivision();
-                rest_client.GetInvoiceItem("123211");
+                //rest_client.GetInvoiceItem("123211");
 
             }
         });

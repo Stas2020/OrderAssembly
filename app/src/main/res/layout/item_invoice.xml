@@ -33,33 +33,39 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="42dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="45dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginBottom="1dp"
-                    android:paddingLeft="3dp"
+                    android:layout_marginStart="4dp"
+                    android:paddingStart="3dp"
                     android:paddingTop="4dp"
                     android:src="@drawable/invoice"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/date_invoice"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    android:contentDescription="TODO" />
 
                 <TextView
                     android:id="@+id/date_invoice"
-                    android:layout_width="114dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="45dp"
+                    android:layout_marginStart="8dp"
                     android:gravity="center"
                     android:paddingTop="5dp"
-                    android:text="12-12-2019"
+                    android:text="12 нояб. 2019"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/number_invoice"
                     app:layout_constraintStart_toEndOf="@+id/imageView"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
 
                 <TextView
                     android:id="@+id/number_invoice"
-                    android:layout_width="245dp"
+                    android:layout_width="0dp"
                     android:layout_height="45dp"
+                    android:layout_marginStart="8dp"
                     android:gravity="center"
                     android:paddingTop="5dp"
                     android:text="TextView"
@@ -67,7 +73,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/date_invoice"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
 
             </android.support.constraint.ConstraintLayout>

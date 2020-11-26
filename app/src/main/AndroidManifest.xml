@@ -18,26 +18,27 @@
 
         <activity android:name=".calculator.CalculationActivity">
             <intent-filter>
-                <action android:name="android.intent.action.CalculationActivity" />
+                <action android:name="android.intent.action.CalculationActivity"  android:screenOrientation="portrait"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".SelectOperationActivity" />
-        <activity android:name=".setting.SettingActivity_">
+        <activity android:name=".SelectOperationActivity" android:screenOrientation="portrait" />
+        <activity android:name=".setting.SettingActivity_"  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SettingActivity_" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".invoice_items.ItemsInvoiceActivity" />
-        <activity android:name=".invoice.ListTransferInvoiceActivity" />
-        <activity android:name=".subdivision.ListSubdivisionActivity">
+        <activity android:name=".invoice_items.ItemsInvoiceActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".invoice.ListTransferInvoiceActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".subdivision.ListSubdivisionActivity"  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.ListSubdivisionActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
