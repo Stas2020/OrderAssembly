@@ -11,4 +11,6 @@ public class TransferInvoice {
     public Date date;
     @SerializedName("uid_customer")
     public String uid_customer;
+    @SerializedName("closed")
+    public boolean closed;
 }

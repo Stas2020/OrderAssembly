@@ -64,15 +64,15 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
         {
             switch (listInvoiceItem.GetItems(position).verify)
             {
-                case less: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#3CD1DACC")); break;
-                case equally: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#DA93D19D")); break;
-                case over: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#DA93D19D")); break;
-                default: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#3CD1DACC")); break;
+                case less: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#67f561ab")); break;
+                case equally: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#67f561e0")); break;
+                case over: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#67f561")); break;
+                default: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#eae7f8")); break;
             }
         }
         else
         {
-            holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#3CD1DACC"));
+            holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#eae7f8"));
         }
 
 

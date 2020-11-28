@@ -16,7 +16,7 @@ import com.westas.orderassembly.R;
 import static android.view.KeyEvent.ACTION_DOWN;
 
 
-public class TDialogQuantity
+public class TDialogForm
 {
 
     private TCallBackDialogQuantity calback_event;
@@ -24,17 +24,19 @@ public class TDialogQuantity
     private TextView textView_quantity;
     private  AlertDialog.Builder builder;
     private  AlertDialog dialog;
+    private String title;
 
-    public TDialogQuantity(TCallBackDialogQuantity calback, Activity activity)
+    public TDialogForm(TCallBackDialogQuantity calback, Activity activity, String _title)
     {
         calback_event = calback;
         activity_ = activity;
+        title = _title;
     }
 
     private void Init()
     {
         builder = new AlertDialog.Builder(activity_);
-        builder.setTitle("Количество");
+        builder.setTitle(title);
 
 
         View linearlayout = activity_.getLayoutInflater().inflate(R.layout.dialog_quantity, null);
@@ -85,11 +87,11 @@ public class TDialogQuantity
 
     }
 
-    public void Show(String NameGoods, double quantity)
+    public void Show(String message, double quantity)
     {
         Init();
 
-        builder.setMessage(NameGoods);
+        builder.setMessage(message);
         dialog = builder.create();
 
         //textView_quantity.setText(Double.toString(quantity));

@@ -21,7 +21,7 @@ import com.westas.orderassembly.R;
 import com.westas.orderassembly.calculator.ParseBarcode;
 import com.westas.orderassembly.calculator.QRCode;
 import com.westas.orderassembly.dialog.TCallBackDialogQuantity;
-import com.westas.orderassembly.dialog.TDialogQuantity;
+import com.westas.orderassembly.dialog.TDialogForm;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TOnResponceItemsInvoice;
@@ -33,7 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnClickListener, TOnReadBarcode, TOnResponceItemsInvoice, TCallBackDialogQuantity, TOnChangeQuantity, TOnResponce {
+public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, TOnReadBarcode, TOnResponceItemsInvoice, TCallBackDialogQuantity, TOnChangeQuantity, TOnResponce {
 
 
     private RecyclerView ListGoodsRecyclerView;
@@ -44,7 +44,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
     private TextView invoice_date;
     private TextView invoice_number;
     private TextView subdivision_name;
-    private TDialogQuantity dialog_;
+    private TDialogForm dialog_quantity;
+    private TDialogForm dialog_print_label;
     private int itemPosition;
 
     private String uid_subdivision ;
@@ -61,7 +62,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         InitToolbar();
         MainActivity.GetBarcodeReader().SetListren(this);
 
-        dialog_ = new TDialogQuantity(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this);
+        dialog_quantity = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Количество");
+        dialog_print_label = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Печать этикетки");
 
         Bundle parametr = getIntent().getExtras();
         if(parametr!=null){
@@ -199,7 +201,13 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         String name = list_invoiceItem.GetItems(itemPosition).name;
         double quant = list_invoiceItem.GetItems(itemPosition).quantity;
 
-        dialog_.Show(name,quant);
+        dialog_quantity.Show(name,quant);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        dialog_print_label.Show("Количество этикеток",0);
+        return false;
     }
 
     @Override
@@ -278,4 +286,6 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         MainActivity.rest_client.SetEventResponce(this);
         MainActivity.rest_client.SetQuantityItem(uid_invoice, uid, quantity);
     }
+
+
 }

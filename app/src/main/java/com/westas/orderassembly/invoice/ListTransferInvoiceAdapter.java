@@ -1,5 +1,7 @@
 package com.westas.orderassembly.invoice;
 
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,11 +30,13 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
         public View view;
         public TextView date_invoice;
         public TextView number_invoice;
+        public CardView cardview_of_invoice;
         public ListInvoceViewHolder(View v) {
             super(v);
             view = v;
             date_invoice = view.findViewById(R.id.date_invoice);
             number_invoice = view.findViewById(R.id.number_invoice);
+            cardview_of_invoice = view.findViewById(R.id.cardview_invoice);
         }
     }
 
@@ -50,6 +54,11 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
         DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
         holder.date_invoice.setText(new SimpleDateFormat("dd MMM yyyy").format(listTransferInvoice.list.get(position).date));
         holder.number_invoice.setText( listTransferInvoice.list.get(position).uid);
+
+        if(listTransferInvoice.list.get(position).closed)
+        {
+            holder.cardview_of_invoice.setCardBackgroundColor(Color.parseColor("#47caff"));
+        }
     }
 
     @Override
