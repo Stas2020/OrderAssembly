@@ -44,9 +44,22 @@ public class ListTransferInvoiceActivity extends AppCompatActivity implements Vi
             SetNameSubdivision(name_subdivision);
             GetListInvoice(uid_subdivision);
         }
-
-
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Bundle parametr = getIntent().getExtras();
+        if(parametr!=null){
+            uid_subdivision = parametr.getString("uid_subdivision");
+            name_subdivision = parametr.getString("name_subdivision");
+
+            SetNameSubdivision(name_subdivision);
+            GetListInvoice(uid_subdivision);
+        }
+    }
+
 
     private void SetNameSubdivision(String name)
     {
@@ -76,7 +89,7 @@ public class ListTransferInvoiceActivity extends AppCompatActivity implements Vi
         ListInvoiceRecyclerView = findViewById(R.id.list_invoice);
         ListInvoiceRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        listInvoiceAdapter = new ListTransferInvoiceAdapter(list_invoice, this);
+        listInvoiceAdapter = new ListTransferInvoiceAdapter(this, list_invoice, this);
         ListInvoiceRecyclerView.setAdapter(listInvoiceAdapter);
     }
 

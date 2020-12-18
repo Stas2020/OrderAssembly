@@ -1,17 +1,22 @@
 package com.westas.orderassembly.invoice_items;
 
 
+import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +28,13 @@ import com.westas.orderassembly.calculator.QRCode;
 import com.westas.orderassembly.dialog.TCallBackDialogQuantity;
 import com.westas.orderassembly.dialog.TDialogForm;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
+import com.westas.orderassembly.dialog.TTypeForm;
+import com.westas.orderassembly.invoice.ListTransferInvoiceActivity;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TOnResponceItemsInvoice;
 import com.westas.orderassembly.rest_service.TResponce;
 
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -62,8 +70,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         InitToolbar();
         MainActivity.GetBarcodeReader().SetListren(this);
 
-        dialog_quantity = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Количество");
-        dialog_print_label = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Печать этикетки");
+        dialog_quantity = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Количество", TTypeForm.change);
+        dialog_print_label = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Печать этикетки",TTypeForm.label);
 
         Bundle parametr = getIntent().getExtras();
         if(parametr!=null){
@@ -99,7 +107,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void OnFailure(Throwable t) {
-        Toast.makeText(this, "Ошибка при получении списка товаров в нвкладной!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Ошибка при получении списка товаров в накладной!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -117,6 +125,26 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu_items_of_invoice, menu);
+
+        //Код с рефлексией, используемый для включения в пункты меню иконок
+        if(menu.getClass().getSimpleName()
+                .equals("MenuBuilder")){
+            try{
+                Method m = menu.getClass()
+                        .getDeclaredMethod (
+                                "setOptionalIconsVisible",
+                                Boolean.TYPE);
+                m.setAccessible(true);
+                m.invoke(menu, true);
+            }
+            catch(NoSuchMethodException e){
+                System.err.println("onCreateOptionsMenu");
+            }
+            catch(Exception e){
+                throw new RuntimeException(e);
+            }
+        }
+
         return true;
     }
 
@@ -133,9 +161,18 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
             case R.id.add_item:
                 AddItemToInvoice();
                 return true;
+            case R.id.info_by_invoice:
+                InfoByInvoice();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void InfoByInvoice() {
+        Intent intent = new Intent(this, InfoInvoiceActivity.class);
+        intent.putExtra("uid_invoice",uid_invoice);
+        startActivity(intent);
     }
 
     private void InitToolbar()
@@ -171,7 +208,9 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         linearLayoutManager = new LinearLayoutManager(this);
         ListGoodsRecyclerView.setLayoutManager(linearLayoutManager);
 
-        listGoodsAdapter = new ItemsInvoiceAdapter(list_invoiceItem, this);
+
+        ListGoodsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        listGoodsAdapter = new ItemsInvoiceAdapter(this, list_invoiceItem, this,this);
         ListGoodsRecyclerView.setAdapter(listGoodsAdapter);
     }
 
@@ -211,12 +250,36 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
     }
 
     @Override
-    public void OnChangeQuantity(double quantity)
+    public void OnChangeQuantity(double quantity, TTypeForm type_)
     {
-        list_invoiceItem.ChangeQuantity(quantity,list_invoiceItem.GetItems(itemPosition).barcode);
-        listGoodsAdapter.notifyDataSetChanged();
+        switch (type_)
+        {
+            case label: {
+                PrintLabel((int)quantity,list_invoiceItem.GetItems(itemPosition));
+                break;
+            }
+            case change:{
+                list_invoiceItem.ChangeQuantity(quantity,list_invoiceItem.GetItems(itemPosition).barcode);
+                listGoodsAdapter.notifyDataSetChanged();
+                ListGoodsRecyclerView.smoothScrollToPosition(0);
+                break;
+            }
+        }
+
     }
 
+    private void PrintLabel(int count_label, InvoiceItem invoiceItem)
+    {
+        MainActivity.rest_client.SetEventResponce(this);
+        MainActivity.rest_client.PrintLabel(uid_invoice, invoiceItem.uid, count_label);
+
+    }
+
+    private void Alert(String message)
+    {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        AlertSound();
+    }
     private void AlertSound()
     {
         Uri notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -234,13 +297,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         }
         catch(Exception e)
         {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(ItemsInvoiceActivity.this, "Не удалось прочитать QRCode!", Toast.LENGTH_SHORT).show();
-                    AlertSound();
-                }
-            });
+            runOnUiThread(() -> Alert("Не удалось прочитать QRCode!"));
         }
 
         if (qr_code == null)
@@ -248,8 +305,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(ItemsInvoiceActivity.this, "Не удалось прочитать QRCode!", Toast.LENGTH_SHORT).show();
-                    AlertSound();
+                    Alert("Не удалось прочитать QRCode!");
                 }
             });
         }
@@ -258,24 +314,14 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
 
         if (verify)
         {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                    listGoodsAdapter.notifyDataSetChanged();
-                    ListGoodsRecyclerView.smoothScrollToPosition(0);
-                }
+            runOnUiThread(() -> {
+                listGoodsAdapter.notifyDataSetChanged();
+                ListGoodsRecyclerView.smoothScrollToPosition(0);
             });
         }
         else
         {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(ItemsInvoiceActivity.this, "Не нашел товар!", Toast.LENGTH_SHORT).show();
-                    AlertSound();
-                }
-            });
+            runOnUiThread(() -> Alert("Не нашел товар!"));
         }
 
     }

@@ -5,11 +5,22 @@
 
     <item
         android:id="@+id/print"
-        android:title="Печать" />
+        android:icon="@drawable/print_14"
+        android:title="  Печать"
+        app:showAsAction="withText" />
     <item
         android:id="@+id/close"
-        android:title="Закрыть" />
+        android:icon="@drawable/opened_lock_14"
+        android:title=" Закрыть"
+        app:showAsAction="collapseActionView|withText" />
     <item
         android:id="@+id/add_item"
-        android:title="Добавить" />
+        android:icon="@drawable/arrow_left_18"
+        android:title=" Добавить"
+        app:showAsAction="collapseActionView|withText" />
+    <item
+        android:id="@+id/info_by_invoice"
+        android:icon="@drawable/empty_clipboard_16"
+        android:title="  Отчет"
+        app:showAsAction="withText" />
 </menu>

@@ -15,22 +15,25 @@ import com.westas.orderassembly.R;
 
 import static android.view.KeyEvent.ACTION_DOWN;
 
+;
 
 public class TDialogForm
 {
 
-    private TCallBackDialogQuantity calback_event;
+    private TCallBackDialogQuantity calback_event = null;
     private Activity activity_;
     private TextView textView_quantity;
     private  AlertDialog.Builder builder;
     private  AlertDialog dialog;
     private String title;
+    private TTypeForm type_f;
 
-    public TDialogForm(TCallBackDialogQuantity calback, Activity activity, String _title)
+    public TDialogForm(TCallBackDialogQuantity calback, Activity activity, String _title, TTypeForm _type)
     {
         calback_event = calback;
         activity_ = activity;
         title = _title;
+        type_f = _type;
     }
 
     private void Init()
@@ -55,7 +58,7 @@ public class TDialogForm
                     {
                         quantity = Double.parseDouble(value);;
                     }
-                    calback_event.OnChangeQuantity(quantity);
+                    calback_event.OnChangeQuantity(quantity, type_f);
                     dialog.hide();
                     return true;
                 }
@@ -76,7 +79,7 @@ public class TDialogForm
                 {
                     quantity = Double.parseDouble(value);;
                 }
-                calback_event.OnChangeQuantity(quantity);
+                calback_event.OnChangeQuantity(quantity, type_f);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

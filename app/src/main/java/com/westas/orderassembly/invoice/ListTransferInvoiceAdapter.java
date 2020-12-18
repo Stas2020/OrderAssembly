@@ -1,11 +1,14 @@
 package com.westas.orderassembly.invoice;
 
+import android.app.Activity;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -18,11 +21,13 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
 
     private ListTransferInvoice listTransferInvoice;
     private View.OnClickListener onClickListener;
+    private Activity activity;
 
-    public ListTransferInvoiceAdapter(ListTransferInvoice listInvoice,View.OnClickListener onClickListener)
+    public ListTransferInvoiceAdapter(Activity _activity, ListTransferInvoice listInvoice,View.OnClickListener onClickListener)
     {
         listTransferInvoice = listInvoice;
         this.onClickListener = onClickListener;
+        activity = _activity;
     }
 
     public static class ListInvoceViewHolder extends RecyclerView.ViewHolder {
@@ -31,12 +36,14 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
         public TextView date_invoice;
         public TextView number_invoice;
         public CardView cardview_of_invoice;
+        public ImageView img_synhronised_invoice;
         public ListInvoceViewHolder(View v) {
             super(v);
             view = v;
             date_invoice = view.findViewById(R.id.date_invoice);
             number_invoice = view.findViewById(R.id.number_invoice);
             cardview_of_invoice = view.findViewById(R.id.cardview_invoice);
+            img_synhronised_invoice = view.findViewById(R.id.image_synchronized_invoice);
         }
     }
 
@@ -57,7 +64,24 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
 
         if(listTransferInvoice.list.get(position).closed)
         {
-            holder.cardview_of_invoice.setCardBackgroundColor(Color.parseColor("#47caff"));
+            holder.cardview_of_invoice.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.invoice_close));
+            holder.img_synhronised_invoice.setImageResource(R.drawable.closed_32);
+
+        }
+        else
+        {
+            if(listTransferInvoice.list.get(position).all_item_synhronized)
+            {
+                holder.img_synhronised_invoice.setImageResource(R.drawable.check_32);
+                holder.cardview_of_invoice.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.invoice_checked));
+            }
+            else
+            {
+                holder.img_synhronised_invoice.setImageResource(R.drawable.alert_32);
+                holder.cardview_of_invoice.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.invoice_alert));
+            }
+
+            //holder.cardview_of_invoice.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.invoice_default));
         }
     }
 

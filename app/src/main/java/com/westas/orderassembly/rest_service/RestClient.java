@@ -61,7 +61,7 @@ public class RestClient {
         NameServer = NameServer.replaceAll("\n|\r\n", "");
         NameServer = NameServer.trim();
 
-        String Port = shared_preferance.getString("NAME_PORT","8000");
+        String Port = shared_preferance.getString("NAME_PORT","8085");
         Port = Port.trim();
         String url = "http://"+NameServer+":"+Port;
         //NameServer = "192.168.222.111";
@@ -72,6 +72,7 @@ public class RestClient {
                 .build();
 
         rest_api= retrofit.create(RestApi.class); //Создаем объект, при помощи которого будем выполнять запросы
+
     }
 
     //Получение данных с REST сервера Подразделения
@@ -192,6 +193,30 @@ public class RestClient {
         }
     }
 
+    //Печать этикетки
+    public void PrintLabel(String uid_invoice, String uid_item, int count_label)
+    {
+        try
+        {
+            Call<TResponce> print_label = rest_api.PrintLabel(uid_invoice, uid_item, count_label);
+
+            print_label.enqueue(new Callback<TResponce>() {
+                @Override
+                public void onResponse(Call<TResponce> call, Response<TResponce> response) {
+                    on_responce.OnSuccessResponce(response.body());
+                }
+                @Override
+                public void onFailure(Call<TResponce> call, Throwable t) {
+                    on_responce.OnFailureResponce(t);
+                }
+            });
+        }
+        catch(Exception e)
+        {
+            String err_nes =  e.getMessage();
+        }
+    }
+
     //Закрытие накладной
     public void CloseInvoice(String uid_invoice)
     {
@@ -216,5 +241,27 @@ public class RestClient {
         }
     }
 
+    //Результат синхронизации с GESTORI
+    public void GetResultSynchronizedInvoice(String uid_invoice)
+    {
+        try
+        {
+            Call<TResponce> result_sync_invoice = rest_api.GetResultSynchronizedInvoice(uid_invoice);
 
+            result_sync_invoice.enqueue(new Callback<TResponce>() {
+                @Override
+                public void onResponse(Call<TResponce> call, Response<TResponce> response) {
+                    on_responce.OnSuccessResponce(response.body());
+                }
+                @Override
+                public void onFailure(Call<TResponce> call, Throwable t) {
+                    on_responce.OnFailureResponce(t);
+                }
+            });
+        }
+        catch(Exception e)
+        {
+            String err_nes =  e.getMessage();
+        }
+    }
 }

@@ -1,5 +1,5 @@
 package com.westas.orderassembly.dialog;
 
 public interface TCallBackDialogQuantity {
-    void OnChangeQuantity(double quantity);
+    void OnChangeQuantity(double quantity, TTypeForm type);
 }

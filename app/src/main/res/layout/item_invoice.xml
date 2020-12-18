@@ -55,6 +55,7 @@
                     android:gravity="center"
                     android:paddingTop="5dp"
                     android:text="12 нояб. 2019"
+                    android:textColor="#050505"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/number_invoice"
@@ -65,17 +66,30 @@
                 <TextView
                     android:id="@+id/number_invoice"
                     android:layout_width="0dp"
-                    android:layout_height="45dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:paddingTop="5dp"
                     android:text="TextView"
+                    android:textColor="#0B0B0B"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/image_synchronized_invoice"
                     app:layout_constraintStart_toEndOf="@+id/date_invoice"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
+
+                <ImageView
+                    android:id="@+id/image_synchronized_invoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/number_invoice"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/closed_32" />
 
 
             </android.support.constraint.ConstraintLayout>

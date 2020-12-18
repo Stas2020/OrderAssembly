@@ -13,4 +13,6 @@ public class TransferInvoice {
     public String uid_customer;
     @SerializedName("closed")
     public boolean closed;
+    @SerializedName("all_item_synhronized")
+    public boolean all_item_synhronized;
 }

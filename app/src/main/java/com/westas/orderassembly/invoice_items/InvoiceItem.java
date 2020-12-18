@@ -4,7 +4,7 @@ package com.westas.orderassembly.invoice_items;
 
 import com.google.gson.annotations.SerializedName;
 
-enum Satus {less, equally, over}
+enum Satus {less, equally, over, default_}
 
 public class InvoiceItem {
 

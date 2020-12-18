@@ -4,9 +4,14 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="row_item_less">#85D1DACC</color>
-    <color name="row_item_equally">#DA93D19D</color>
-    <color name="row_item_over">#DA93D19D</color>
+    <color name="row_item_less">#C3AED581</color>
+    <color name="row_item_equally">#81C784</color>
+    <color name="row_item_over">#4DB6AC</color>
     <color name="row_item_default">#3CD1DACC</color>
+
+    <color name="invoice_close">#7E1E1010</color>
+    <color name="invoice_default">#3CD1DACC</color>
+    <color name="invoice_checked">#BE3AD862</color>
+    <color name="invoice_alert">#B4EC3F3F</color>
 
 </resources>

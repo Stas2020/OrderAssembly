@@ -1,6 +1,9 @@
 package com.westas.orderassembly.invoice_items;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,11 +18,15 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
 
     private ListInvoiceItem listInvoiceItem;
     private View.OnClickListener onClickListener;
+    private View.OnLongClickListener onLongClickListener;
+    private Activity activity;
 
-    public ItemsInvoiceAdapter(ListInvoiceItem listInvoiceItem,View.OnClickListener onClickListener)
+    public ItemsInvoiceAdapter(Activity _activity, ListInvoiceItem listInvoiceItem,View.OnClickListener _onClickListener,View.OnLongClickListener _onLongClickListener)
     {
         this.listInvoiceItem = listInvoiceItem;
-        this.onClickListener = onClickListener;
+        this.onClickListener = _onClickListener;
+        this.onLongClickListener = _onLongClickListener;
+        activity = _activity;
     }
 
     public static class ItemsInvoiceViewHolder extends RecyclerView.ViewHolder {
@@ -48,8 +55,10 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.goods_of_invoice, parent, false);
         ItemsInvoiceViewHolder vh = new ItemsInvoiceViewHolder(view);
         view.setOnClickListener(onClickListener);
+        view.setOnLongClickListener(onLongClickListener);
         return vh;
     }
+
 
     @Override
     public void onBindViewHolder(ItemsInvoiceViewHolder holder, int position) {
@@ -64,10 +73,10 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
         {
             switch (listInvoiceItem.GetItems(position).verify)
             {
-                case less: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#67f561ab")); break;
-                case equally: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#67f561e0")); break;
-                case over: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#67f561")); break;
-                default: holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#eae7f8")); break;
+                case less: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_less)); break;
+                case equally: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_equally)); break;
+                case over: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_over)); break;
+                default: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
             }
         }
         else

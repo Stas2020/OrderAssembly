@@ -32,6 +32,12 @@ public interface RestApi {
     @POST("/Service/json/PrintInvoice")
     public Call<TResponce>PrintInvoice(@Query("uid_invoice") String uid_invoice);
 
+    @POST("/Service/json/PrintLabel")
+    public Call<TResponce>PrintLabel(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("count_label") int count_label);
+
     @POST("/Service/json/CloseInvoice")
     public Call<TResponce>CloseInvoice(@Query("uid_invoice") String uid_invoice);
+
+    @POST("/Service/json/GetResultSynchronizedInvoice")
+    public Call<TResponce>GetResultSynchronizedInvoice(@Query("uid_invoice") String uid_invoice);
 }

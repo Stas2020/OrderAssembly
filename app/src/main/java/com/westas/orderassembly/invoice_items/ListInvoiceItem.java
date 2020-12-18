@@ -21,21 +21,26 @@ public class ListInvoiceItem {
 
     public void SortingItem()
     {
-        Collections.sort(list, new Comparator<InvoiceItem>() {
-            public int compare(InvoiceItem o1, InvoiceItem o2) {
-                int res = 0;
-                if (o1.verify == Satus.equally || o1.verify == Satus.over)
+        try
+        {
+            Collections.sort(list, (o1, o2) -> {
+                int res = 1;
+                if (o1.verify != null)
                 {
-                    res = -1;
-                }
-                else
-                {
-                    res = 1;
+                    if ( o1.verify == Satus.equally || o1.verify == Satus.over)
+                    {
+                        res = -1;
+                    }
                 }
 
+
                 return res;
-            }
-        });
+            });
+        }
+        catch(Exception e)
+        {
+            String err_nes =  e.getMessage();
+        }
     }
 
     public InvoiceItem GetItems(int position)
