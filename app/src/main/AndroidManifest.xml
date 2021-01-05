@@ -15,13 +15,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".invoice_items.InfoInvoiceActivity"></activity>
-        <activity android:name=".calculator.CalculationActivity">
+        <activity
+            android:name=".invoice_items.AddItemToInvoiceActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_add_item_to_invoice">
+        </activity>
+        <activity
+            android:name=".invoice_items.InfoInvoiceActivity"
+            android:label="Информация"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".calculator.CalculationActivity">
             <intent-filter>
                 <action
                     android:name="android.intent.action.CalculationActivity"
                     android:screenOrientation="portrait" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -33,7 +41,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SettingActivity_" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -48,7 +55,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.ListSubdivisionActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -57,7 +63,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

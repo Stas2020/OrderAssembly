@@ -1,7 +1,7 @@
 package com.westas.orderassembly.invoice_items;
 
 import com.google.gson.annotations.SerializedName;
-import com.westas.orderassembly.invoice_items.Satus;
+
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,7 +27,7 @@ public class ListInvoiceItem {
                 int res = 1;
                 if (o1.verify != null)
                 {
-                    if ( o1.verify == Satus.equally || o1.verify == Satus.over)
+                    if ( o1.verify == SatusQuantity.equally || o1.verify == SatusQuantity.over)
                     {
                         res = -1;
                     }
@@ -41,6 +41,11 @@ public class ListInvoiceItem {
         {
             String err_nes =  e.getMessage();
         }
+    }
+
+    public void Remove(int idx)
+    {
+        list.remove(idx);
     }
 
     public InvoiceItem GetItems(int position)
@@ -68,15 +73,15 @@ public class ListInvoiceItem {
 
                 if (itm.quantity > itm.required_quantity)
                 {
-                    itm.verify = Satus.over;
+                    itm.verify = SatusQuantity.over;
                 }
                 if (itm.quantity == itm.required_quantity)
                 {
-                    itm.verify = Satus.equally;
+                    itm.verify = SatusQuantity.equally;
                 }
                 if (itm.quantity < itm.required_quantity)
                 {
-                    itm.verify = Satus.less;
+                    itm.verify = SatusQuantity.less;
                 }
 
 
@@ -95,7 +100,7 @@ public class ListInvoiceItem {
         return false;
     }
 
-    public void ChangeQuantity(double quantity, String code)
+    public void ChangeQuantity(float quantity, String code)
     {
         int position = 0;
         for (InvoiceItem itm: list)
@@ -109,15 +114,15 @@ public class ListInvoiceItem {
 
                 if (itm.quantity > itm.required_quantity)
                 {
-                    itm.verify = Satus.over;
+                    itm.verify = SatusQuantity.over;
                 }
                 if (itm.quantity == itm.required_quantity)
                 {
-                    itm.verify = Satus.equally;
+                    itm.verify = SatusQuantity.equally;
                 }
                 if (itm.quantity < itm.required_quantity)
                 {
-                    itm.verify = Satus.less;
+                    itm.verify = SatusQuantity.less;
                 }
 
 

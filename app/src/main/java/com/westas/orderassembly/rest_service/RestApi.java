@@ -21,13 +21,19 @@ public interface RestApi {
     public Call<TResponce>SetQuantityItem(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("quantity") double quantity);
 
     @POST("/Service/json/AddItemToInvoice")
-    public Call<TResponce>AddItemToInvoice(@Query("uid_invoice") String uid_invoice, @Query("barcode_item") String barcode_item, @Query("quantity") double quantity);
+    public Call<TResponce>AddItemToInvoice(@Query("uid_invoice") String uid_invoice, @Query("barcode_item") String barcode_item);
+
+    @POST("/Service/json/DeleteItemFromInvoice")
+    public Call<TResponce>DeleteItemFromInvoice(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item);
+
+    @POST("/Service/json/CheckItem")
+    public Call<TResponceOfChekItem>CheckItem(@Query("barcode_item") String barcode_item);
 
     @POST("/Service/json/GetItemsOfInvoice")
     public Call<ListInvoiceItem>GetItemsOfInvoice(@Query("uid_invoice") String uid_invoice);
 
-    @POST("/Service/json/SetInvoiceItem")
-    public Call<ListInvoiceItem>SetInvoiceItem(@Query("invoice") TransferInvoice invoice, @Query("items_invoice") TransferInvoice items_invoice);
+    //@POST("/Service/json/SetInvoiceItem")
+    //public Call<ListInvoiceItem>SetInvoiceItem(@Query("invoice") TransferInvoice invoice, @Query("items_invoice") TransferInvoice items_invoice);
 
     @POST("/Service/json/PrintInvoice")
     public Call<TResponce>PrintInvoice(@Query("uid_invoice") String uid_invoice);

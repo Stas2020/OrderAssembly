@@ -66,8 +66,8 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
         holder.unit.setText(listInvoiceItem.GetItems(position).unit);
         holder.barcode.setText(listInvoiceItem.GetItems(position).barcode);
         holder.name.setText(listInvoiceItem.GetItems(position).name);
-        holder.quantity.setText(Double.toString(listInvoiceItem.GetItems(position).required_quantity));
-        holder.required_quantity.setText(Double.toString(listInvoiceItem.GetItems(position).quantity));
+        holder.quantity.setText(Float.toString(listInvoiceItem.GetItems(position).required_quantity));
+        holder.required_quantity.setText(Float.toString(listInvoiceItem.GetItems(position).quantity));
 
         if (listInvoiceItem.GetItems(position).verify != null)
         {
@@ -76,20 +76,38 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
                 case less: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_less)); break;
                 case equally: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_equally)); break;
                 case over: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_over)); break;
-                default: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
+                case default_: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
             }
         }
         else
         {
-            holder.cardview_of_goods.setCardBackgroundColor(Color.parseColor("#eae7f8"));
+            holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default));
         }
 
-
+        if (listInvoiceItem.GetItems(position).status != null)
+        {
+            switch (listInvoiceItem.GetItems(position).status)
+            {
+                case add: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_less)); break;
+                case delete: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_equally)); break;
+                case def: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
+            }
+        }
 
     }
 
     @Override
     public int getItemCount() {
         return listInvoiceItem.GetSize();
+    }
+
+    public InvoiceItem GetItem(int position)
+    {
+        return listInvoiceItem.GetItems(position);
+    }
+
+    public void removeItem(int position) {
+        listInvoiceItem.Remove(position);
+        notifyItemRemoved(position);
     }
 }

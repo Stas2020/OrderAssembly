@@ -52,11 +52,11 @@ public class TDialogForm
 
                 if(keyCode == 66 && event.getAction() == ACTION_DOWN)
                 {
-                    double quantity = 0;
+                    float quantity = 0;
                     String value = textView_quantity.getText().toString();
                     if (!value.isEmpty())
                     {
-                        quantity = Double.parseDouble(value);;
+                        quantity = Float.parseFloat(value);;
                     }
                     calback_event.OnChangeQuantity(quantity, type_f);
                     dialog.hide();
@@ -73,11 +73,11 @@ public class TDialogForm
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
 
-                double quantity = 0;
+                float quantity = 0;
                 String value = textView_quantity.getText().toString();
                 if (!value.isEmpty())
                 {
-                    quantity = Double.parseDouble(value);;
+                    quantity = Float.parseFloat(value);;
                 }
                 calback_event.OnChangeQuantity(quantity, type_f);
             }

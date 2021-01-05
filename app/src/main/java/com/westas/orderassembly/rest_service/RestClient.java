@@ -26,6 +26,7 @@ public class RestClient {
     TOnResponceListInvoice on_responce_list_invoice;
     TOnResponceItemsInvoice on_responce_items_invoice;
     TOnResponce on_responce;
+    TOnResponceChekItem on_responce_chek_item;
 
     public void SetEventSubDivision(TOnResponceSubDivision value)
     {
@@ -43,8 +44,11 @@ public class RestClient {
     {
         on_responce = value;
     }
-
-    //Создаем Retrofit
+    public void SetEventChekItems(TOnResponceChekItem value)
+    {
+        on_responce_chek_item = value;
+    }
+    //TODO:  Создаем Retrofit
     public void BuildRetrofit()
     {
 
@@ -75,7 +79,7 @@ public class RestClient {
 
     }
 
-    //Получение данных с REST сервера Подразделения
+    //TODO:  Получение, Подразделения
     public void GetListSubdivision()
     {
         Call<ListSubdivision> list_subdivision = rest_api.GetListSubdivision();
@@ -91,7 +95,7 @@ public class RestClient {
         });
     }
 
-    //Получение данных с REST сервера список накладных
+    //TODO:  Получение, список накладных
     public void GetInvoice(String uid_customer)
     {
             Call<ListTransferInvoice> transfer_invoices = rest_api.GetListTransferInvoice(uid_customer);
@@ -109,7 +113,7 @@ public class RestClient {
             });
     }
 
-    //Замена количества товара в накладной
+    //TODO:  Замена количества товара в накладной
     public void SetQuantityItem( String uid_invoice,  String uid_item,  double quantity)
     {
         Call<TResponce> set_quantity_item = rest_api.SetQuantityItem(uid_invoice,uid_item,quantity);
@@ -127,10 +131,10 @@ public class RestClient {
         });
     }
 
-    //Добавление товара в накладную
-    public void AddItemToInvoice(String uid_invoice, String barcode_item, float quantity)
+    //TODO:  Добавление товара в накладную
+    public void AddItemToInvoice(String uid_invoice, String barcode_item)
     {
-        Call<TResponce> add_item = rest_api.AddItemToInvoice(uid_invoice,  barcode_item,  quantity);
+        Call<TResponce> add_item = rest_api.AddItemToInvoice(uid_invoice,  barcode_item);
         add_item.enqueue(new Callback<TResponce>() {
             @Override
             public void onResponse(Call<TResponce> call, Response<TResponce> response) {
@@ -145,7 +149,42 @@ public class RestClient {
         });
     }
 
-    //Получение данных с REST сервера список товаров в накладной
+    //Удаление товара из накладной
+    public void DeleteItemFromInvoice(String uid_invoice, String uid_item)
+    {
+        Call<TResponce> delete_item = rest_api.DeleteItemFromInvoice(uid_invoice,  uid_item);
+        delete_item.enqueue(new Callback<TResponce>() {
+            @Override
+            public void onResponse(Call<TResponce> call, Response<TResponce> response) {
+
+                on_responce.OnSuccessResponce(response.body());
+            }
+            @Override
+            public void onFailure(Call<TResponce> call, Throwable t) {
+
+                on_responce.OnFailureResponce(t);
+            }
+        });
+    }
+
+    //Проверка, существует ли баркод
+    public void CheckItem(String barcode_item)
+    {
+        Call<TResponceOfChekItem> cheked_item = rest_api.CheckItem(barcode_item);
+        cheked_item.enqueue(new Callback<TResponceOfChekItem>() {
+            @Override
+            public void onResponse(Call<TResponceOfChekItem> call, Response<TResponceOfChekItem> response) {
+
+                on_responce_chek_item.OnSuccessResponce(response.body());
+            }
+            @Override
+            public void onFailure(Call<TResponceOfChekItem> call, Throwable t) {
+
+                on_responce_chek_item.OnFailureResponce(t);
+            }
+        });
+    }
+    //список товаров в накладной
     public void GetItemsOfInvoice(String uid_invoice)
     {
         try

@@ -4,7 +4,8 @@ package com.westas.orderassembly.invoice_items;
 
 import com.google.gson.annotations.SerializedName;
 
-enum Satus {less, equally, over, default_}
+enum SatusQuantity {less, equally, over, default_}
+enum SatusItem {add, delete, def}
 
 public class InvoiceItem {
 
@@ -15,11 +16,14 @@ public class InvoiceItem {
     @SerializedName("name")
     public String name;
     @SerializedName("quantity")
-    public double quantity;
+    public float quantity;
     @SerializedName("required_quantity")
-    public double required_quantity;
+    public float required_quantity;
     @SerializedName("unit")
     public String unit;
     @SerializedName("verify")
-    public Satus verify;
+    public SatusQuantity verify;
+    @SerializedName("status")
+    public SatusItem status;
 }
+

@@ -1,17 +1,21 @@
 package com.westas.orderassembly.invoice_items;
 
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +33,6 @@ import com.westas.orderassembly.dialog.TCallBackDialogQuantity;
 import com.westas.orderassembly.dialog.TDialogForm;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.dialog.TTypeForm;
-import com.westas.orderassembly.invoice.ListTransferInvoiceActivity;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TOnResponceItemsInvoice;
 import com.westas.orderassembly.rest_service.TResponce;
@@ -41,7 +44,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, TOnReadBarcode, TOnResponceItemsInvoice, TCallBackDialogQuantity, TOnChangeQuantity, TOnResponce {
+public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnClickListener,
+                                                                        View.OnLongClickListener,
+                                                                        TOnReadBarcode,
+                                                                        TOnResponceItemsInvoice,
+                                                                        TCallBackDialogQuantity,
+                                                                        TOnChangeQuantity,
+                                                                        TOnResponce{
 
 
     private RecyclerView ListGoodsRecyclerView;
@@ -52,6 +61,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
     private TextView invoice_date;
     private TextView invoice_number;
     private TextView subdivision_name;
+    private Fragment fragment_add;
+    private Fragment fragment_scan;
     private TDialogForm dialog_quantity;
     private TDialogForm dialog_print_label;
     private int itemPosition;
@@ -88,8 +99,27 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
 
         parseBarcode = new ParseBarcode();
 
+        FloatingActionButton floating_button_down = (FloatingActionButton) findViewById(R.id.floating_button_down);
+        floating_button_down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PageDown();
+            }
+        });
+
     }
 
+    private void PageDown()
+    {
+        int count_item = listGoodsAdapter.getItemCount();
+        ListGoodsRecyclerView.smoothScrollToPosition(count_item);
+        Toast.makeText(getApplicationContext(), "Page down!  ", Toast.LENGTH_SHORT).show();
+    }
+    private void PageUp()
+    {
+        ListGoodsRecyclerView.smoothScrollToPosition(0);
+        Toast.makeText(getApplicationContext(), "Page up!  ", Toast.LENGTH_SHORT).show();
+    }
     private void GetItemsInvoice()
     {
         MainActivity.rest_client.SetEventItemsInvoice(this);
@@ -169,11 +199,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void InfoByInvoice() {
-        Intent intent = new Intent(this, InfoInvoiceActivity.class);
-        intent.putExtra("uid_invoice",uid_invoice);
-        startActivity(intent);
-    }
+
 
     private void InitToolbar()
     {
@@ -212,6 +238,21 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         ListGoodsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         listGoodsAdapter = new ItemsInvoiceAdapter(this, list_invoiceItem, this,this);
         ListGoodsRecyclerView.setAdapter(listGoodsAdapter);
+
+
+
+        SwipeCallback swipe_callback = new SwipeCallback()
+        {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                final int position = viewHolder.getAdapterPosition();
+                InvoiceItem item = listGoodsAdapter.GetItem(position);
+                listGoodsAdapter.removeItem(position);
+                DeleteItemFromInvoice(item);
+            }
+        };
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipe_callback);
+        itemTouchhelper.attachToRecyclerView(ListGoodsRecyclerView);
     }
 
     private void CloseInvoice()
@@ -226,11 +267,22 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
         MainActivity.rest_client.PrintInvoice(uid_invoice);
     }
 
+    private void DeleteItemFromInvoice(InvoiceItem item)
+    {
+        Toast.makeText(getApplicationContext(), "Удалил товар из накладной.", Toast.LENGTH_SHORT).show();
+    }
     private void AddItemToInvoice()
     {
-
+        Intent intent = new Intent(this, AddItemToInvoiceActivity.class);
+        intent.putExtra("uid_invoice",uid_invoice);
+        startActivity(intent);
     }
 
+    private void InfoByInvoice() {
+        Intent intent = new Intent(this, InfoInvoiceActivity.class);
+        intent.putExtra("uid_invoice",uid_invoice);
+        startActivity(intent);
+    }
     //Клик по Item в RecyclerView or click on button close_invoice
     @Override
     public void onClick(View view)
@@ -250,7 +302,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
     }
 
     @Override
-    public void OnChangeQuantity(double quantity, TTypeForm type_)
+    public void OnChangeQuantity(float quantity, TTypeForm type_)
     {
         switch (type_)
         {
@@ -277,7 +329,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
 
     private void Alert(String message)
     {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
         AlertSound();
     }
     private void AlertSound()
@@ -328,7 +380,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements View.OnCl
 
 
     @Override
-    public void EventChangeQuantity(String uid, String barcode, double quantity) {
+    public void EventChangeQuantity(String uid, String barcode, float quantity) {
         MainActivity.rest_client.SetEventResponce(this);
         MainActivity.rest_client.SetQuantityItem(uid_invoice, uid, quantity);
     }
