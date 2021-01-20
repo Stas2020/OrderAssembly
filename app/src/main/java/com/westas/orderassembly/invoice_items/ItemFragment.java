@@ -18,6 +18,7 @@ public class ItemFragment extends Fragment {
 
     private TextView txt_barcode;
     private TextView txt_name;
+    private InvoiceItem item;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -57,20 +58,28 @@ public class ItemFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        TextView txt_barcode = getActivity().findViewById(R.id.textViewBarcode);
-        TextView txt_name = getActivity().findViewById(R.id.textViewName);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_item, container, false);
+        View view = inflater.inflate(R.layout.fragment_item, container, false);
+
+        txt_barcode = view.findViewById(R.id.textViewBarcode);
+        txt_name = view.findViewById(R.id.textViewName);
+        if(item!= null)
+        {
+            txt_barcode.setText(item.barcode);
+            txt_name.setText(item.name + "" + item.unit);
+        }
+
+        return view;
     }
 
-    public void ShowItem(InvoiceItem item)
+    public void SetItem(InvoiceItem _item)
     {
-        txt_barcode.setText(item.barcode);
-        txt_name.setText(item.name + "" + item.unit);
+        item =_item;
     }
 }

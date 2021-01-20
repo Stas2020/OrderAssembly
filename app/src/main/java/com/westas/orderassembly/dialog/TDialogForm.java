@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.westas.orderassembly.R;
 
+import java.text.DecimalFormat;
+
 import static android.view.KeyEvent.ACTION_DOWN;
 
 ;
@@ -73,10 +75,11 @@ public class TDialogForm
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
 
-                float quantity = 0;
+                float quantity = 0.000f;
                 String value = textView_quantity.getText().toString();
                 if (!value.isEmpty())
                 {
+                    //DecimalFormat myFormatter = new DecimalFormat("#.###");
                     quantity = Float.parseFloat(value);;
                 }
                 calback_event.OnChangeQuantity(quantity, type_f);

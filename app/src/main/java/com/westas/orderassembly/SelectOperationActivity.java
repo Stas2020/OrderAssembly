@@ -21,35 +21,36 @@ public class SelectOperationActivity extends AppCompatActivity {
 
         InitToolbar();
 
-
-    Button button_Calculation = (Button) findViewById(R.id.Calculation);
-
+        Button button_Calculation = findViewById(R.id.Calculation);
         button_Calculation.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
 
             Intent ListSubdivisionActivity = new Intent("android.intent.action.CalculationActivity");
             startActivity(ListSubdivisionActivity);
-
-
         }
     });
 
-
-
-        Button button_OrderAsembly = (Button) findViewById(R.id.OrderAsembly);
-
+        Button button_OrderAsembly = findViewById(R.id.OrderAsembly);
         button_OrderAsembly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent ListSubdivisionActivity = new Intent("android.intent.action.ListSubdivisionActivity");
                 startActivity(ListSubdivisionActivity);
-
             }
         });
 
+        Button button_OrderAccept = findViewById(R.id.OrderAccept);
+        button_OrderAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                Intent ListSubdivisionActivity = new Intent("android.intent.action.AcceptInvoiceActivity");
+                startActivity(ListSubdivisionActivity);
+
+            }
+        });
 
     }
 

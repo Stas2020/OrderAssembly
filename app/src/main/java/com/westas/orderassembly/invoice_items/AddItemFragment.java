@@ -1,6 +1,7 @@
 package com.westas.orderassembly.invoice_items;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -63,8 +64,7 @@ public class AddItemFragment extends Fragment implements TOnResponceChekItem {
         if (context instanceof TOnSuccessSearchBarcode) {
             OnSuccessSearchBarcode = (TOnSuccessSearchBarcode) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + " must implement TOnSuccessSearchBarcode");
+            throw new ClassCastException(context.toString() + " must implement TOnSuccessSearchBarcode");
         }
     }
 
@@ -77,16 +77,6 @@ public class AddItemFragment extends Fragment implements TOnResponceChekItem {
         }
 
 
-        TextView text_view_barcode = getActivity().findViewById(R.id.editTextBarcode);
-        String barcode_str = (String) text_view_barcode.getText();
-
-        Button button_search = getActivity().findViewById(R.id.button_search);
-        button_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SearchItem(barcode_str);
-            }
-        });
     }
 
     private void SearchItem(String barcode_str) {
@@ -96,8 +86,13 @@ public class AddItemFragment extends Fragment implements TOnResponceChekItem {
 
     @Override
     public void OnSuccessResponce(TResponceOfChekItem responce) {
-        Toast.makeText(getActivity(), "Нашел товар!  ", Toast.LENGTH_SHORT).show();
-        OnSuccessSearchBarcode.OnSuccessSearchBarcode(responce.item);
+
+        if (responce.success == true) {
+            OnSuccessSearchBarcode.OnSuccessSearchBarcode(responce.item);
+        }
+        else {
+            Toast.makeText(getActivity(), responce.message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -109,8 +104,20 @@ public class AddItemFragment extends Fragment implements TOnResponceChekItem {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_add_item, container, false);
 
-        return inflater.inflate(R.layout.fragment_add_item, container, false);
+        TextView text_view_barcode = view.findViewById(R.id.editTextBarcode);
+        Button button_search = view.findViewById(R.id.button_search);
+
+        button_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String barcode_str =  text_view_barcode.getText().toString();
+                SearchItem(barcode_str);
+            }
+        });
+
+        return view;
     }
 
 

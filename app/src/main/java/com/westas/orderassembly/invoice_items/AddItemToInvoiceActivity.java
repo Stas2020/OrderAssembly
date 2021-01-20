@@ -11,15 +11,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
-
+import android.widget.Toast;
 
 
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
+import com.westas.orderassembly.rest_service.TOnResponce;
+import com.westas.orderassembly.rest_service.TResponce;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import static java.lang.Math.abs;
 
-public class AddItemToInvoiceActivity extends AppCompatActivity implements View.OnTouchListener , TOnSuccessSearchBarcode {
+public class AddItemToInvoiceActivity extends AppCompatActivity implements View.OnTouchListener , TOnSuccessSearchBarcode, TOnResponce {
     private String uid_invoice;
     private Fragment fragment_add_item ;
     private Fragment fragment_scan_item;
@@ -42,6 +49,11 @@ public class AddItemToInvoiceActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item_to_invoice);
 
+        Bundle parametr = getIntent().getExtras();
+        if(parametr!=null){
+            uid_invoice = parametr.getString("uid_invoice");
+        }
+
         InitToolbar();
 
         fab_button = findViewById(R.id.fab);
@@ -50,7 +62,6 @@ public class AddItemToInvoiceActivity extends AppCompatActivity implements View.
             @Override
             public void onClick(View view) {
                 AddItem();
-                Snackbar.make(view, "Добавил новый товар", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
@@ -88,7 +99,7 @@ public class AddItemToInvoiceActivity extends AppCompatActivity implements View.
     public void OnSuccessSearchBarcode(InvoiceItem item) {
         item_to_add = item;
         fab_button.setVisibility(View.VISIBLE);
-        fragment_item.ShowItem(item_to_add);
+        fragment_item.SetItem(item_to_add);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_in_right)
                 .replace(R.id.fragment_container_view, fragment_item)
@@ -98,6 +109,7 @@ public class AddItemToInvoiceActivity extends AppCompatActivity implements View.
 
     private void AddItem()
     {
+        MainActivity.rest_client.SetEventResponce(this);
         MainActivity.rest_client.AddItemToInvoice(uid_invoice, item_to_add.barcode);
     }
 
@@ -148,4 +160,14 @@ public class AddItemToInvoiceActivity extends AppCompatActivity implements View.
     }
 
 
+    @Override
+    public void OnSuccessResponce(TResponce responce) {
+        Toast.makeText(this, responce.Message, Toast.LENGTH_SHORT).show();
+        onBackPressed();
+    }
+
+    @Override
+    public void OnFailureResponce(Throwable t) {
+        Toast.makeText(this, "Ошибка! "+ t.getMessage(), Toast.LENGTH_SHORT).show();
+    }
 }

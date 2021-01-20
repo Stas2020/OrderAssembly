@@ -33,6 +33,12 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
         GetListSundivision();
 
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        GetListSundivision();
+    }
+
     private void GetListSundivision()
     {
         MainActivity.rest_client.SetEventSubDivision(this);

@@ -5,11 +5,11 @@ import com.westas.orderassembly.invoice_items.InvoiceItem;
 import com.westas.orderassembly.subdivision.ListSubdivision;
 
 public class TResponceOfChekItem {
-    @SerializedName("success")
+    @SerializedName("Success")
     public boolean success;
-    @SerializedName("item")
+    @SerializedName("Item")
     public InvoiceItem item;
-    @SerializedName("message")
+    @SerializedName("Message")
     public String message;
 }
 

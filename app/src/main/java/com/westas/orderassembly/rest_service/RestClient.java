@@ -2,6 +2,7 @@ package com.westas.orderassembly.rest_service;
 
 import android.content.SharedPreferences;
 
+import com.westas.orderassembly.accept_invoice.ListAcceptedInvoice;
 import com.westas.orderassembly.invoice_items.ListInvoiceItem;
 import com.westas.orderassembly.invoice.ListTransferInvoice;
 import com.westas.orderassembly.subdivision.ListSubdivision;
@@ -24,6 +25,7 @@ public class RestClient {
     public SharedPreferences shared_preferance;
     TOnResponceSubDivision on_responce_subdivision;
     TOnResponceListInvoice on_responce_list_invoice;
+    TOnResponceAcceptInvoice on_responce_accept_invoice;
     TOnResponceItemsInvoice on_responce_items_invoice;
     TOnResponce on_responce;
     TOnResponceChekItem on_responce_chek_item;
@@ -35,6 +37,10 @@ public class RestClient {
     public void SetEventListInvoice(TOnResponceListInvoice value)
     {
         on_responce_list_invoice = value;
+    }
+    public void SetEventAcceptInvoice(TOnResponceAcceptInvoice value)
+    {
+        on_responce_accept_invoice = value;
     }
     public void SetEventItemsInvoice(TOnResponceItemsInvoice value)
     {
@@ -113,10 +119,28 @@ public class RestClient {
             });
     }
 
-    //TODO:  Замена количества товара в накладной
-    public void SetQuantityItem( String uid_invoice,  String uid_item,  double quantity)
+    //TODO:  Получение, список накладных для приемки на ресторане
+    public void GetAcceptInvoice(String uid_customer)
     {
-        Call<TResponce> set_quantity_item = rest_api.SetQuantityItem(uid_invoice,uid_item,quantity);
+        Call<ListAcceptedInvoice> accept_invoices = rest_api.GetListAcceptInvoice(uid_customer);
+        accept_invoices.enqueue(new Callback<ListAcceptedInvoice>() {
+            @Override
+            public void onResponse(Call<ListAcceptedInvoice> call, Response<ListAcceptedInvoice> response) {
+
+                on_responce_accept_invoice.OnSuccess(response.body());
+            }
+            @Override
+            public void onFailure(Call<ListAcceptedInvoice> call, Throwable t) {
+
+                on_responce_list_invoice.OnFailure(t);
+            }
+        });
+    }
+
+    //TODO:  Замена количества товара в накладной
+    public void SetQuantityItem( String uid_invoice,  String uid_item,  float quantity, String barcode_item)
+    {
+        Call<TResponce> set_quantity_item = rest_api.SetQuantityItem(uid_invoice,uid_item,quantity,barcode_item);
         set_quantity_item.enqueue(new Callback<TResponce>() {
             @Override
             public void onResponse(Call<TResponce> call, Response<TResponce> response) {
@@ -150,19 +174,19 @@ public class RestClient {
     }
 
     //Удаление товара из накладной
-    public void DeleteItemFromInvoice(String uid_invoice, String uid_item)
+    public void DeleteItemFromInvoice(String uid_invoice, String uid_item , String barcode_item)
     {
-        Call<TResponce> delete_item = rest_api.DeleteItemFromInvoice(uid_invoice,  uid_item);
+        Call<TResponce> delete_item = rest_api.DeleteItemFromInvoice(uid_invoice,  uid_item, barcode_item);
         delete_item.enqueue(new Callback<TResponce>() {
             @Override
             public void onResponse(Call<TResponce> call, Response<TResponce> response) {
 
-                on_responce.OnSuccessResponce(response.body());
+                //on_responce.OnSuccessResponce(response.body());
             }
             @Override
             public void onFailure(Call<TResponce> call, Throwable t) {
 
-                on_responce.OnFailureResponce(t);
+                //on_responce.OnFailureResponce(t);
             }
         });
     }

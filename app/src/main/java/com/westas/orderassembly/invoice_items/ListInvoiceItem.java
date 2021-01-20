@@ -27,7 +27,7 @@ public class ListInvoiceItem {
                 int res = 1;
                 if (o1.verify != null)
                 {
-                    if ( o1.verify == SatusQuantity.equally || o1.verify == SatusQuantity.over)
+                    if ( o1.verify == SatusQuantity.equally || o1.verify == SatusQuantity.over || o1.verify == SatusQuantity.less)
                     {
                         res = -1;
                     }
@@ -46,6 +46,10 @@ public class ListInvoiceItem {
     public void Remove(int idx)
     {
         list.remove(idx);
+    }
+    public void Add(InvoiceItem item, int idx)
+    {
+        list.add(idx, item);
     }
 
     public InvoiceItem GetItems(int position)

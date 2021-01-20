@@ -29,9 +29,11 @@ import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
 import com.westas.orderassembly.calculator.ParseBarcode;
 import com.westas.orderassembly.calculator.QRCode;
+import com.westas.orderassembly.dialog.TCallBackDialog;
 import com.westas.orderassembly.dialog.TCallBackDialogQuantity;
 import com.westas.orderassembly.dialog.TDialogForm;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
+import com.westas.orderassembly.dialog.TDialogQuestion;
 import com.westas.orderassembly.dialog.TTypeForm;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TOnResponceItemsInvoice;
@@ -65,6 +67,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
     private Fragment fragment_scan;
     private TDialogForm dialog_quantity;
     private TDialogForm dialog_print_label;
+    private TDialogQuestion dialog_question;
     private int itemPosition;
 
     private String uid_subdivision ;
@@ -72,6 +75,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
     private String uid_invoice ;
 
     private ParseBarcode parseBarcode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
 
         dialog_quantity = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Количество", TTypeForm.change);
         dialog_print_label = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Печать этикетки",TTypeForm.label);
+        dialog_question = new TDialogQuestion(this,"Удалить?");
 
         Bundle parametr = getIntent().getExtras();
         if(parametr!=null){
@@ -107,6 +112,13 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        GetItemsInvoice();
     }
 
     private void PageDown()
@@ -142,8 +154,9 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
 
     @Override
     public void OnSuccessResponce(TResponce responce) {
-
+        //GetItemsInvoice();
         Toast.makeText(this,  responce.Message, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -248,7 +261,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
                 final int position = viewHolder.getAdapterPosition();
                 InvoiceItem item = listGoodsAdapter.GetItem(position);
                 listGoodsAdapter.removeItem(position);
-                DeleteItemFromInvoice(item);
+                EventDeleteItemFromInvoice(item, position);
             }
         };
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipe_callback);
@@ -267,10 +280,25 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         MainActivity.rest_client.PrintInvoice(uid_invoice);
     }
 
-    private void DeleteItemFromInvoice(InvoiceItem item)
+    private void EventDeleteItemFromInvoice(InvoiceItem item, int position)
     {
-        Toast.makeText(getApplicationContext(), "Удалил товар из накладной.", Toast.LENGTH_SHORT).show();
+        InvoiceItem item_for_delete = item;
+        dialog_question.Show(item.barcode + " " + item.name, new TCallBackDialog() {
+            @Override
+            public void OnSuccess(boolean flag) {
+                if (flag == true)
+                {
+                    MainActivity.rest_client.DeleteItemFromInvoice(uid_invoice,item.uid,item.barcode);
+                    Toast.makeText(getApplicationContext(), "Удалил товар из накладной.", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    listGoodsAdapter.restoreItem(item, position);
+                }
+            }
+        });
     }
+
     private void AddItemToInvoice()
     {
         Intent intent = new Intent(this, AddItemToInvoiceActivity.class);
@@ -382,8 +410,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
     @Override
     public void EventChangeQuantity(String uid, String barcode, float quantity) {
         MainActivity.rest_client.SetEventResponce(this);
-        MainActivity.rest_client.SetQuantityItem(uid_invoice, uid, quantity);
+        MainActivity.rest_client.SetQuantityItem(uid_invoice, uid, quantity,barcode);
     }
-
 
 }

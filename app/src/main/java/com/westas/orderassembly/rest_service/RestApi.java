@@ -1,5 +1,6 @@
 package com.westas.orderassembly.rest_service;
 
+import com.westas.orderassembly.accept_invoice.ListAcceptedInvoice;
 import com.westas.orderassembly.invoice_items.ListInvoiceItem;
 import com.westas.orderassembly.invoice.ListTransferInvoice;
 import com.westas.orderassembly.invoice.TransferInvoice;
@@ -17,14 +18,17 @@ public interface RestApi {
     @POST("/Service/json/GetListTransferInvoice")
     public Call<ListTransferInvoice>GetListTransferInvoice(@Query("uid_customer") String uid_customer);
 
+    @POST("/Service/json/GetListAcceptInvoice")
+    public Call<ListAcceptedInvoice>GetListAcceptInvoice(@Query("uid_customer") String uid_customer);
+
     @POST("/Service/json/SetQuantityItem")
-    public Call<TResponce>SetQuantityItem(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("quantity") double quantity);
+    public Call<TResponce>SetQuantityItem(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("quantity") float quantity, @Query("barcode_item") String barcode_item);
 
     @POST("/Service/json/AddItemToInvoice")
     public Call<TResponce>AddItemToInvoice(@Query("uid_invoice") String uid_invoice, @Query("barcode_item") String barcode_item);
 
     @POST("/Service/json/DeleteItemFromInvoice")
-    public Call<TResponce>DeleteItemFromInvoice(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item);
+    public Call<TResponce>DeleteItemFromInvoice(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("barcode_item") String barcode_item);
 
     @POST("/Service/json/CheckItem")
     public Call<TResponceOfChekItem>CheckItem(@Query("barcode_item") String barcode_item);

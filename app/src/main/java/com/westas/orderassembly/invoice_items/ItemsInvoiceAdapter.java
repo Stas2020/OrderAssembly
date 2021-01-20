@@ -88,9 +88,9 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
         {
             switch (listInvoiceItem.GetItems(position).status)
             {
-                case add: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_less)); break;
-                case delete: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_equally)); break;
-                case def: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
+                case add: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_add)); break;
+                case delete: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_delete)); break;
+                //case def: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
             }
         }
 
@@ -109,5 +109,10 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
     public void removeItem(int position) {
         listInvoiceItem.Remove(position);
         notifyItemRemoved(position);
+    }
+
+    public void restoreItem(InvoiceItem item, int position) {
+        listInvoiceItem.Add(item, position);
+        notifyItemInserted(position);
     }
 }
