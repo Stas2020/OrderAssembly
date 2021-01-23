@@ -95,7 +95,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
              name_subdivision = parametr.getString("name_subdivision");
              uid_invoice = parametr.getString("uid_invoice");
 
-            GetItemsInvoice();
+            //GetItemsInvoice();
             Date date = Calendar.getInstance().getTime();
             DateFormat dateFormat = new SimpleDateFormat("dd MMM");
 

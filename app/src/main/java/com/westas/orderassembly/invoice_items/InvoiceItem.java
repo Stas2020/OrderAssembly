@@ -25,5 +25,6 @@ public class InvoiceItem {
     public SatusQuantity verify;
     @SerializedName("status")
     public SatusItem status;
+    public boolean selected;
 }
 

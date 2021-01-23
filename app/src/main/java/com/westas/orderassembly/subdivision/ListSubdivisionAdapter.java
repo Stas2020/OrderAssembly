@@ -1,5 +1,7 @@
 package com.westas.orderassembly.subdivision;
 
+import android.support.design.card.MaterialCardView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +21,13 @@ public class ListSubdivisionAdapter extends RecyclerView.Adapter<ListSubdivision
         public View view;
         public TextView num_Subdivision;
         public TextView name_Subdivision;
+        public MaterialCardView card_view_subdivision;
         public ListSubdivisionViewHolder(View v) {
             super(v);
             view = v;
             num_Subdivision = view.findViewById(R.id.NumSubdivision);
             name_Subdivision = view.findViewById(R.id.SubdivisionName);
+            card_view_subdivision = view.findViewById(R.id.card_view_subdivision);
         }
     }
 
@@ -49,14 +53,19 @@ public class ListSubdivisionAdapter extends RecyclerView.Adapter<ListSubdivision
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
-        holder.name_Subdivision.setText(_listSubdivision.list.get(position).name);
-        holder.num_Subdivision.setText( _listSubdivision.list.get(position).uid);
+        holder.name_Subdivision.setText(_listSubdivision.GetSubdivision(position).name);
+        holder.num_Subdivision.setText( _listSubdivision.GetSubdivision(position).uid);
+
+        if(_listSubdivision.CheckSelectedPosition(position)){
+            holder.card_view_subdivision.setStrokeWidth(3);
+        }
+        //holder.card_view_subdivision.setStrokeWidth(3);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return _listSubdivision.list.size();
+        return _listSubdivision.GetSize();
     }
 
 

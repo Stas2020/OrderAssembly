@@ -8,4 +8,5 @@ public class Subdivision {
     public String uid;
     @SerializedName("name")
     public String name;
+    public boolean selected;
 }

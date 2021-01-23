@@ -35,7 +35,7 @@ public class ListTransferInvoiceActivity extends AppCompatActivity implements Vi
         setContentView(R.layout.activity_list_transfer_invoice);
 
         InitToolbar();
-
+/*
         Bundle parametr = getIntent().getExtras();
         if(parametr!=null){
              uid_subdivision = parametr.getString("uid_subdivision");
@@ -44,6 +44,7 @@ public class ListTransferInvoiceActivity extends AppCompatActivity implements Vi
             SetNameSubdivision(name_subdivision);
             GetListInvoice(uid_subdivision);
         }
+ */
     }
 
     @Override

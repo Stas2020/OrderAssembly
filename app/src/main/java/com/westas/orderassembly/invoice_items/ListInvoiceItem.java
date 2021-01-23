@@ -51,12 +51,10 @@ public class ListInvoiceItem {
     {
         list.add(idx, item);
     }
-
     public InvoiceItem GetItems(int position)
     {
         return list.get(position);
     }
-
     public int GetSize()
     {
         return list.size();
@@ -75,26 +73,9 @@ public class ListInvoiceItem {
                 if (event_change_quantity != null)
                     event_change_quantity.EventChangeQuantity(itm.uid, itm.barcode, itm.quantity);
 
-                if (itm.quantity > itm.required_quantity)
-                {
-                    itm.verify = SatusQuantity.over;
-                }
-                if (itm.quantity == itm.required_quantity)
-                {
-                    itm.verify = SatusQuantity.equally;
-                }
-                if (itm.quantity < itm.required_quantity)
-                {
-                    itm.verify = SatusQuantity.less;
-                }
-
-
+                ChangeStatus(itm);
                 //Меняем позицию найденного item на первую
-                if(position != 0)
-                {
-                    list.remove(position);
-                    list.add(0,itm);
-                }
+                ChangePositionToLastSelect(position);
 
                 return true;
             }
@@ -104,41 +85,64 @@ public class ListInvoiceItem {
         return false;
     }
 
+    public int GetLastPisitionBySelect()
+    {
+        int pos = 0;
+        for (InvoiceItem itm:list) {
+            if(itm.verify == SatusQuantity.default_){
+                return pos;
+            }
+            pos++;
+        }
+        return pos;
+    }
+
+    private void ChangePositionToLastSelect(int position)
+    {
+        if(position != 0)
+        {
+            InvoiceItem itm = list.get(position);
+            list.remove(position);
+            int idx = GetLastPisitionBySelect();
+            list.add(idx,itm);
+        }
+    }
+
+    private void ChangeStatus(InvoiceItem itm) {
+
+        if (itm.quantity > itm.required_quantity)
+        {
+            itm.verify = SatusQuantity.over;
+        }
+        if (itm.quantity == itm.required_quantity)
+        {
+            itm.verify = SatusQuantity.equally;
+        }
+        if (itm.quantity < itm.required_quantity)
+        {
+            itm.verify = SatusQuantity.less;
+        }
+
+    }
+
     public void ChangeQuantity(float quantity, String code)
     {
         int position = 0;
+        int last_position =0;
         for (InvoiceItem itm: list)
         {
             if (itm.barcode.equals(code))
             {
                 itm.quantity = quantity;
 
-                if (event_change_quantity != null)
-                event_change_quantity.EventChangeQuantity(itm.uid, itm.barcode, itm.quantity);
-
-                if (itm.quantity > itm.required_quantity)
-                {
-                    itm.verify = SatusQuantity.over;
+                if (event_change_quantity != null){
+                    event_change_quantity.EventChangeQuantity(itm.uid, itm.barcode, itm.quantity);
                 }
-                if (itm.quantity == itm.required_quantity)
-                {
-                    itm.verify = SatusQuantity.equally;
-                }
-                if (itm.quantity < itm.required_quantity)
-                {
-                    itm.verify = SatusQuantity.less;
-                }
-
-
+                ChangeStatus(itm);
                 //Меняем позицию найденного item на первую
-                if(position != 0)
-                {
-                    list.remove(position);
-                    list.add(0,itm);
-                }
+                ChangePositionToLastSelect(position);
 
                 break;
-
             }
             position++;
         }

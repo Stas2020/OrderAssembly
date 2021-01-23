@@ -30,8 +30,6 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_list_subdivision);
 
         InitToolbar();
-        GetListSundivision();
-
     }
     @Override
     public void onResume() {
@@ -47,10 +45,19 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
 
     @Override
     public void OnSuccess(ListSubdivision list_subdivision) {
+        String uid ="";
+        if(list_sd!= null){
+            uid = list_sd.GetUidSelected();
+        }
 
         list_sd = list_subdivision;
+        if(!uid.isEmpty()){
+            list_sd.SelectedByUid(uid);
+        }
+
         InitRecyclerView();
     }
+
     @Override
     public void OnFailure(Throwable t) {
         if (t instanceof IOException) {
@@ -86,15 +93,16 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
 
     }
 
-
     //Клик по Item в RecyclerView
     @Override
     public void onClick(View view) {
 
         int itemPosition = ListSubdivisionRecyclerView.getChildLayoutPosition(view);
 
-        String uid = list_sd.list.get(itemPosition).uid;
-        String name = list_sd.list.get(itemPosition).name;
+        String uid = list_sd.GetSubdivision(itemPosition).uid;
+        String name = list_sd.GetSubdivision(itemPosition).name;
+
+        list_sd.SelectSubdivision(itemPosition);
 
         Intent intent = new Intent(this, ListTransferInvoiceActivity.class);
         intent.putExtra("uid_subdivision",uid);
