@@ -13,15 +13,15 @@ import com.westas.orderassembly.R;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.calculator.ParseBarcode;
 import com.westas.orderassembly.calculator.QRCode;
-import com.westas.orderassembly.rest_service.TOnResponceChekItem;
-import com.westas.orderassembly.rest_service.TResponceOfChekItem;
+import com.westas.orderassembly.rest_service.TOnResponce;
+import com.westas.orderassembly.rest_service.TResponce;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ScanItemFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScanItemFragment extends Fragment implements TOnReadBarcode, TOnResponceChekItem {
+public class ScanItemFragment extends Fragment implements TOnReadBarcode, TOnResponce<InvoiceItem> {
 
     private ParseBarcode parseBarcode;
     private TOnSuccessSearchBarcode OnSuccessSearchBarcode;
@@ -66,6 +66,7 @@ public class ScanItemFragment extends Fragment implements TOnReadBarcode, TOnRes
             throw new ClassCastException(context.toString() + " must implement TOnSuccessSearchBarcode");
         }
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,27 +108,25 @@ public class ScanItemFragment extends Fragment implements TOnReadBarcode, TOnRes
             });
         }
 
-
         SearchItem(qr_code.code);
     }
 
     private void SearchItem(String barcode_str) {
-        MainActivity.rest_client.SetEventChekItems(this);
-        MainActivity.rest_client.CheckItem(barcode_str);
+        MainActivity.GetRestClient().CheckItem(barcode_str, this);
     }
 
     @Override
-    public void OnSuccessResponce(TResponceOfChekItem responce) {
-        if (responce.success == true) {
-            OnSuccessSearchBarcode.OnSuccessSearchBarcode(responce.item);
+    public void OnSuccess(TResponce<InvoiceItem> responce) {
+        if (responce.Success == true) {
+            OnSuccessSearchBarcode.OnSuccessSearchBarcode(responce.Data_);
         }
         else {
-            Toast.makeText(getActivity(), responce.message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), responce.Message, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void OnFailureResponce(Throwable t) {
+    public void OnFailure(Throwable t) {
         Toast.makeText(getActivity(), "Ошибка! "+ t.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }

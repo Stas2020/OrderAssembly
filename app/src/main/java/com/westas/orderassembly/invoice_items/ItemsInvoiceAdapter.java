@@ -3,6 +3,7 @@ package com.westas.orderassembly.invoice_items;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
+import android.support.design.card.MaterialCardView;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import com.westas.orderassembly.R;
 
+import static com.westas.orderassembly.invoice_items.SatusItem.add;
+
 
 public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapter.ItemsInvoiceViewHolder> {
 
@@ -21,12 +24,17 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
     private View.OnLongClickListener onLongClickListener;
     private Activity activity;
 
-    public ItemsInvoiceAdapter(Activity _activity, ListInvoiceItem listInvoiceItem,View.OnClickListener _onClickListener,View.OnLongClickListener _onLongClickListener)
+    public ItemsInvoiceAdapter(Activity _activity, ListInvoiceItem _listInvoiceItem, View.OnClickListener _onClickListener, View.OnLongClickListener _onLongClickListener)
     {
-        this.listInvoiceItem = listInvoiceItem;
-        this.onClickListener = _onClickListener;
-        this.onLongClickListener = _onLongClickListener;
+        listInvoiceItem = _listInvoiceItem;
+        onClickListener = _onClickListener;
+        onLongClickListener = _onLongClickListener;
         activity = _activity;
+    }
+
+    public void SetInvoices(ListInvoiceItem invoices)
+    {
+        listInvoiceItem = invoices;
     }
 
     public static class ItemsInvoiceViewHolder extends RecyclerView.ViewHolder {
@@ -37,7 +45,7 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
         public TextView quantity;
         public TextView required_quantity;
         public TextView unit;
-        public CardView cardview_of_goods;
+        public MaterialCardView cardview_of_goods;
         public ItemsInvoiceViewHolder(View v) {
             super(v);
             view = v;
@@ -63,27 +71,27 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
     @Override
     public void onBindViewHolder(ItemsInvoiceViewHolder holder, int position) {
 
-        holder.unit.setText(listInvoiceItem.GetItems(position).unit);
-        holder.barcode.setText(listInvoiceItem.GetItems(position).barcode);
-        holder.name.setText(listInvoiceItem.GetItems(position).name);
-        holder.quantity.setText(Float.toString(listInvoiceItem.GetItems(position).required_quantity));
-        holder.required_quantity.setText(Float.toString(listInvoiceItem.GetItems(position).quantity));
+        holder.unit.setText(listInvoiceItem.GetItems(position).GetUnit());
+        holder.barcode.setText(listInvoiceItem.GetItems(position).GetBarcode());
+        holder.name.setText(listInvoiceItem.GetItems(position).GetName());
+        holder.quantity.setText(Float.toString(listInvoiceItem.GetItems(position).GetRequiredQuantity()));
+        holder.required_quantity.setText(Float.toString(listInvoiceItem.GetItems(position).GetQuantity()));
 
-        if (listInvoiceItem.GetItems(position).verify != null)
+
+        switch (listInvoiceItem.GetItems(position).GetStatusQuantity())
         {
-            switch (listInvoiceItem.GetItems(position).verify)
-            {
-                case less: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_less)); break;
-                case equally: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_equally)); break;
-                case over: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_over)); break;
-                case default_: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
-            }
-        }
-        else
-        {
-            holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default));
+            case less: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_less)); break;
+            case equally: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_equally)); break;
+            case over: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_over)); break;
+            case default_: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
         }
 
+        if(listInvoiceItem.GetItems(position).GetStatus() == add)
+        {
+            holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_add));
+        }
+
+/*
         if (listInvoiceItem.GetItems(position).status != null)
         {
             switch (listInvoiceItem.GetItems(position).status)
@@ -93,7 +101,15 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
                 //case def: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
             }
         }
-
+*/
+        if(listInvoiceItem.CheckSelectedPosition(position))
+        {
+            holder.cardview_of_goods.setStrokeWidth(4);
+        }
+        else
+        {
+            holder.cardview_of_goods.setStrokeWidth(0);
+        }
     }
 
     @Override

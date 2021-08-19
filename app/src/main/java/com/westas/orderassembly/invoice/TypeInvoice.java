@@ -1,3 +1,3 @@
-package com.westas.orderassembly.invoice_items;
+package com.westas.orderassembly.invoice;
 
-public enum TypeInvoice {transfer, purchase, invoice_1c}
+public enum TypeInvoice {invoice_external, invoice_1c}

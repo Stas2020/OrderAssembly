@@ -2,13 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/date_purch_invoice"
+        android:id="@+id/date_invoice_1c"
         android:icon="@drawable/date_calendar_24"
         android:title="  Дата"
         app:showAsAction="withText" />
+
     <item
-        android:id="@+id/update_purch_invoice"
-        android:icon="@drawable/reload_refresh_24"
-        android:title="  Обновить"
+        android:id="@+id/groupe_1с_invoice"
+        android:icon="@drawable/list_lines_24"
+        android:title="  Сгруппировать"
         app:showAsAction="withText" />
+
 </menu>

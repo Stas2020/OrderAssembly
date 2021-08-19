@@ -105,4 +105,9 @@ public class TDialogForm
 
         dialog.show();
     }
+
+    public void Hide()
+    {
+        dialog.hide();
+    }
 }

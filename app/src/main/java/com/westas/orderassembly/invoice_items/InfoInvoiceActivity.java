@@ -11,11 +11,6 @@ import com.westas.orderassembly.R;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 public class InfoInvoiceActivity extends AppCompatActivity implements TOnResponce {
 
     private Toolbar toolbar;
@@ -30,8 +25,7 @@ public class InfoInvoiceActivity extends AppCompatActivity implements TOnResponc
         Bundle parametr = getIntent().getExtras();
         if(parametr!=null){
             uid_invoice = parametr.getString("uid_invoice");
-            MainActivity.rest_client.SetEventResponce(this);
-            MainActivity.rest_client.GetResultSynchronizedInvoice(uid_invoice);
+            MainActivity.GetRestClient().GetResultSynchronizedInvoice(uid_invoice,this);
         }
     }
 
@@ -53,13 +47,13 @@ public class InfoInvoiceActivity extends AppCompatActivity implements TOnResponc
 
 
     @Override
-    public void OnSuccessResponce(TResponce responce) {
+    public void OnSuccess(TResponce responce) {
         TextView info_invoice_txt = findViewById(R.id.infotextView);
         info_invoice_txt.setText(responce.Message);
     }
 
     @Override
-    public void OnFailureResponce(Throwable t) {
+    public void OnFailure(Throwable t) {
 
     }
 }

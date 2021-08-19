@@ -2,9 +2,9 @@ package com.westas.orderassembly.invoice;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ListTransferInvoice {
+public class ListInvoice {
 
-    @SerializedName("list_transfer_invoice")
+    @SerializedName("list_invoice")
     private java.util.List<Invoice> list;
 
     private static int last_position = 0;

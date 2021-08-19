@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,16 +14,19 @@ import android.widget.Toast;
 import com.westas.orderassembly.invoice.ListTransferInvoiceActivity;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
-import com.westas.orderassembly.rest_service.TOnResponceSubDivision;
+import com.westas.orderassembly.rest_service.TOnResponce;
+import com.westas.orderassembly.rest_service.TResponce;
 
 import java.io.IOException;
 
-public class ListSubdivisionActivity extends AppCompatActivity implements View.OnClickListener, TOnResponceSubDivision {
+public class ListSubdivisionActivity extends AppCompatActivity implements View.OnClickListener, TOnResponce<ListSubdivision> {
 
     private RecyclerView ListSubdivisionRecyclerView;
+    private LinearLayoutManager linearLayoutManager;
     private ListSubdivisionAdapter listSubdivisionAdapter;
     private ListSubdivision list_sd;
     private Toolbar toolbar;
+    private int first_position = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,23 +43,27 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
 
     private void GetListSundivision()
     {
-        MainActivity.rest_client.SetEventSubDivision(this);
-        MainActivity.rest_client.GetListSubdivision();
+        MainActivity.GetRestClient().GetListSubdivision(this);
     }
 
     @Override
-    public void OnSuccess(ListSubdivision list_subdivision) {
+    public void OnSuccess(TResponce<ListSubdivision> responce) {
         String uid ="";
         if(list_sd!= null){
             uid = list_sd.GetUidSelected();
         }
 
-        list_sd = list_subdivision;
+        list_sd = responce.Data_;
         if(!uid.isEmpty()){
             list_sd.SelectedByUid(uid);
         }
 
         InitRecyclerView();
+        if(linearLayoutManager!= null)
+        {
+            linearLayoutManager.scrollToPosition(first_position);
+            Log.i("MESSAGE", "first_position: " + String.valueOf(first_position));
+        }
     }
 
     @Override
@@ -86,7 +94,8 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
     private void InitRecyclerView()
     {
         ListSubdivisionRecyclerView = findViewById(R.id.listSubdivision);
-        ListSubdivisionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        linearLayoutManager = new LinearLayoutManager(this);
+        ListSubdivisionRecyclerView.setLayoutManager(linearLayoutManager);
 
         listSubdivisionAdapter = new ListSubdivisionAdapter(list_sd, this);
         ListSubdivisionRecyclerView.setAdapter(listSubdivisionAdapter);
@@ -98,6 +107,10 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
     public void onClick(View view) {
 
         int itemPosition = ListSubdivisionRecyclerView.getChildLayoutPosition(view);
+        first_position = linearLayoutManager.findFirstVisibleItemPosition();
+
+        Log.i("MESSAGE", "itemPosition: " + String.valueOf(itemPosition));
+
 
         String uid = list_sd.GetSubdivision(itemPosition).uid;
         String name = list_sd.GetSubdivision(itemPosition).name;

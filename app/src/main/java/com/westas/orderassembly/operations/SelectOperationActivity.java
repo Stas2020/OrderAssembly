@@ -1,57 +1,139 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.operations;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
+import com.westas.orderassembly.R;
+import com.westas.orderassembly.invoice.TypeInvoice;
 
 
 public class SelectOperationActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
+    ListOperation listOperation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_operation);
 
         InitToolbar();
+        listOperation = new ListOperation();
+        Operation operation;
 
-        Button button_Calculation = findViewById(R.id.consumables);
-        button_Calculation.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
 
-            Intent ListTransferInvoice1C_Activity = new Intent("android.intent.action.ListTransferInvoice1C_Activity");
-            startActivity(ListTransferInvoice1C_Activity);
-        }
-    });
-
-        Button button_OrderAsembly = findViewById(R.id.OrderAsembly);
-        button_OrderAsembly.setOnClickListener(new View.OnClickListener() {
+        operation = new Operation();
+        operation.SetCaption("Расходники");
+        Operation finalOperation = operation;
+        operation.SetOnClick(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
 
+                intent_activity.putExtra("caption", "Расходники");
+                intent_activity.putExtra("type_invoice", TypeInvoice.invoice_1c);
+                intent_activity.putExtra("uid_sender", "112");
+                startActivity(intent_activity);
+            }
+        });
+        listOperation.Add(operation);
+
+        operation = new Operation();
+        operation.SetCaption("Заказ 108");
+        //finalOperation = operation;
+        operation.SetOnClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+                intent_activity.putExtra("caption", "Заказ 108");
+                intent_activity.putExtra("type_invoice", TypeInvoice.invoice_external);
+                intent_activity.putExtra("uid_sender", "108");
+                startActivity(intent_activity);
+            }
+        });
+        listOperation.Add(operation);
+
+        operation = new Operation();
+        operation.SetCaption("Заказ 112");
+        operation.SetOnClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+
+                intent_activity.putExtra("caption", "Заказ 112");
+                intent_activity.putExtra("type_invoice", TypeInvoice.invoice_external);
+                intent_activity.putExtra("uid_sender", "112");
+                startActivity(intent_activity);
+            }
+        });
+        listOperation.Add(operation);
+
+        operation = new Operation();
+        operation.SetCaption("Оптиком");
+        //finalOperation = operation;
+        operation.SetOnClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+
+                intent_activity.putExtra("caption", "Оптиком");
+                intent_activity.putExtra("type_invoice", TypeInvoice.invoice_1c);
+                intent_activity.putExtra("uid_sender", "999");
+                startActivity(intent_activity);
+
+            }
+        });
+        listOperation.Add(operation);
+
+        operation = new Operation();
+        operation.SetCaption("Кофе");
+        //finalOperation = operation;
+        operation.SetOnClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+
+                intent_activity.putExtra("caption", "Кофе");
+                intent_activity.putExtra("type_invoice", TypeInvoice.invoice_external);
+                intent_activity.putExtra("uid_sender", "71");
+                startActivity(intent_activity);
+
+            }
+        });
+        listOperation.Add(operation);
+
+        operation = new Operation();
+        operation.SetCaption("Сборка заказа");
+        operation.SetOnClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent ListSubdivisionActivity = new Intent("android.intent.action.ListSubdivisionActivity");
-                startActivity(ListSubdivisionActivity);
+                //startActivity(ListSubdivisionActivity);
             }
         });
+        listOperation.Add(operation);
 
-        Button button_OrderAccept = findViewById(R.id.OrderAccept);
-        button_OrderAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        InitOperationRecyclerView(listOperation);
 
-                Intent ListSubdivisionActivity = new Intent("android.intent.action.AcceptInvoiceActivity");
-                startActivity(ListSubdivisionActivity);
 
-            }
-        });
+    }
 
+    private void InitOperationRecyclerView(ListOperation listOperation)
+    {
+        RecyclerView recycler_view_operation = findViewById(R.id.recycler_view_operation);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recycler_view_operation.setLayoutManager(linearLayoutManager);
+
+        recycler_view_operation.setItemAnimator(new DefaultItemAnimator());
+        OperationAdapter operationAdapter = new OperationAdapter(listOperation);
+        recycler_view_operation.setAdapter(operationAdapter);
     }
 
     @Override

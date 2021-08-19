@@ -7,9 +7,16 @@
         android:singleLine="false"
         android:title="Адрес сервера" />
     <EditTextPreference
-        android:inputType="number"
+        android:inputType="numberSigned"
         android:key="NAME_PORT"
         android:selectAllOnFocus="true"
         android:singleLine="false"
         android:title="Порт" />
+    <EditTextPreference
+        android:inputType="numberSigned"
+        android:key="NUM_TERMINAL"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:title="Номер терминала" />
+
 </PreferenceScreen>

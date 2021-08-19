@@ -53,7 +53,12 @@ public class TDialogQuestion {
         Init();
         builder.setMessage(message);
         dialog = builder.create();
+        dialog.setCancelable(false);
         dialog.show();
     }
 
+    public void Hide()
+    {
+        dialog.hide();
+    }
 }

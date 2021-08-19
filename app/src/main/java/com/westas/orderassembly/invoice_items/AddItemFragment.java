@@ -1,7 +1,5 @@
 package com.westas.orderassembly.invoice_items;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -14,16 +12,15 @@ import android.widget.Toast;
 
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
-import com.westas.orderassembly.rest_service.RestClient;
-import com.westas.orderassembly.rest_service.TOnResponceChekItem;
-import com.westas.orderassembly.rest_service.TResponceOfChekItem;
+import com.westas.orderassembly.rest_service.TOnResponce;
+import com.westas.orderassembly.rest_service.TResponce;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AddItemFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddItemFragment extends Fragment implements TOnResponceChekItem {
+public class AddItemFragment extends Fragment  {
 
     private TOnSuccessSearchBarcode OnSuccessSearchBarcode;
 
@@ -80,24 +77,23 @@ public class AddItemFragment extends Fragment implements TOnResponceChekItem {
     }
 
     private void SearchItem(String barcode_str) {
-        MainActivity.rest_client.SetEventChekItems(this);
-        MainActivity.rest_client.CheckItem(barcode_str);
-    }
 
-    @Override
-    public void OnSuccessResponce(TResponceOfChekItem responce) {
+        MainActivity.GetRestClient().CheckItem(barcode_str, new TOnResponce<InvoiceItem>() {
+            @Override
+            public void OnSuccess(TResponce<InvoiceItem> responce) {
+                if (responce.Success == true) {
+                    OnSuccessSearchBarcode.OnSuccessSearchBarcode(responce.Data_);
+                }
+                else {
+                    Toast.makeText(getActivity(), responce.Message, Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        if (responce.success == true) {
-            OnSuccessSearchBarcode.OnSuccessSearchBarcode(responce.item);
-        }
-        else {
-            Toast.makeText(getActivity(), responce.message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void OnFailureResponce(Throwable t) {
-        Toast.makeText(getActivity(), "Ошибка! "+ t.getMessage(), Toast.LENGTH_SHORT).show();
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getActivity(), "Ошибка! "+ t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

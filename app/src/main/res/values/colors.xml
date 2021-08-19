@@ -4,10 +4,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="row_item_less">#C3AED581</color>
-    <color name="row_item_equally">#81C784</color>
-    <color name="row_item_over">#4DB6AC</color>
-    <color name="row_item_default">#3CD1DACC</color>
+    <color name="row_item_less">#40458E49</color>
+    <color name="row_item_equally">#99458E49</color>
+    <color name="row_item_over">#F2458E49</color>
+    <color name="row_item_default">#16455D8E</color>
 
     <color name="row_item_add">#8F9CE1</color>
     <color name="row_item_delete">#E897B2</color>
@@ -17,5 +17,21 @@
     <color name="invoice_default">#3CD1DACC</color>
     <color name="invoice_checked">#BE3AD862</color>
     <color name="invoice_alert">#B4EC3F3F</color>
+
+    <color name="wifi_connect">#B43C7BDA</color>
+    <color name="wifi_lost">#F44336</color>
+
+    <color name="items_group">#5095AA</color>
+    <color name="items_nogroup">#6AA351</color>
+
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#808080</color>
+    <color name="white">#fafafa</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="pink">#e91e63</color>
+    <color name="pink_pressed">#ec407a</color>
+    <color name="blue_semi_transparent">#805677fc</color>
+    <color name="blue_semi_transparent_pressed">#80738ffe</color>
 
 </resources>

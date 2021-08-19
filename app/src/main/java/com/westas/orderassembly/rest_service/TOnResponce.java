@@ -1,6 +1,7 @@
 package com.westas.orderassembly.rest_service;
 
-public interface TOnResponce_<T> {
-    void OnSuccess(TResponce_<T> responce);
+
+public interface TOnResponce<T> {
+    void OnSuccess(TResponce<T> responce);
     void OnFailure(Throwable t);
 }

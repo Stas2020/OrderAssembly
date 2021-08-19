@@ -7,15 +7,16 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar_of_invoice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/subdivision_name"
+                    android:id="@+id/date_invoice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
@@ -31,7 +32,7 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_invoice"
+        android:id="@+id/list_invoice1C"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

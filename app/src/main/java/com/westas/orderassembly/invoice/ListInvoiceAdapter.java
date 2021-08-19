@@ -1,10 +1,8 @@
 package com.westas.orderassembly.invoice;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.support.design.card.MaterialCardView;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,30 +16,30 @@ import com.westas.orderassembly.R;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransferInvoiceAdapter.ListInvoceViewHolder> {
+public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.ListInvoceViewHolder> {
 
-    private ListTransferInvoice listTransferInvoice;
+    private ListInvoice list_invoice;
     private View.OnClickListener onClickListener;
     private Activity activity;
 
-    public ListTransferInvoiceAdapter(Activity _activity, ListTransferInvoice listInvoice, View.OnClickListener onClickListener)
+    public ListInvoiceAdapter(Activity _activity, ListInvoice listInvoice, View.OnClickListener onClickListener)
     {
-        listTransferInvoice = listInvoice;
+        list_invoice = listInvoice;
         this.onClickListener = onClickListener;
         activity = _activity;
     }
 
     public static class ListInvoceViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         public View view;
-        public TextView date_invoice;
+        public TextView date_order;
         public TextView number_invoice;
         public MaterialCardView cardview_of_invoice;
         public ImageView img_synhronised_invoice;
+
         public ListInvoceViewHolder(View v) {
             super(v);
             view = v;
-            date_invoice = view.findViewById(R.id.date_invoice);
+            date_order = view.findViewById(R.id.date_order);
             number_invoice = view.findViewById(R.id.number_invoice);
             cardview_of_invoice = view.findViewById(R.id.cardview_invoice);
             img_synhronised_invoice = view.findViewById(R.id.image_synchronized_invoice);
@@ -59,12 +57,20 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
     @Override
     public void onBindViewHolder(ListInvoceViewHolder holder, int position) {
 
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
-        holder.date_invoice.setText(new SimpleDateFormat("dd MMM yy").format(listTransferInvoice.GetInvoice(position).date));
-        holder.number_invoice.setText( listTransferInvoice.GetInvoice(position).num_doc);
+        int year = list_invoice.GetInvoice(position).date_order.getYear() + 1900;
+        if (year < 2000)
+        {
+            holder.date_order.setText("Дата заказа: отсутствует");
+        }
+        else
+        {
+            holder.date_order.setText("Дата заказа: " + new SimpleDateFormat("dd MMM yy").format(list_invoice.GetInvoice(position).date_order));
+        }
+
+        holder.number_invoice.setText( list_invoice.GetInvoice(position).num_doc);
 
 
-        if(listTransferInvoice.GetInvoice(position).closed)
+        if(list_invoice.GetInvoice(position).closed)
         {
             holder.cardview_of_invoice.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.invoice_close));
             holder.img_synhronised_invoice.setImageResource(R.drawable.closed_32);
@@ -72,7 +78,7 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
         }
         else
         {
-            if(listTransferInvoice.GetInvoice(position).all_item_synhronized)
+            if(list_invoice.GetInvoice(position).all_item_synhronized)
             {
                 holder.img_synhronised_invoice.setImageResource(R.drawable.check_32);
                 holder.cardview_of_invoice.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.invoice_checked));
@@ -82,11 +88,10 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
                 holder.img_synhronised_invoice.setImageResource(R.drawable.alert_32);
                 holder.cardview_of_invoice.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.invoice_alert));
             }
-            //holder.cardview_of_invoice.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.invoice_default));
         }
 
 
-        if(listTransferInvoice.CheckSelectedPosition(position) == true)
+        if(list_invoice.CheckSelectedPosition(position) == true)
         {
             holder.cardview_of_invoice.setStrokeWidth(4);
         }
@@ -98,7 +103,7 @@ public class ListTransferInvoiceAdapter extends RecyclerView.Adapter<ListTransfe
 
     @Override
     public int getItemCount() {
-        return listTransferInvoice.GetSize();
+        return list_invoice.GetSize();
     }
 
 

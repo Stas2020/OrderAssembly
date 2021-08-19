@@ -22,25 +22,23 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
 import com.westas.orderassembly.Scaner.ScanerActivity;
 import com.westas.orderassembly.WiFi.TStatusWiFi;
 import com.westas.orderassembly.WiFi.TUtilsWiFi;
+import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.calculator.ParseBarcode;
 import com.westas.orderassembly.calculator.QRCode;
 import com.westas.orderassembly.dialog.TCallBackDialog;
 import com.westas.orderassembly.dialog.TCallBackDialogQuantity;
 import com.westas.orderassembly.dialog.TDialogForm;
-import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.dialog.TDialogQuestion;
 import com.westas.orderassembly.dialog.TTypeForm;
 import com.westas.orderassembly.invoice.TypeInvoice;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
-import com.westas.orderassembly.toolbar.ToolbarItemsOfInvoice;
 
 import java.lang.reflect.Method;
 import java.text.DateFormat;
@@ -50,8 +48,7 @@ import java.util.Date;
 import java.util.Locale;
 
 
-
-public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnClickListener, View.OnLongClickListener, TOnReadBarcode, TCallBackDialogQuantity
+public class ItemsInvoiceActivityCopy extends AppCompatActivity implements  View.OnClickListener, View.OnLongClickListener, TOnReadBarcode, TCallBackDialogQuantity
 {
 
     private RecyclerView ListGoodsRecyclerView;
@@ -102,8 +99,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         InitToolbar();
         MainActivity.GetBarcodeReader().SetListren(this);
 
-        dialog_quantity = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Количество", TTypeForm.change);
-        dialog_print_label = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Печать этикетки",TTypeForm.label);
+        dialog_quantity = new TDialogForm(ItemsInvoiceActivityCopy.this, ItemsInvoiceActivityCopy.this,"Количество", TTypeForm.change);
+        dialog_print_label = new TDialogForm(ItemsInvoiceActivityCopy.this, ItemsInvoiceActivityCopy.this,"Печать этикетки",TTypeForm.label);
         dialog_question = new TDialogQuestion(this,"Удалить?");
 
         Bundle parametr = getIntent().getExtras();
@@ -156,7 +153,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         message_toolbar = (TextView) findViewById(R.id.message_toolbar);
 
 
-        com.getbase.floatingactionbutton.FloatingActionsMenu rightLabels = (FloatingActionsMenu) findViewById(R.id.right_labels_);
+        FloatingActionsMenu rightLabels = (FloatingActionsMenu) findViewById(R.id.right_labels_);
         com.getbase.floatingactionbutton.FloatingActionButton addedOnce = new com.getbase.floatingactionbutton.FloatingActionButton(this);
         addedOnce.setTitle("Код");
         rightLabels.addButton(addedOnce);
@@ -288,6 +285,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
 
     private void GetItemsOfInvoiceGroup()
     {
+        /*
         MainActivity.GetRestClient().GetItemsOfInvoiceGroup(current_date, type_invoice, new TOnResponce<ListInvoiceItem>() {
             @Override
             public void OnSuccess(TResponce<ListInvoiceItem> responce) {
@@ -309,6 +307,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
                 Toast.makeText(getApplicationContext(), "Ошибка при получении списка товаров!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+         */
 
     }
 
@@ -536,7 +536,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
     }
     private void CloseInvoice()
     {
-
+/*
         ShowAlert("Закрытие накладной", "Идет передача данных...", false);
 
         MainActivity.GetRestClient().CloseInvoice(uid_invoice, type_invoice, new TOnResponce() {
@@ -556,6 +556,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
             }
 
         });
+
+ */
     }
     private void CloseInvoice1C()
     {
@@ -939,7 +941,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
     }
 
     private void ChangeQuantityOnServer(InvoiceItem item) {
-
+/*
         MainActivity.GetRestClient().SetQuantityItem(item.GetUidInvoice(), item.GetUid(), item.GetQuantity(), item.GetBarcode(), new TOnResponce() {
             @Override
             public void OnSuccess(TResponce responce) {
@@ -951,6 +953,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
             }
 
         });
+
+ */
     }
 
     private void ChangeQuantityAndUniqueUidOnServer(InvoiceItem item, String unique_uid) {

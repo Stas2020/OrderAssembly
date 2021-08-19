@@ -24,6 +24,7 @@ public class ListSubdivision {
     {
         return list.get(position).selected;
     }
+
     public String GetUidSelected()
     {
         for (Subdivision subdivision:list) {
@@ -38,12 +39,13 @@ public class ListSubdivision {
     {
         return list.size();
     }
+
     public void SelectedByUid(String uid)
     {
-            for (Subdivision subdivision:list) {
-                if(subdivision.uid.equals(uid)){
-                    subdivision.selected = true;
-                }
+        for (Subdivision subdivision:list) {
+            if(subdivision.uid.equals(uid)){
+                subdivision.selected = true;
             }
+        }
     }
 }

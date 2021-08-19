@@ -1,32 +1,36 @@
 package com.westas.orderassembly.invoice_items;
 
 
-import android.app.Fragment;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
+import com.westas.orderassembly.Scaner.ScanerActivity;
+import com.westas.orderassembly.WiFi.TStatusWiFi;
+import com.westas.orderassembly.WiFi.TUtilsWiFi;
+import com.westas.orderassembly.calculator.ListBarcodeTemplate;
 import com.westas.orderassembly.calculator.ParseBarcode;
 import com.westas.orderassembly.calculator.QRCode;
 import com.westas.orderassembly.dialog.TCallBackDialog;
@@ -35,47 +39,63 @@ import com.westas.orderassembly.dialog.TDialogForm;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.dialog.TDialogQuestion;
 import com.westas.orderassembly.dialog.TTypeForm;
+import com.westas.orderassembly.invoice.TypeInvoice;
+import com.westas.orderassembly.menu_for_list_invoice.ItemMenu;
+import com.westas.orderassembly.menu_for_list_invoice.MenuToolbar;
+import com.westas.orderassembly.menu_for_list_invoice.OnSelectItemMenu;
 import com.westas.orderassembly.rest_service.TOnResponce;
-import com.westas.orderassembly.rest_service.TOnResponceItemsInvoice;
 import com.westas.orderassembly.rest_service.TResponce;
+import com.westas.orderassembly.toolbar.ToolbarItemsOfInvoice;
 
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
-public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnClickListener,
-                                                                        View.OnLongClickListener,
-                                                                        TOnReadBarcode,
-                                                                        TOnResponceItemsInvoice,
-                                                                        TCallBackDialogQuantity,
-                                                                        TOnChangeQuantity,
-                                                                        TOnResponce{
 
+public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnClickListener, View.OnLongClickListener, TOnReadBarcode, TCallBackDialogQuantity
+{
 
     private RecyclerView ListGoodsRecyclerView;
     private ItemsInvoiceAdapter listGoodsAdapter;
-    private ListInvoiceItem list_invoiceItem;
+    private ListInvoiceItem list_item_of_invoice;
     private LinearLayoutManager linearLayoutManager;
     private Toolbar toolbar;
-    private TextView invoice_date;
-    private TextView invoice_number;
-    private TextView subdivision_name;
-    private Fragment fragment_add;
-    private Fragment fragment_scan;
+
+    private TextView caption_toolbar;
+    private TextView date_toolbar;
+    private TextView number_invoice_toolbar;
+
+
+    private TypeView type_view;
+    private TypeInvoice type_invoice;
+    private Date current_date;
+    private Date date_invoice;
+    private String uid_invoice;
+    private Date date_order;
+    private String caption;
+    private String num_doc;
+    private String uid_sender;
+
+
+    private int selected_position;
+    int num_term;
+
+    private ParseBarcode parseBarcode;
+    private ListBarcodeTemplate list_barcode_template;
+
     private TDialogForm dialog_quantity;
     private TDialogForm dialog_print_label;
     private TDialogQuestion dialog_question;
-    private int itemPosition;
 
-    private String uid_subdivision ;
-    private String name_subdivision ;
-    private String uid_invoice ;
+    TUtilsWiFi utils_wifi;
+    private Toolbar toolbar_status;
+    private TextView message_toolbar;
 
-    private ParseBarcode parseBarcode;
-
+    private AlertDialog alert_dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +103,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         setContentView(R.layout.activity_items_invoice);
 
         InitToolbar();
+        GetListBarcodeTemplate();
         MainActivity.GetBarcodeReader().SetListren(this);
 
         dialog_quantity = new TDialogForm(ItemsInvoiceActivity.this,ItemsInvoiceActivity.this,"Количество", TTypeForm.change);
@@ -91,34 +112,117 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
 
         Bundle parametr = getIntent().getExtras();
         if(parametr!=null){
-             uid_subdivision = parametr.getString("uid_subdivision");
-             name_subdivision = parametr.getString("name_subdivision");
-             uid_invoice = parametr.getString("uid_invoice");
-
-            //GetItemsInvoice();
-            Date date = Calendar.getInstance().getTime();
-            DateFormat dateFormat = new SimpleDateFormat("dd MMM");
-
-            SetInvoiceInfo(dateFormat.format(date), "№ "+uid_invoice, name_subdivision);
+            type_view = (TypeView) parametr.get("type_view");
+            type_invoice = (TypeInvoice)parametr.get("type_invoice");
+            current_date = (Date)parametr.get("current_date");
+            date_invoice = (Date)parametr.get("date_invoice");
+            uid_invoice = parametr.getString("uid_invoice");
+            date_order = (Date)parametr.get("date_order");
+            caption = parametr.getString("caption");
+            num_doc = parametr.getString("num_doc");
+            uid_sender = parametr.getString("uid_sender");
         }
 
         parseBarcode = new ParseBarcode();
+        num_term = MainActivity.GetSettings().num_term;
 
-        FloatingActionButton floating_button_down = (FloatingActionButton) findViewById(R.id.floating_button_down);
-        floating_button_down.setOnClickListener(new View.OnClickListener() {
+
+        com.getbase.floatingactionbutton.FloatingActionsMenu rightLabels = (FloatingActionsMenu) findViewById(R.id.right_labels_);
+        com.getbase.floatingactionbutton.FloatingActionButton addedOnce = new com.getbase.floatingactionbutton.FloatingActionButton(this);
+        addedOnce.setTitle("Код");
+        rightLabels.addButton(addedOnce);
+
+        addedOnce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PageDown();
+                list_item_of_invoice.SortingItemByCode();
+                NotifyDataSetChangedReciclerView();
+            }
+        });
+
+        com.getbase.floatingactionbutton.FloatingActionButton addedTwice = new com.getbase.floatingactionbutton.FloatingActionButton(this);
+        addedTwice.setTitle("Название");
+        rightLabels.addButton(addedTwice);
+        rightLabels.removeButton(addedTwice);
+        rightLabels.addButton(addedTwice);
+
+        addedTwice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list_item_of_invoice.SortingItemByName();
+                NotifyDataSetChangedReciclerView();
+            }
+        });
+
+        toolbar_status = (Toolbar) findViewById(R.id.toolbar_status);
+        message_toolbar = (TextView) findViewById(R.id.message_toolbar);
+    }
+
+    @SuppressLint("ResourceAsColor")
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        switch (type_view)
+        {
+            case not_group:
+            {
+                caption_toolbar.setText(caption);
+                date_toolbar.setText(new SimpleDateFormat("dd.MM.yy").format(date_invoice));
+                number_invoice_toolbar.setText("№ "+num_doc);
+                //toolbar.setBackgroundColor(R.color.items_nogroup);
+                GetItemsOfInvoice();
+                break;
+            }
+            case group:
+            {
+                caption_toolbar.setText(caption);
+                date_toolbar.setText(new SimpleDateFormat("dd.MM.yy").format(current_date));
+                number_invoice_toolbar.setText("ВСЕ ПОЗИЦИИ");
+                //toolbar.setBackgroundColor(R.color.items_group);
+                GetItemsOfInvoiceGroup();
+                break;
+            }
+        }
+
+        utils_wifi = new TUtilsWiFi(getApplicationContext());
+        utils_wifi.StatrMonitoring(new TStatusWiFi() {
+
+            @Override
+            public void OnConnected() {
+                toolbar_status.setBackgroundColor(Color.BLUE);
+                message_toolbar.setText("WiFi Connected");
+            }
+
+            @Override
+            public void OnLost() {
+                toolbar_status.setBackgroundColor(Color.RED);
+                message_toolbar.setText("WiFi Lost");
             }
         });
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void InitToolbar()
+    {
+        caption_toolbar = findViewById(R.id.caption_textview);
+        date_toolbar = findViewById(R.id.date_textview);
+        number_invoice_toolbar = findViewById(R.id.number_textview);
 
-        GetItemsInvoice();
+        toolbar = findViewById(R.id.toolbar_items_of_invoice);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                onBackPressed();// возврат на предыдущий activity
+            }
+        });
+
+
     }
 
     private void PageDown()
@@ -132,42 +236,109 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         ListGoodsRecyclerView.smoothScrollToPosition(0);
         Toast.makeText(getApplicationContext(), "Page up!  ", Toast.LENGTH_SHORT).show();
     }
-    private void GetItemsInvoice()
+
+    private void GetItemsOfInvoice()
     {
-        MainActivity.rest_client.SetEventItemsInvoice(this);
-        MainActivity.rest_client.GetItemsOfInvoice(uid_invoice);
+        MainActivity.GetRestClient().GetItemsOfInvoice(uid_invoice, type_invoice, new TOnResponce<ListInvoiceItem>() {
+            @Override
+            public void OnSuccess(TResponce<ListInvoiceItem> responce) {
+
+                if(!responce.Success)
+                {
+                    Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                list_item_of_invoice = responce.Data_;
+                list_item_of_invoice.SortingItem();
+
+                InitRecyclerView();
+            }
+
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка при получении списка товаров в накладной!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    @Override
-    public void OnSuccess(ListInvoiceItem items_invoice) {
-        list_invoiceItem = items_invoice;
-        list_invoiceItem.SortingItem();
-        list_invoiceItem.SetEventOfChangeQuantity(this);
+    private void GetItemsOfInvoiceGroup()
+    {
+        MainActivity.GetRestClient().GetItemsOfInvoiceGroup(current_date, uid_sender, type_invoice, new TOnResponce<ListInvoiceItem>() {
+            @Override
+            public void OnSuccess(TResponce<ListInvoiceItem> responce) {
 
-        InitRecyclerView();
+                if(!responce.Success)
+                {
+                    Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                list_item_of_invoice = responce.Data_;
+                list_item_of_invoice.SortingItem();
+
+                InitRecyclerView();
+            }
+
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка при получении списка товаров!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
-    @Override
-    public void OnFailure(Throwable t) {
-        Toast.makeText(this, "Ошибка при получении списка товаров в накладной!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
-    }
+
 
     @Override
-    public void OnSuccessResponce(TResponce responce) {
-        //GetItemsInvoice();
-        Toast.makeText(this,  responce.Message, Toast.LENGTH_SHORT).show();
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        ItemMenu m_item;
+        MenuToolbar menu_toolbar = new MenuToolbar(menu);
 
-    }
+        m_item = new ItemMenu();
+        m_item.SetCaption("Печать");
+        m_item.SetIcon(getDrawable(R.drawable.print_24));
+        m_item.SetOnClickListren(new OnSelectItemMenu() {
+            @Override
+            public void OnSelect() {
+                Toast.makeText(getApplicationContext(),  "Печать...", Toast.LENGTH_SHORT).show();
+            }
+        });
+        menu_toolbar.Add(m_item);
 
-    @Override
-    public void OnFailureResponce(Throwable t) {
-        Toast.makeText(this, "Ошибка!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
-    }
+        m_item = new ItemMenu();
+        m_item.SetCaption("Закрыть");
+        m_item.SetIcon(getDrawable(R.drawable.closed_24));
+        m_item.SetOnClickListren(new OnSelectItemMenu() {
+            @Override
+            public void OnSelect() {
+                CloseInvoice();
+            }
+        });
+        menu_toolbar.Add(m_item);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+        m_item = new ItemMenu();
+        m_item.SetCaption("Сканировать");
+        m_item.SetIcon(getDrawable(R.drawable.binoculars_24));
+        m_item.SetOnClickListren(new OnSelectItemMenu() {
+            @Override
+            public void OnSelect() {
+                ScanItem();
+            }
+        });
+        menu_toolbar.Add(m_item);
 
-        getMenuInflater().inflate(R.menu.menu_items_of_invoice, menu);
+        m_item = new ItemMenu();
+        m_item.SetCaption("Претензия");
+        m_item.SetIcon(getDrawable(R.drawable.notepad_24));
+        m_item.SetOnClickListren(new OnSelectItemMenu() {
+            @Override
+            public void OnSelect() {
+                Toast.makeText(getApplicationContext(),  "В разработке...", Toast.LENGTH_SHORT).show();
+            }
+        });
+        menu_toolbar.Add(m_item);
 
         //Код с рефлексией, используемый для включения в пункты меню иконок
         if(menu.getClass().getSimpleName()
@@ -191,56 +362,6 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.print:
-                PrintInvoice();
-                return true;
-            case R.id.close:
-                CloseInvoice();
-                return true;
-            case R.id.add_item:
-                AddItemToInvoice();
-                return true;
-            case R.id.info_by_invoice:
-                InfoByInvoice();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-
-    private void InitToolbar()
-    {
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                onBackPressed();// возврат на предыдущий activity
-            }
-        });
-
-        invoice_date = findViewById(R.id.invoice_date);
-        invoice_number = findViewById(R.id.invoice_number);
-        subdivision_name = findViewById(R.id.subdivision_name);
-    }
-
-    private void SetInvoiceInfo(String date, String number_invoice, String name_subdivision)
-    {
-        invoice_date.setText(date);
-        invoice_number.setText(number_invoice);
-        subdivision_name.setText(name_subdivision);
-    }
-
     private void InitRecyclerView()
     {
         ListGoodsRecyclerView = findViewById(R.id.list_items_invoice);
@@ -249,9 +370,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
 
 
         ListGoodsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        listGoodsAdapter = new ItemsInvoiceAdapter(this, list_invoiceItem, this,this);
+        listGoodsAdapter = new ItemsInvoiceAdapter(this, list_item_of_invoice, this,this);
         ListGoodsRecyclerView.setAdapter(listGoodsAdapter);
-
 
 
         SwipeCallback swipe_callback = new SwipeCallback()
@@ -268,28 +388,82 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         itemTouchhelper.attachToRecyclerView(ListGoodsRecyclerView);
     }
 
+    private void ShowAlert(String title, String message, boolean show_cancel)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        alert_dialog = builder.create();
+        alert_dialog.setCancelable(show_cancel);
+        alert_dialog.show();
+    }
+    private void HideAlert()
+    {
+        alert_dialog.hide();
+    }
+
     private void CloseInvoice()
     {
-        MainActivity.rest_client.SetEventResponce(this);
-        MainActivity.rest_client.CloseInvoice(uid_invoice);
+        ShowAlert("Закрытие накладной", "Идет передача данных...", false);
+
+        MainActivity.GetRestClient().CloseInvoice(uid_sender, uid_invoice, type_invoice, new TOnResponce() {
+            @Override
+            public void OnSuccess(TResponce responce) {
+                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+                GetItemsOfInvoice();
+                HideAlert();
+            }
+
+            @Override
+            public void OnFailure(Throwable t) {
+
+                Toast.makeText(getApplicationContext(), "Ошибка!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                ShowAlert("Ошибка! ", t.getMessage(), true);
+
+            }
+
+        });
     }
 
     private void PrintInvoice()
     {
-        MainActivity.rest_client.SetEventResponce(this);
-        MainActivity.rest_client.PrintInvoice(uid_invoice);
+        if(!list_item_of_invoice.CheckAllItemSynchronized())
+        {
+            Toast.makeText(getApplicationContext(), "Ошибка! Не все данные отправлены в GESTORI.  ", Toast.LENGTH_SHORT).show();
+            AlertSound();
+            return;
+        }
+
+        MainActivity.GetRestClient().PrintInvoice(uid_invoice, num_term, new TOnResponce() {
+            @Override
+            public void OnSuccess(TResponce responce) {
+                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void EventDeleteItemFromInvoice(InvoiceItem item, int position)
     {
-        InvoiceItem item_for_delete = item;
-        dialog_question.Show(item.barcode + " " + item.name, new TCallBackDialog() {
+        dialog_question.Show(item.GetBarcode() + " " + item.GetName(), new TCallBackDialog() {
             @Override
             public void OnSuccess(boolean flag) {
-                if (flag == true)
+                if (flag)
                 {
-                    MainActivity.rest_client.DeleteItemFromInvoice(uid_invoice,item.uid,item.barcode);
-                    Toast.makeText(getApplicationContext(), "Удалил товар из накладной.", Toast.LENGTH_SHORT).show();
+                    MainActivity.GetRestClient().DeleteItemFromInvoice(uid_invoice, item.GetUid(), item.GetBarcode(), new TOnResponce() {
+                        @Override
+                        public void OnSuccess(TResponce responce) {
+                            Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+                        }
+                        @Override
+                        public void OnFailure(Throwable t) {
+                            Toast.makeText(getApplicationContext(), "Ошибка!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 else
                 {
@@ -306,6 +480,12 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         startActivity(intent);
     }
 
+    private void ScanItem()
+    {
+        Intent intent = new Intent(this, ScanerActivity.class);
+        startActivity(intent);
+    }
+
     private void InfoByInvoice() {
         Intent intent = new Intent(this, InfoInvoiceActivity.class);
         intent.putExtra("uid_invoice",uid_invoice);
@@ -315,11 +495,15 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
     @Override
     public void onClick(View view)
     {
-        itemPosition = ListGoodsRecyclerView.getChildLayoutPosition(view);
+        selected_position = ListGoodsRecyclerView.getChildLayoutPosition(view);
 
-        String name = list_invoiceItem.GetItems(itemPosition).name;
-        double quant = list_invoiceItem.GetItems(itemPosition).quantity;
+        InvoiceItem item = list_item_of_invoice.GetItems(selected_position);
 
+        SelectItem(item);
+        NotifyDataSetChangedReciclerView();
+
+        String name = item.GetName();
+        double quant = item.GetQuantity();
         dialog_quantity.Show(name,quant);
     }
 
@@ -335,24 +519,36 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         switch (type_)
         {
             case label: {
-                PrintLabel((int)quantity,list_invoiceItem.GetItems(itemPosition));
+                PrintLabel((int)quantity,list_item_of_invoice.GetItems(selected_position));
                 break;
             }
             case change:{
-                list_invoiceItem.ChangeQuantity(quantity,list_invoiceItem.GetItems(itemPosition).barcode);
-                listGoodsAdapter.notifyDataSetChanged();
-                ListGoodsRecyclerView.smoothScrollToPosition(0);
+                InvoiceItem item = list_item_of_invoice.GetItems(selected_position);
+                item.SetQuantity(quantity);
+
+                ChangeQuantityOnServer(item);
+
+                MovePositionToLastPlace(item);
+                NotifyDataSetChangedReciclerView();
+                ScrolToSelectPosition();
                 break;
             }
         }
-
     }
 
     private void PrintLabel(int count_label, InvoiceItem invoiceItem)
     {
-        MainActivity.rest_client.SetEventResponce(this);
-        MainActivity.rest_client.PrintLabel(uid_invoice, invoiceItem.uid, count_label);
+        MainActivity.GetRestClient().PrintLabel(uid_invoice, invoiceItem.GetUid(), count_label, num_term, new TOnResponce() {
+            @Override
+            public void OnSuccess(TResponce responce) {
+                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void Alert(String message)
@@ -360,6 +556,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
         AlertSound();
     }
+
     private void AlertSound()
     {
         Uri notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -367,50 +564,252 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         r.play();
     }
 
+    private void ShowMessage(String message)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Alert(message);
+            }
+        });
+    }
+
     @Override
     public void OnReadCode(final String code)
     {
-        QRCode qr_code = null;
-        try
+        switch (type_invoice)
         {
-             qr_code = parseBarcode.ParseJSON(code);
-        }
-        catch(Exception e)
-        {
-            runOnUiThread(() -> Alert("Не удалось прочитать QRCode!"));
-        }
-
-        if (qr_code == null)
-        {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Alert("Не удалось прочитать QRCode!");
+            case invoice_1c:
+            {
+                InvoiceItem item = list_item_of_invoice.GetItemsByBarcode(code);
+                if(item == null)
+                {
+                    ShowMessage("Не нашел товар!");
+                    return;
                 }
-            });
-        }
+                float quantity = item.GetQuantity() + item.GetBox(code).quantity_in_box;
+                item.SetQuantity(quantity);
 
-        boolean verify = list_invoiceItem.VerifyGoods(qr_code.quantity,qr_code.code);
+                SelectItem(item);
+                MovePositionToLastPlace(item);
 
-        if (verify)
-        {
-            runOnUiThread(() -> {
-                listGoodsAdapter.notifyDataSetChanged();
-                ListGoodsRecyclerView.smoothScrollToPosition(0);
-            });
-        }
-        else
-        {
-            runOnUiThread(() -> Alert("Не нашел товар!"));
+                runOnUiThread(() -> {
+                    NotifyDataSetChangedReciclerView();
+                    ScrolToSelectPosition();
+                });
+
+                ChangeQuantityOnServer(item);
+                break;
+            }
+            case invoice_external:
+            {
+                if(uid_sender.compareTo("112") == 0)
+                {
+                    InvoiceItem item = list_item_of_invoice.GetItemsByBarcode(code);
+                    if(item == null)
+                    {
+                        ParseBarcode.WeightAndCode weightAndCode = parseBarcode.ParseBarcodeByWeight(code, list_barcode_template);
+                        item = list_item_of_invoice.GetItemsByBarcode(weightAndCode.good_code);
+                        if(item != null)
+                        {
+                            float quantity = item.GetQuantity() + weightAndCode.weight;
+                            item.SetQuantity(quantity);
+                            SelectItem(item);
+                            MovePositionToLastPlace(item);
+                            runOnUiThread(() -> {
+                                NotifyDataSetChangedReciclerView();
+                                ScrolToSelectPosition();
+                            });
+                            ChangeQuantityOnServer(item);
+                            return;
+                        }
+                        {
+                            ShowMessage("Не нашел товар!");
+                            return;
+                        }
+                    }
+                    Box box = item.GetBox(code);
+                    if(box == null)
+                    {
+                        ParseBarcode.WeightAndCode weightAndCode = parseBarcode.ParseBarcodeByWeight(code, list_barcode_template);
+                        float quantity = item.GetQuantity() + weightAndCode.weight;
+                        item.SetQuantity(quantity);
+                        SelectItem(item);
+                        MovePositionToLastPlace(item);
+                        runOnUiThread(() -> {
+                            NotifyDataSetChangedReciclerView();
+                            ScrolToSelectPosition();
+                        });
+                        ChangeQuantityOnServer(item);
+                        return;
+
+                    }
+
+                    float quantity = item.GetQuantity() + item.GetBox(code).quantity_in_box;
+                    item.SetQuantity(quantity);
+
+                    SelectItem(item);
+                    MovePositionToLastPlace(item);
+
+                    runOnUiThread(() -> {
+                        NotifyDataSetChangedReciclerView();
+                        ScrolToSelectPosition();
+                    });
+
+                    ChangeQuantityOnServer(item);
+                }
+                if(uid_sender.compareTo("108") == 0)
+                {
+                    QRCode qr_code = parseBarcode.ParseJSON(code);
+                    if (qr_code == null)
+                    {
+                        ShowMessage("Не удалось прочитать QRCode!");
+                        return;
+                    }
+                    InvoiceItem item  = list_item_of_invoice.GetItemsByBarcode(qr_code.code);
+                    if(item == null)
+                    {
+                        ShowMessage("Не нашел товар!");
+                        return;
+                    }
+
+                    CheckItemByInvoice(item, qr_code.uid_unique, new TOnResultCheckItemInvoice() {
+                        @Override
+                        public void OnSuccess() {
+
+                            item.SetQuantity(item.GetRequiredQuantity());
+                            SelectItem(item);
+                            MovePositionToLastPlace(item);
+
+                            runOnUiThread(() -> {
+                                NotifyDataSetChangedReciclerView();
+                                ScrolToSelectPosition();
+                            });
+
+                            ChangeQuantityOnServer(item);
+
+                        }
+
+                        @Override
+                        public void OnFailure() {
+                            //Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+                            Alert("Товар не принадлежит накладной!");
+                            AlertSound();
+                        }
+                    });
+                }
+                break;
+            }
         }
 
     }
 
-
-    @Override
-    public void EventChangeQuantity(String uid, String barcode, float quantity) {
-        MainActivity.rest_client.SetEventResponce(this);
-        MainActivity.rest_client.SetQuantityItem(uid_invoice, uid, quantity,barcode);
+    private void GetListBarcodeTemplate()
+    {
+        MainActivity.GetRestClient().GetListBarcodeTemplate( new TOnResponce<ListBarcodeTemplate>() {
+            @Override
+            public void OnSuccess(TResponce<ListBarcodeTemplate> responce) {
+                if(!responce.Success)
+                {
+                    Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else
+                {
+                    list_barcode_template = responce.Data_;
+                }
+            }
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка. Не удалось получить шаблоны баркодов.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    private void ScrolToSelectPosition()
+    {
+        int pos = list_item_of_invoice.GetSelectedPosition();
+        //linearLayoutManager.scrollToPosition(pos);
+        linearLayoutManager.scrollToPositionWithOffset(pos, 150);
+    }
+
+    private void ScrolToLastPosition()
+    {
+        int pos = list_item_of_invoice.GetLastPosition();
+        linearLayoutManager.scrollToPositionWithOffset(pos, 150);
+    }
+    private void MovePositionToLastPlace(InvoiceItem item)
+    {
+        list_item_of_invoice.MovePositionToLastPlace(item);
+    }
+    private void SelectItem(InvoiceItem item)
+    {
+        list_item_of_invoice.SelectItem(item);
+    }
+
+    private void NotifyDataSetChangedReciclerView()
+    {
+        listGoodsAdapter.notifyDataSetChanged();
+    }
+
+
+    private void CheckItemByInvoice(InvoiceItem item, String uid_unique, TOnResultCheckItemInvoice resultCheckItemInvoice)
+    {
+        MainActivity.GetRestClient().CheckItemByInvoice(item.GetUidInvoice(), uid_unique, new TOnResponce() {
+            @Override
+            public void OnSuccess(TResponce responce) {
+                if(responce.Success)
+                {
+                    resultCheckItemInvoice.OnSuccess();
+                }
+                else
+                {
+                    resultCheckItemInvoice.OnFailure();
+                }
+
+            }
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+
+    }
+
+    private void ChangeQuantityOnServer(InvoiceItem item) {
+
+        MainActivity.GetRestClient().SetQuantityItem(type_invoice, item.GetUidInvoice(), item.GetUid(), item.GetQuantity(), item.GetBarcode(), new TOnResponce() {
+            @Override
+            public void OnSuccess(TResponce responce) {
+                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
+    private void ChangeQuantityAndUniqueUidOnServer(InvoiceItem item, String unique_uid) {
+
+        MainActivity.GetRestClient().SetQuantityAndUniqueUidItem(item.GetUidInvoice(), item.GetUid(), item.GetQuantity(), item.GetBarcode(), unique_uid, new TOnResponce() {
+            @Override
+            public void OnSuccess(TResponce responce) {
+                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
+
+
+
 
 }

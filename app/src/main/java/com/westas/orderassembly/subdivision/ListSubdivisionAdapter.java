@@ -59,7 +59,11 @@ public class ListSubdivisionAdapter extends RecyclerView.Adapter<ListSubdivision
         if(_listSubdivision.CheckSelectedPosition(position)){
             holder.card_view_subdivision.setStrokeWidth(3);
         }
-        //holder.card_view_subdivision.setStrokeWidth(3);
+        else
+        {
+            holder.card_view_subdivision.setStrokeWidth(0);
+        }
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

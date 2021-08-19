@@ -2,7 +2,7 @@ package com.westas.orderassembly.rest_service;
 
 import com.google.gson.annotations.SerializedName;
 
-public class TResponce_<T> {
+public class TResponce<T> {
     @SerializedName("Success")
     public boolean Success;
     @SerializedName("Message")

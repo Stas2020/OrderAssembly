@@ -63,8 +63,9 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
     @Override
     public void onTriggerEvent(TriggerStateChangeEvent event) {
 
-
+      boolean state = event.getState();
     }
+
 
     @Override
     public void onFailureEvent(BarcodeFailureEvent arg0) {
@@ -120,8 +121,7 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
             // set the trigger mode to client control
             try
             {
-                reader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
-                        BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
+                reader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE, BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
             }
             catch (UnsupportedPropertyException e)
             {
@@ -138,12 +138,21 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
             properties.put(BarcodeReader.PROPERTY_QR_CODE_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_CODE_39_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_DATAMATRIX_ENABLED, true);
+
             properties.put(BarcodeReader.PROPERTY_UPC_A_ENABLE, true);
+            properties.put(BarcodeReader.PROPERTY_UPC_A_TWO_CHAR_ADDENDA_ENABLED, true);
+            properties.put(BarcodeReader.PROPERTY_UPC_A_CHECK_DIGIT_TRANSMIT_ENABLED, true);
+            properties.put(BarcodeReader.PROPERTY_UPC_A_NUMBER_SYSTEM_TRANSMIT_ENABLED, true);
+            properties.put(BarcodeReader.PROPERTY_UPC_A_TRANSLATE_EAN13, true);
+
             properties.put(BarcodeReader.PROPERTY_EAN_13_ENABLED, true);
+            properties.put(BarcodeReader.PROPERTY_EAN_13_TWO_CHAR_ADDENDA_ENABLED, true);
+            properties.put(BarcodeReader.PROPERTY_EAN_13_CHECK_DIGIT_TRANSMIT_ENABLED, true);
+
+            properties.put(BarcodeReader.PROPERTY_INTERLEAVED_25_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_AZTEC_ENABLED, false);
             properties.put(BarcodeReader.PROPERTY_CODABAR_ENABLED, true);
-            properties.put(BarcodeReader.PROPERTY_INTERLEAVED_25_ENABLED, false);
-            properties.put(BarcodeReader.PROPERTY_PDF_417_ENABLED, false);
+            properties.put(BarcodeReader.PROPERTY_PDF_417_ENABLED, true);
             // Set Max Code 39 barcode length
             properties.put(BarcodeReader.PROPERTY_CODE_39_MAXIMUM_LENGTH, 55);
             //properties.put(BarcodeReader.PROPERTY_GS1_128_MAXIMUM_LENGTH, 155);

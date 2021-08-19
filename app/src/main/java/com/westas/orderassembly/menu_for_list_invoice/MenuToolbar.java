@@ -1,17 +1,32 @@
 package com.westas.orderassembly.menu_for_list_invoice;
 
-import android.view.MenuItem;
 
-public class Menu {
+import android.support.annotation.DrawableRes;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+
+import com.westas.orderassembly.R;
+
+public class MenuToolbar{
 
     private android.view.Menu menu;
-    Menu(android.view.Menu _menu)
+
+    public MenuToolbar(Menu _menu)
     {
         menu = _menu;
     }
-    public void Add(MenuItem it)
+    public void Add(ItemMenu it)
     {
-        //menu.add(it.GetCaption());
+        MenuItem item = menu.add(it.GetCaption());
+        item.setIcon(it.GetIcon());
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                it.OnClick();
+                return true;
+            }
+        });
     }
 
 }

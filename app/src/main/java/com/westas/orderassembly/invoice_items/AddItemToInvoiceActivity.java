@@ -1,10 +1,8 @@
 package com.westas.orderassembly.invoice_items;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
@@ -19,14 +17,9 @@ import com.westas.orderassembly.R;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import static java.lang.Math.abs;
 
-public class AddItemToInvoiceActivity extends AppCompatActivity implements View.OnTouchListener , TOnSuccessSearchBarcode, TOnResponce {
+public class AddItemToInvoiceActivity extends AppCompatActivity implements View.OnTouchListener , TOnSuccessSearchBarcode {
     private String uid_invoice;
     private Fragment fragment_add_item ;
     private Fragment fragment_scan_item;
@@ -61,7 +54,7 @@ public class AddItemToInvoiceActivity extends AppCompatActivity implements View.
         fab_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddItem();
+                AddItem(item_to_add);
             }
         });
 
@@ -107,10 +100,21 @@ public class AddItemToInvoiceActivity extends AppCompatActivity implements View.
 
     }
 
-    private void AddItem()
+    private void AddItem(InvoiceItem item)
     {
-        MainActivity.rest_client.SetEventResponce(this);
-        MainActivity.rest_client.AddItemToInvoice(uid_invoice, item_to_add.barcode);
+        MainActivity.GetRestClient().AddItemToInvoice(uid_invoice, item.GetBarcode(), new TOnResponce() {
+            @Override
+            public void OnSuccess(TResponce responce) {
+                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
     @SuppressLint("ResourceType")
@@ -159,15 +163,4 @@ public class AddItemToInvoiceActivity extends AppCompatActivity implements View.
         return true;
     }
 
-
-    @Override
-    public void OnSuccessResponce(TResponce responce) {
-        Toast.makeText(this, responce.Message, Toast.LENGTH_SHORT).show();
-        onBackPressed();
-    }
-
-    @Override
-    public void OnFailureResponce(Throwable t) {
-        Toast.makeText(this, "Ошибка! "+ t.getMessage(), Toast.LENGTH_SHORT).show();
-    }
 }

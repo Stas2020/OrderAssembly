@@ -71,8 +71,8 @@ public class ItemFragment extends Fragment {
         txt_name = view.findViewById(R.id.textViewName);
         if(item!= null)
         {
-            txt_barcode.setText(item.barcode);
-            txt_name.setText(item.name + "" + item.unit);
+            txt_barcode.setText(item.GetBarcode());
+            txt_name.setText(item.GetName() + "" + item.GetUnit());
         }
 
         return view;
