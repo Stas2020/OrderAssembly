@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/date_purch_invoice"
+        android:icon="@drawable/date_calendar_24"
+        android:title="  Дата"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/update_purch_invoice"
+        android:icon="@drawable/reload_refresh_24"
+        android:title="  Обновить"
+        app:showAsAction="withText" />
+</menu>
