@@ -115,7 +115,7 @@ public class SelectOperationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent ListSubdivisionActivity = new Intent("android.intent.action.ListSubdivisionActivity");
-                //startActivity(ListSubdivisionActivity);
+                startActivity(ListSubdivisionActivity);
             }
         });
         listOperation.Add(operation);
@@ -175,6 +175,8 @@ public class SelectOperationActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setSubtitle("   Заказы");
+
 
         getSupportActionBar().setTitle("");
 

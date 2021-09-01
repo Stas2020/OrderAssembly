@@ -81,7 +81,7 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("");
-        getSupportActionBar().setSubtitle("Подразделения");
+        getSupportActionBar().setSubtitle("   Подразделения");
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

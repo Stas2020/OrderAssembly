@@ -11,10 +11,9 @@
         android:id="@+id/toolbar2"
         android:layout_width="match_parent"
         android:layout_height="67dp"
-        android:background="?attr/colorPrimary"
+        android:background="@color/background"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:logo="@drawable/icon">
+        app:logo="@drawable/shopping_32">
 
     </android.support.v7.widget.Toolbar>
 

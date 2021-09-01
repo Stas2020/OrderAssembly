@@ -133,6 +133,7 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
             // Set Symbologies On/Off
             properties.put(BarcodeReader.PROPERTY_RSS_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_RSS_EXPANDED_ENABLED, true);
+            properties.put(BarcodeReader.PROPERTY_CODE_11_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_CODE_128_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_GS1_128_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_QR_CODE_ENABLED, true);

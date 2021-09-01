@@ -11,9 +11,9 @@
         android:id="@+id/toolbar_select_operation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/background"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+        app:logo="@drawable/full_basket_32" />
 
 
     <android.support.constraint.ConstraintLayout
