@@ -82,6 +82,10 @@ public interface RestApi {
 
 
 
+
+
+
+
     @POST("/Service/json/ClosePurchaseInvoice")
     public Call<TResponce>ClosePurchaseInvoice(@Query("uid_invoice") String uid_invoice);
 
