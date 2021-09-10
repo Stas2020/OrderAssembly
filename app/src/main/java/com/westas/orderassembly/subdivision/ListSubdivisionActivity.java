@@ -2,16 +2,17 @@ package com.westas.orderassembly.subdivision;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 
-import com.westas.orderassembly.invoice.ListTransferInvoiceActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
 import com.westas.orderassembly.rest_service.TOnResponce;
@@ -117,10 +118,10 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
 
         list_sd.SelectSubdivision(itemPosition);
 
-        Intent intent = new Intent(this, ListTransferInvoiceActivity.class);
-        intent.putExtra("uid_subdivision",uid);
-        intent.putExtra("name_subdivision",name);
-        startActivity(intent);
+        //Intent intent = new Intent(this, ListTransferInvoiceActivity.class);
+        //intent.putExtra("uid_subdivision",uid);
+        //intent.putExtra("name_subdivision",name);
+        //startActivity(intent);
 
         //Toast.makeText(this, Integer.toString(NumberSubdivision), Toast.LENGTH_LONG).show();
     }

@@ -1,8 +1,9 @@
 package com.westas.orderassembly.dialog;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+
 import android.widget.TextView;
 
 
@@ -12,7 +13,7 @@ public class TDialogQuestion {
     private TCallBackDialog calback_event = null;
     private Activity activity_;
     private  AlertDialog.Builder builder;
-    private  AlertDialog dialog;
+    private AlertDialog dialog;
     private String title;
 
     public TDialogQuestion(Activity activity, String _title)

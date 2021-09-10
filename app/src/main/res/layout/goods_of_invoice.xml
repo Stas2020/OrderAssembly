@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.card.MaterialCardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardview_of_goods"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="0dp"
     android:foreground="?android:attr/selectableItemBackground"
-
+    android:theme="@style/Theme.MaterialComponents.Light"
     app:contentPaddingTop="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +22,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="40dp">
 
@@ -32,13 +33,14 @@
                 android:background="@drawable/border_textview"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
                 android:text="123456"
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="RtlSymmetry" />
 
             <TextView
                 android:id="@+id/name"
@@ -47,7 +49,7 @@
                 android:background="@drawable/border_textview"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
                 android:text="Name"
                 android:textColor="#020202"
                 android:textSize="14sp"
@@ -55,7 +57,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/unit"
                 app:layout_constraintStart_toEndOf="@+id/barcode"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="RtlSymmetry" />
 
             <TextView
                 android:id="@+id/unit"
@@ -106,8 +109,8 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </LinearLayout>
-</android.support.design.card.MaterialCardView>
+</com.google.android.material.card.MaterialCardView>

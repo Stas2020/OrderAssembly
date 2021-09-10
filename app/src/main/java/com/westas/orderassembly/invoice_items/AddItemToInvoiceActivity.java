@@ -2,22 +2,26 @@ package com.westas.orderassembly.invoice_items;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 
-import android.support.v7.widget.Toolbar;
+import android.app.Fragment;
+
+
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
 
 import static java.lang.Math.abs;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class AddItemToInvoiceActivity extends AppCompatActivity implements View.OnTouchListener , TOnSuccessSearchBarcode {
     private String uid_invoice;

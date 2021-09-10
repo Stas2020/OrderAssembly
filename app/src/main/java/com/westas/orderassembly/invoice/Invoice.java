@@ -23,6 +23,8 @@ public class Invoice {
     public String name_sender;
     @SerializedName("closed")
     public boolean closed;
+    @SerializedName("accepted")
+    public boolean accepted;
     @SerializedName("all_item_synhronized")
     public boolean all_item_synhronized;
 

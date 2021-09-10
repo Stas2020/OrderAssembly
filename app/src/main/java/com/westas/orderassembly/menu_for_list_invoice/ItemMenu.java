@@ -1,8 +1,9 @@
 package com.westas.orderassembly.menu_for_list_invoice;
 
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
+
 
 public class ItemMenu {
     private String caption;
