@@ -1,6 +1,5 @@
 package com.westas.orderassembly.rest_service;
 
-import com.westas.orderassembly.accept_invoice.ListAcceptedInvoice;
 import com.westas.orderassembly.calculator.ListBarcodeTemplate;
 import com.westas.orderassembly.invoice.TypeInvoice;
 import com.westas.orderassembly.invoice_items.InvoiceItem;
@@ -21,7 +20,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Query;
 
 
 public class RestClient {
@@ -97,29 +95,6 @@ public class RestClient {
         });
     }
     //Закрытие накладной
-    public void CloseInvoice1C(String uid_invoice, TOnResponce on_responce_)
-    {
-        try
-        {
-            Call<TResponce> close_invoice = rest_api.CloseInvoice1C(uid_invoice);
-
-            close_invoice.enqueue(new Callback<TResponce>() {
-                @Override
-                public void onResponse(Call<TResponce> call, Response<TResponce> response) {
-                    on_responce_.OnSuccess(response.body());
-                }
-                @Override
-                public void onFailure(Call<TResponce> call, Throwable t) {
-                    on_responce_.OnFailure(t);
-                }
-            });
-        }
-        catch(Exception e)
-        {
-            on_responce_.OnFailure(e);
-        }
-    }
-    //Закрытие накладной
     public void CloseInvoice(String uid_sender, String uid_invoice, TypeInvoice type_invoice, TOnResponce on_responce_)
     {
         try
@@ -142,41 +117,7 @@ public class RestClient {
             on_responce_.OnFailure(e);
         }
     }
-    public void GetListInvoice1C(Date date, TOnResponce on_responce_)
-    {
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
-        String dateText = dateFormat.format(date);
 
-        Call<TResponce<ListInvoice>> call_invoice_1c = rest_api.GetInvoices1C(dateText);
-        call_invoice_1c.enqueue(new Callback<TResponce<ListInvoice>>() {
-            @Override
-            public void onResponse(Call<TResponce<ListInvoice>> call, Response<TResponce<ListInvoice>> response) {
-                on_responce_.OnSuccess(response.body());
-            }
-            @Override
-            public void onFailure(Call<TResponce<ListInvoice>> call, Throwable t) {
-                on_responce_.OnFailure(t);
-            }
-        });
-    }
-
-    //TODO:  Замена количества товара в накладной
-    public void SetQuantityItem1C( String uid_invoice,  String uid_item,  float quantity, String barcode_item, TOnResponce on_responce_)
-    {
-        Call<TResponce> set_quantity_item = rest_api.SetQuantityItem1C(uid_invoice,uid_item,quantity,barcode_item);
-        set_quantity_item.enqueue(new Callback<TResponce>() {
-            @Override
-            public void onResponse(Call<TResponce> call, Response<TResponce> response) {
-
-                on_responce_.OnSuccess(response.body());
-            }
-            @Override
-            public void onFailure(Call<TResponce> call, Throwable t) {
-
-                on_responce_.OnFailure(t);
-            }
-        });
-    }
     //TODO:  Получение, Подразделения
     public void GetListSubdivision(TOnResponce on_responce_)
     {
@@ -193,44 +134,6 @@ public class RestClient {
         });
     }
 
-    //TODO:  Получение, список накладных
-    public void GetInvoice(String uid_customer, TOnResponce on_responce_)
-    {
-            Call<TResponce<ListInvoice>> transfer_invoices = rest_api.GetListTransferInvoice(uid_customer);
-            transfer_invoices.enqueue(new Callback<TResponce<ListInvoice>>() {
-                @Override
-                public void onResponse(Call<TResponce<ListInvoice>> call, Response<TResponce<ListInvoice>> response) {
-
-                    on_responce_.OnSuccess(response.body());
-                }
-                @Override
-                public void onFailure(Call<TResponce<ListInvoice>> call, Throwable t) {
-
-                    on_responce_.OnFailure(t);
-                }
-            });
-    }
-
-    //TODO:  Получение, список накладных для приемки на ресторане
-    public void GetAcceptInvoice(Date date, TOnResponce on_responce_)
-    {
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
-        String dateText = dateFormat.format(date);
-
-        Call<TResponce<ListAcceptedInvoice>> accept_invoices = rest_api.GetListAcceptInvoice(dateText);
-        accept_invoices.enqueue(new Callback<TResponce<ListAcceptedInvoice>>() {
-            @Override
-            public void onResponse(Call<TResponce<ListAcceptedInvoice>> call, Response<TResponce<ListAcceptedInvoice>> response) {
-
-                on_responce_.OnSuccess(response.body());
-            }
-            @Override
-            public void onFailure(Call<TResponce<ListAcceptedInvoice>> call, Throwable t) {
-
-                on_responce_.OnFailure(t);
-            }
-        });
-    }
 
     //TODO:  Получение, список накладных для приемки на ресторане
     public void GetInvoicesFromServer(Date date, String uid_sender, TypeInvoice type_invoice, TOnResponce on_responce_)
@@ -412,54 +315,7 @@ public class RestClient {
         }
     }
 
-    //список товаров в накладной 1C
-    public void GetItemsOfInvoice1C(String uid_invoice, TOnResponce on_responce_)
-    {
-        try
-        {
-            Call<TResponce<ListInvoiceItem>> invoice_items = rest_api.GetItemsOfInvoice1C(uid_invoice);
 
-            invoice_items.enqueue(new Callback<TResponce<ListInvoiceItem>>() {
-                @Override
-                public void onResponse(Call<TResponce<ListInvoiceItem>> call, Response<TResponce<ListInvoiceItem>> response) {
-                    on_responce_.OnSuccess(response.body());
-                }
-                @Override
-                public void onFailure(Call<TResponce<ListInvoiceItem>> call, Throwable t) {
-                    on_responce_.OnFailure(t);
-                }
-            });
-        }
-        catch(Exception e)
-        {
-            String err_nes =  e.getMessage();
-            on_responce_.OnFailure(e);
-        }
-    }
-
-    public void GetItemsOfInvoice1CGroup(String date_str, TOnResponce on_responce_)
-    {
-        try
-        {
-            Call<TResponce<ListInvoiceItem>> invoice_items = rest_api.GetItemsOfInvoice1CGroup(date_str);
-
-            invoice_items.enqueue(new Callback<TResponce<ListInvoiceItem>>() {
-                @Override
-                public void onResponse(Call<TResponce<ListInvoiceItem>> call, Response<TResponce<ListInvoiceItem>> response) {
-                    on_responce_.OnSuccess(response.body());
-                }
-                @Override
-                public void onFailure(Call<TResponce<ListInvoiceItem>> call, Throwable t) {
-                    on_responce_.OnFailure(t);
-                }
-            });
-        }
-        catch(Exception e)
-        {
-            String err_nes =  e.getMessage();
-            on_responce_.OnFailure(e);
-        }
-    }
     //Печать накладной
     public void PrintInvoice(String uid_invoice, int num_term , TOnResponce on_responce_)
     {
@@ -510,30 +366,6 @@ public class RestClient {
         }
     }
 
-    //Закрытие приходной накладной
-    public void ClosePurchaseInvoice(String uid_invoice, TOnResponce on_responce_)
-    {
-        try
-        {
-            Call<TResponce> close_invoice = rest_api.ClosePurchaseInvoice(uid_invoice);
-
-            close_invoice.enqueue(new Callback<TResponce>() {
-                @Override
-                public void onResponse(Call<TResponce> call, Response<TResponce> response) {
-                    on_responce_.OnSuccess(response.body());
-                }
-                @Override
-                public void onFailure(Call<TResponce> call, Throwable t) {
-                    on_responce_.OnFailure(t);
-                }
-            });
-        }
-        catch(Exception e)
-        {
-            String err_nes =  e.getMessage();
-            on_responce_.OnFailure(e);
-        }
-    }
     //Результат синхронизации с GESTORI
     public void GetResultSynchronizedInvoice(String uid_invoice, TOnResponce on_responce_)
     {

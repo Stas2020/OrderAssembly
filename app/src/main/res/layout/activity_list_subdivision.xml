@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".subdivision.ListSubdivisionActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar2"
         android:layout_width="match_parent"
         android:layout_height="67dp"
@@ -15,9 +15,9 @@
         android:minHeight="?attr/actionBarSize"
         app:logo="@drawable/shopping_32">
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listSubdivision"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

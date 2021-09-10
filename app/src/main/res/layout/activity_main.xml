@@ -8,36 +8,34 @@
     tools:context=".MainActivity"
     tools:layout_editor_absoluteY="81dp">
 
-    <Button
-        android:id="@+id/button_show_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="show "
-        android:visibility="invisible"
-        tools:layout_editor_absoluteX="172dp"
-        tools:layout_editor_absoluteY="0dp" />
-
-    <TextView
-        android:id="@+id/TextOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Message!"
-        android:visibility="invisible"
-        tools:layout_editor_absoluteX="307dp"
-        tools:layout_editor_absoluteY="16dp" />
-
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/keyboard_login"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="203dp"
-            tools:layout_editor_absoluteY="268dp">
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainerView_keyboard_login"
+            android:name="com.westas.orderassembly.LoginFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/textView_version_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </FrameLayout>
-    </android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/textView_version_info"
+            android:layout_width="0dp"
+            android:layout_height="19dp"
+            android:text="TextView"
+            android:textColor="#040303"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

@@ -3,26 +3,41 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.25833333333333336" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/drawable/fab_label_background.xml" value="0.3265625" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/drawable/ic_launcher_background.xml" value="0.25833333333333336" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_add_item_to_invoice.xml" value="0.3265625" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_calculation.xml" value="0.36666666666666664" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_info_invoice.xml" value="0.17760416666666667" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_item_operation.xml" value="0.29010416666666666" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_items_invoice.xml" value="0.33" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_items_invoice_new.xml" value="0.3541666666666667" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_list_invoice.xml" value="0.33" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_list_subdivision.xml" value="0.284375" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_list_transfer_invoice.xml" value="0.2921875" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_list_transfer_invoice1c_activity.xml" value="0.2971014492753623" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_main.xml" value="0.35104166666666664" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_main2.xml" value="0.3307291666666667" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_scaner.xml" value="0.3265625" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_scaner2.xml" value="0.36666666666666664" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_select_operation.xml" value="0.29010416666666666" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_setting.xml" value="0.2598958333333333" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/barcode.xml" value="0.2971014492753623" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/dialog_quantity.xml" value="0.2598958333333333" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/fragment_add_item.xml" value="0.2598958333333333" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/fragment_item.xml" value="0.2598958333333333" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/fragment_scan_item.xml" value="0.2598958333333333" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/goods_of_invoice.xml" value="0.67" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/header_items_invoice.xml" value="0.67" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/item_invoice.xml" value="0.5" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/item_subdivision.xml" value="0.2598958333333333" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/keyboard_for_login.xml" value="0.2598958333333333" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/scan_item.xml" value="0.36666666666666664" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/toolbar_items_of_invoice.xml" value="0.3541666666666667" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/menu/main_menu.xml" value="0.2109375" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/menu/menu_items_of_invoice.xml" value="0.2109375" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/menu/menu_items_purchase.xml" value="0.25416666666666665" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.25833333333333336" />
       </map>
     </option>
   </component>

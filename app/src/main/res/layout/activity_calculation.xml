@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".calculator.CalculationActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_calculation"
         android:layout_width="match_parent"
         android:layout_height="67dp"
@@ -16,9 +16,9 @@
         android:theme="?attr/actionBarTheme"
         app:logo="@drawable/calculator">
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_barcode"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

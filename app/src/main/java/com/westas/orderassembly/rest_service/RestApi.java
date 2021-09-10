@@ -1,6 +1,5 @@
 package com.westas.orderassembly.rest_service;
 
-import com.westas.orderassembly.accept_invoice.ListAcceptedInvoice;
 import com.westas.orderassembly.calculator.ListBarcodeTemplate;
 import com.westas.orderassembly.invoice_items.InvoiceItem;
 import com.westas.orderassembly.invoice_items.ListInvoiceItem;
@@ -41,21 +40,6 @@ public interface RestApi {
     @POST("/Service/json/SetQuantityItem")
     public Call<TResponce>SetQuantityItem(@Query("type_invoice") TypeInvoice type_invoice, @Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("quantity") float quantity, @Query("barcode_item") String barcode_item);
 
-
-
-    @POST("/Service/json/GetListTransferInvoice")
-    public Call<TResponce<ListInvoice>>GetListTransferInvoice(@Query("uid_customer") String uid_customer);
-
-
-
-    @POST("/Service/json/GetListPurchaseInvoice")
-    public Call<TResponce<ListAcceptedInvoice>>GetListAcceptInvoice(@Query("date") String date);
-
-
-
-
-
-
     @POST("/Service/json/SetQuantityAndUniqueUidItem")
     public Call<TResponce>SetQuantityAndUniqueUidItem(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("quantity") float quantity, @Query("barcode_item") String barcode_item, @Query("unique_uid_item") String unique_uid_item);
 
@@ -71,40 +55,14 @@ public interface RestApi {
     @POST("/Service/json/CheckItemByInvoice")
     public Call<TResponce>CheckItemByInvoice(@Query("uid_invoice") String uid_invoice, @Query("uid_unique_item") String uid_unique_item);
 
-
-
-
     @POST("/Service/json/PrintInvoice")
     public Call<TResponce>PrintInvoice(@Query("uid_invoice") String uid_invoice, @Query("num_term") int num_term);
 
     @POST("/Service/json/PrintLabel")
     public Call<TResponce>PrintLabel(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("count_label") int count_label, @Query("num_term") int num_term);
 
-
-
-
-
-
-
-    @POST("/Service/json/ClosePurchaseInvoice")
-    public Call<TResponce>ClosePurchaseInvoice(@Query("uid_invoice") String uid_invoice);
-
     @POST("/Service/json/GetResultSynchronizedInvoice")
     public Call<TResponce>GetResultSynchronizedInvoice(@Query("uid_invoice") String uid_invoice);
 
-    @POST("/Service/json/GetInvoices1C")
-    public Call<TResponce<ListInvoice>>GetInvoices1C(@Query("date") String date);
-
-    @POST("/Service/json/CloseInvoice1C")
-    public Call<TResponce>CloseInvoice1C(@Query("uid_invoice") String uid_invoice);
-
-    @POST("/Service/json/GetItemsOfInvoice1C")
-    public Call<TResponce<ListInvoiceItem>>GetItemsOfInvoice1C(@Query("uid_invoice") String uid_invoice);
-
-    @POST("/Service/json/GetItemsOfInvoice1CGroup")
-    public Call<TResponce<ListInvoiceItem>>GetItemsOfInvoice1CGroup(@Query("date") String date);
-
-    @POST("/Service/json/SetQuantityItem1C")
-    public Call<TResponce>SetQuantityItem1C(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("quantity") float quantity, @Query("barcode_item") String barcode_item);
 
 }

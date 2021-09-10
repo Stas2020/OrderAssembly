@@ -1,5 +1,6 @@
 package com.westas.orderassembly.calculator;
 
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;

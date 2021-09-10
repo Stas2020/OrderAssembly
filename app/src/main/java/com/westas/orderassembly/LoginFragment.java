@@ -1,10 +1,9 @@
 package com.westas.orderassembly;
 
-import android.annotation.SuppressLint;
-import android.app.Fragment;
+
+
 import android.os.Bundle;
 
-import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +11,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 
 public class LoginFragment extends Fragment {
+    public LoginFragment() {
+        super(R.layout.keyboard_for_login);
+    }
 
     interface TOnClickOk
     {
@@ -29,6 +33,8 @@ public class LoginFragment extends Fragment {
     {
         onClickOk_ = onClickOk;
     }
+
+    /*
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -37,7 +43,7 @@ public class LoginFragment extends Fragment {
 
 
     }
-
+*/
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

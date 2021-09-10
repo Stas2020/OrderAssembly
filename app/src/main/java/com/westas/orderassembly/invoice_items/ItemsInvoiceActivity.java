@@ -8,21 +8,24 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
+
+
+
+
+
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.westas.orderassembly.MainActivity;
@@ -30,13 +33,13 @@ import com.westas.orderassembly.R;
 import com.westas.orderassembly.Scaner.ScanerActivity;
 import com.westas.orderassembly.WiFi.TStatusWiFi;
 import com.westas.orderassembly.WiFi.TUtilsWiFi;
+import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.calculator.ListBarcodeTemplate;
 import com.westas.orderassembly.calculator.ParseBarcode;
 import com.westas.orderassembly.calculator.QRCode;
 import com.westas.orderassembly.dialog.TCallBackDialog;
 import com.westas.orderassembly.dialog.TCallBackDialogQuantity;
 import com.westas.orderassembly.dialog.TDialogForm;
-import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.dialog.TDialogQuestion;
 import com.westas.orderassembly.dialog.TTypeForm;
 import com.westas.orderassembly.invoice.TypeInvoice;
@@ -45,15 +48,10 @@ import com.westas.orderassembly.menu_for_list_invoice.MenuToolbar;
 import com.westas.orderassembly.menu_for_list_invoice.OnSelectItemMenu;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
-import com.westas.orderassembly.toolbar.ToolbarItemsOfInvoice;
 
 import java.lang.reflect.Method;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-
 
 
 public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnClickListener, View.OnLongClickListener, TOnReadBarcode, TCallBackDialogQuantity
@@ -63,7 +61,6 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
     private ItemsInvoiceAdapter listGoodsAdapter;
     private ListInvoiceItem list_item_of_invoice;
     private LinearLayoutManager linearLayoutManager;
-    private Toolbar toolbar;
 
     private TextView caption_toolbar;
     private TextView date_toolbar;
@@ -75,7 +72,6 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
     private Date current_date;
     private Date date_invoice;
     private String uid_invoice;
-    private Date date_order;
     private String caption;
     private String num_doc;
     private String uid_sender;
@@ -117,7 +113,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
             current_date = (Date)parametr.get("current_date");
             date_invoice = (Date)parametr.get("date_invoice");
             uid_invoice = parametr.getString("uid_invoice");
-            date_order = (Date)parametr.get("date_order");
+            Date date_order = (Date) parametr.get("date_order");
             caption = parametr.getString("caption");
             num_doc = parametr.getString("num_doc");
             uid_sender = parametr.getString("uid_sender");
@@ -154,8 +150,8 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
             }
         });
 
-        toolbar_status = (Toolbar) findViewById(R.id.toolbar_status);
-        message_toolbar = (TextView) findViewById(R.id.message_toolbar);
+        toolbar_status = findViewById(R.id.toolbar_status);
+        message_toolbar = findViewById(R.id.message_toolbar);
     }
 
     @SuppressLint("ResourceAsColor")
@@ -209,7 +205,7 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
         date_toolbar = findViewById(R.id.date_textview);
         number_invoice_toolbar = findViewById(R.id.number_textview);
 
-        toolbar = findViewById(R.id.toolbar_items_of_invoice);
+        Toolbar toolbar = findViewById(R.id.toolbar_items_of_invoice);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -641,6 +637,36 @@ public class ItemsInvoiceActivity extends AppCompatActivity implements  View.OnC
                             ScrolToSelectPosition();
                         });
                         ChangeQuantityOnServer(item);
+                        return;
+
+                    }
+
+                    float quantity = item.GetQuantity() + item.GetBox(code).quantity_in_box;
+                    item.SetQuantity(quantity);
+
+                    SelectItem(item);
+                    MovePositionToLastPlace(item);
+
+                    runOnUiThread(() -> {
+                        NotifyDataSetChangedReciclerView();
+                        ScrolToSelectPosition();
+                    });
+
+                    ChangeQuantityOnServer(item);
+                }
+                if(uid_sender.compareTo("71") == 0)
+                {
+                    InvoiceItem item = list_item_of_invoice.GetItemsByBarcode(code);
+                    if(item == null)
+                    {
+                        ShowMessage("Не нашел товар!");
+                        return;
+                    }
+
+                    Box box = item.GetBox(code);
+                    if(box == null)
+                    {
+                        ShowMessage("Не смог определить количество по баркоду!");
                         return;
 
                     }
