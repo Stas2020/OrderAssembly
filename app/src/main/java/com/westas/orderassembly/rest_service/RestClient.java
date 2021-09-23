@@ -80,6 +80,23 @@ public class RestClient {
             }
         });
     }
+    public void GetListInvoiceByReceiver(Date date, String uid_receiver, TypeInvoice type_invoice, TOnResponce on_responce_)
+    {
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+        String date_str = dateFormat.format(date);
+
+        Call<TResponce<ListInvoice>> call_invoice = rest_api.GetListInvoiceByReceiver(date_str, uid_receiver, type_invoice);
+        call_invoice.enqueue(new Callback<TResponce<ListInvoice>>() {
+            @Override
+            public void onResponse(Call<TResponce<ListInvoice>> call, Response<TResponce<ListInvoice>> response) {
+                on_responce_.OnSuccess(response.body());
+            }
+            @Override
+            public void onFailure(Call<TResponce<ListInvoice>> call, Throwable t) {
+                on_responce_.OnFailure(t);
+            }
+        });
+    }
     public void GetListBarcodeTemplate(TOnResponce on_responce_)
     {
         Call<TResponce<ListBarcodeTemplate>> call_invoice = rest_api.GetListBarcodeTemplate();

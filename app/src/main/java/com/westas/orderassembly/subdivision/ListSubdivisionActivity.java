@@ -15,10 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
+import com.westas.orderassembly.invoice.TypeInvoice;
+import com.westas.orderassembly.invoice.TypeOperation;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class ListSubdivisionActivity extends AppCompatActivity implements View.OnClickListener, TOnResponce<ListSubdivision> {
 
@@ -112,11 +115,19 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
 
         Log.i("MESSAGE", "itemPosition: " + String.valueOf(itemPosition));
 
+        list_sd.SelectSubdivision(itemPosition);
 
         String uid = list_sd.GetSubdivision(itemPosition).uid;
         String name = list_sd.GetSubdivision(itemPosition).name;
 
-        list_sd.SelectSubdivision(itemPosition);
+
+        Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+
+        intent_activity.putExtra("caption", name);
+        intent_activity.putExtra("type_invoice", TypeInvoice.invoice_external);
+        intent_activity.putExtra("uid_receiver", uid);
+        intent_activity.putExtra("type_operation", TypeOperation.assembly_);
+        startActivity(intent_activity);
 
         //Intent intent = new Intent(this, ListTransferInvoiceActivity.class);
         //intent.putExtra("uid_subdivision",uid);

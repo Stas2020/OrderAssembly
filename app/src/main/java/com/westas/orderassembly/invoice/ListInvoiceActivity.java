@@ -50,7 +50,9 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
     private String caption;
 
     private TypeInvoice type_invoice;
+    private TypeOperation type_operation;
     private String uid_sender;
+    private String uid_receiver;
 
     private AlertDialog alert_dialog;
 
@@ -58,8 +60,6 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_invoice);
-
-
     }
 
     private void GetParametrs()
@@ -68,7 +68,9 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
         if(parametr!=null){
             caption = parametr.getString("caption");
             type_invoice = (TypeInvoice)parametr.get("type_invoice");
+            type_operation = (TypeOperation)parametr.get("type_operation");
             uid_sender = parametr.getString("uid_sender");
+            uid_receiver = parametr.getString("uid_receiver");
         }
     }
 
@@ -82,7 +84,20 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
         }
         GetParametrs();
         InitToolbar();
-        GetListInvoiceBySender();
+        switch (type_operation)
+        {
+            case receive_:
+            {
+                GetListInvoiceBySender();
+                break;
+            }
+            case assembly_:
+            {
+                GetListInvoiceByReceiver();
+                break;
+            }
+        }
+
     }
 
     private void InitToolbar()
@@ -140,7 +155,9 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
         intent.putExtra("date_invoice",date_invoice);
         intent.putExtra("date_order",date_order);
         intent.putExtra("uid_sender",uid_sender);
+        intent.putExtra("uid_sender",uid_receiver);
         intent.putExtra("type_invoice", type_invoice);
+        intent.putExtra("type_operation", type_operation);
         intent.putExtra("type_view", TypeView.not_group);
         intent.putExtra("caption", caption);
         intent.putExtra("current_date", current_date);
@@ -194,6 +211,38 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
+    private void GetListInvoiceByReceiver()
+    {
+        MainActivity.GetRestClient().GetListInvoiceByReceiver(current_date, uid_receiver, type_invoice, new TOnResponce<ListInvoice>() {
+            @Override
+            public void OnSuccess(TResponce<ListInvoice> responce) {
+
+                if(!responce.Success)
+                {
+                    Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String uid ="";
+                if(list_invoice!= null){
+                    uid = list_invoice.GetUidSelected();
+                }
+
+                list_invoice = responce.Data_;
+
+                if(!uid.isEmpty()){
+                    list_invoice.SelectedByUid(uid);
+                }
+
+                InitRecyclerView();
+            }
+
+            @Override
+            public void OnFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ошибка при получении списка накладных!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void GetInvoicesFromServer()
     {
@@ -211,7 +260,6 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
                     HideAlert();
                     GetListInvoiceBySender();
                     Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
-
                 }
             }
 
@@ -222,8 +270,6 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -324,10 +370,7 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
             }
         }, mYear, mMonth, mDay);
 
-
         date_pic_dialog.show();
-
     }
-
 
 }

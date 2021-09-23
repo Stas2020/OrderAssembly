@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.westas.orderassembly.R;
 import com.westas.orderassembly.invoice.TypeInvoice;
+import com.westas.orderassembly.invoice.TypeOperation;
 
 
 public class SelectOperationActivity extends AppCompatActivity {
@@ -42,6 +43,7 @@ public class SelectOperationActivity extends AppCompatActivity {
                 intent_activity.putExtra("caption", "Расходники");
                 intent_activity.putExtra("type_invoice", TypeInvoice.invoice_1c);
                 intent_activity.putExtra("uid_sender", "112");
+                intent_activity.putExtra("type_operation", TypeOperation.receive_);
                 startActivity(intent_activity);
             }
         });
@@ -57,6 +59,7 @@ public class SelectOperationActivity extends AppCompatActivity {
                 intent_activity.putExtra("caption", "Заказ 108");
                 intent_activity.putExtra("type_invoice", TypeInvoice.invoice_external);
                 intent_activity.putExtra("uid_sender", "108");
+                intent_activity.putExtra("type_operation", TypeOperation.receive_);
                 startActivity(intent_activity);
             }
         });
@@ -72,6 +75,7 @@ public class SelectOperationActivity extends AppCompatActivity {
                 intent_activity.putExtra("caption", "Заказ 112");
                 intent_activity.putExtra("type_invoice", TypeInvoice.invoice_external);
                 intent_activity.putExtra("uid_sender", "112");
+                intent_activity.putExtra("type_operation", TypeOperation.receive_);
                 startActivity(intent_activity);
             }
         });
@@ -85,9 +89,10 @@ public class SelectOperationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
 
-                intent_activity.putExtra("caption", "Оптиком");
+                intent_activity.putExtra("caption", "ОптиКом");
                 intent_activity.putExtra("type_invoice", TypeInvoice.invoice_1c);
-                intent_activity.putExtra("uid_sender", "999");
+                intent_activity.putExtra("uid_sender", "37e3514c-2ce6-11df-940d-001708578b92");
+                intent_activity.putExtra("type_operation", TypeOperation.receive_);
                 startActivity(intent_activity);
 
             }
@@ -105,6 +110,7 @@ public class SelectOperationActivity extends AppCompatActivity {
                 intent_activity.putExtra("caption", "Кофе");
                 intent_activity.putExtra("type_invoice", TypeInvoice.invoice_external);
                 intent_activity.putExtra("uid_sender", "71");
+                intent_activity.putExtra("type_operation", TypeOperation.receive_);
                 startActivity(intent_activity);
 
             }

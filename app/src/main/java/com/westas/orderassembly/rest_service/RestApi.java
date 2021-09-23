@@ -19,6 +19,9 @@ public interface RestApi {
     @POST("/Service/json/GetListInvoiceBySender")
     public Call<TResponce<ListInvoice>>GetListInvoiceBySender(@Query("date") String date, @Query("uid_sender") String uid_sender, @Query("type_invoice") TypeInvoice type_invoice);
 
+    @POST("/Service/json/GetListInvoiceByReceiver")
+    public Call<TResponce<ListInvoice>>GetListInvoiceByReceiver(@Query("date") String date, @Query("uid_receiver") String uid_sender, @Query("type_invoice") TypeInvoice type_invoice);
+
     @POST("/Service/json/GetInvoicesFromServer")
     public Call<TResponce>GetInvoicesFromServer(@Query("date") String date, @Query("uid_sender") String uid_sender, @Query("type_invoice") TypeInvoice type_invoice);
 
