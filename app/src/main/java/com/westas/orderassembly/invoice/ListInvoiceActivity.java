@@ -1,13 +1,17 @@
 package com.westas.orderassembly.invoice;
 
+import static com.westas.orderassembly.R.drawable.alert_32;
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 
-
+import android.service.controls.actions.FloatAction;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,13 +22,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
-import com.westas.orderassembly.invoice_items.ItemsInvoiceActivity;
-import com.westas.orderassembly.invoice_items.TypeView;
-import com.westas.orderassembly.menu_for_list_invoice.ItemMenu;
-import com.westas.orderassembly.menu_for_list_invoice.MenuToolbar;
-import com.westas.orderassembly.menu_for_list_invoice.OnSelectItemMenu;
+import com.westas.orderassembly.item.ItemsActivity;
+import com.westas.orderassembly.item.TypeView;
+import com.westas.orderassembly.menu_helper.MenuHelper;
+
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
 
@@ -36,7 +41,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class ListInvoiceActivity extends AppCompatActivity implements View.OnClickListener{
+public class ListInvoiceActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView caption_of_list_invoice;
     private TextView current_date_toolbar;
@@ -44,17 +49,20 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
     private RecyclerView ListInvoiceRecyclerView;
     private LinearLayoutManager linearLayoutManager;
     private ListInvoiceAdapter listInvoiceAdapter;
+    private ListBoxAdapter listBoxAdapter;
     private ListInvoice list_invoice;
+    private ListBox list_box;
 
     private static Date current_date;
     private String caption;
 
-    private TypeInvoice type_invoice;
     private TypeOperation type_operation;
     private String uid_sender;
     private String uid_receiver;
 
     private AlertDialog alert_dialog;
+    private FloatingActionButton button_switch_to_box;
+    private boolean show_box = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +70,10 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_list_invoice);
     }
 
-    private void GetParametrs()
-    {
+    private void GetParametrs() {
         Bundle parametr = getIntent().getExtras();
         if(parametr!=null){
             caption = parametr.getString("caption");
-            type_invoice = (TypeInvoice)parametr.get("type_invoice");
             type_operation = (TypeOperation)parametr.get("type_operation");
             uid_sender = parametr.getString("uid_sender");
             uid_receiver = parametr.getString("uid_receiver");
@@ -78,21 +84,17 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
     public void onResume() {
         super.onResume();
 
-        if(current_date == null)
-        {
+        if(current_date == null) {
             current_date = new Date();
         }
         GetParametrs();
         InitToolbar();
-        switch (type_operation)
-        {
-            case receive_:
-            {
+        switch (type_operation) {
+            case _accept: {
                 GetListInvoiceBySender();
                 break;
             }
-            case assembly_:
-            {
+            case _assembly: {
                 GetListInvoiceByReceiver();
                 break;
             }
@@ -100,11 +102,24 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    private void InitToolbar()
-    {
+    private void InitToolbar() {
         caption_of_list_invoice = findViewById(R.id.caption_of_list_invoice);
         caption_of_list_invoice.setText(caption);
         current_date_toolbar = findViewById(R.id.current_date);
+        button_switch_to_box = (FloatingActionButton) findViewById(R.id.floating_button_box);
+        button_switch_to_box.bringToFront();
+        button_switch_to_box.setOnClickListener(v -> {
+            if(!show_box){
+                show_box = true;
+                button_switch_to_box.setImageDrawable(getResources().getDrawable(R.drawable.box_address_64));
+                GetListBoxesBySender();
+            }
+            else{
+                show_box = false;
+                button_switch_to_box.setImageDrawable(getResources().getDrawable(R.drawable.invoice));
+                GetListInvoiceBySender();
+            }
+        });
 
         toolbar = findViewById(R.id.toolbar_of_invoice);
         setSupportActionBar(toolbar);
@@ -121,51 +136,81 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
 
         SetDateInToolbar(current_date);
     }
-    private void SetDateInToolbar(Date value)
-    {
+    private void SetDateInToolbar(Date value) {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-        current_date_toolbar.setText("Дата накладных: " + dateFormat.format(value));
+        current_date_toolbar.setText(dateFormat.format(value));
     }
 
-    private void InitRecyclerView()
-    {
+    private void InitRecyclerView() {
+
         ListInvoiceRecyclerView = findViewById(R.id.list_invoice);
         linearLayoutManager = new LinearLayoutManager(this);
         ListInvoiceRecyclerView.setLayoutManager(linearLayoutManager);
 
-        listInvoiceAdapter = new ListInvoiceAdapter(this, list_invoice, this);
-        ListInvoiceRecyclerView.setAdapter(listInvoiceAdapter);
+        if(show_box){
+            listBoxAdapter = new ListBoxAdapter(this, list_box, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int itemPosition = ListInvoiceRecyclerView.getChildLayoutPosition(view);
+                    String uid_box = list_box.GetBox(itemPosition).uid;
+                    String name_box = list_box.GetBox(itemPosition).name;
+                    list_box.SelectBox(itemPosition);
+
+                    Intent intent = new Intent(getApplicationContext(), ItemsActivity.class);
+                    intent.putExtra("num_doc",name_box);
+                    intent.putExtra("uid_sender",uid_sender);
+                    intent.putExtra("uid_receiver",uid_receiver);
+                    intent.putExtra("type_operation", type_operation);
+                    intent.putExtra("type_view", TypeView.not_group);
+                    intent.putExtra("caption", caption);
+                    intent.putExtra("current_date", current_date);
+                    intent.putExtra("uid_box", uid_box);
+                    intent.putExtra("show_box", show_box);
+
+                    startActivity(intent);
+
+                }
+            });
+            ListInvoiceRecyclerView.setAdapter(listBoxAdapter);
+        }
+        else{
+            listInvoiceAdapter = new ListInvoiceAdapter(this, list_invoice, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int itemPosition = ListInvoiceRecyclerView.getChildLayoutPosition(view);
+
+                    Date date_invoice = list_invoice.GetInvoice(itemPosition).date;
+                    Date date_order = list_invoice.GetInvoice(itemPosition).date_order;
+                    String uid_invoice = list_invoice.GetInvoice(itemPosition).uid;
+                    String num_doc = list_invoice.GetInvoice(itemPosition).num_doc;
+
+                    list_invoice.SelectInvoice(itemPosition);
+
+                    Intent intent = new Intent(getApplicationContext(), ItemsActivity.class);
+                    intent.putExtra("uid_invoice",uid_invoice);
+                    intent.putExtra("num_doc",num_doc);
+                    intent.putExtra("date_invoice",date_invoice);
+                    intent.putExtra("date_order",date_order);
+                    intent.putExtra("uid_sender",uid_sender);
+                    intent.putExtra("uid_receiver",uid_receiver);
+                    intent.putExtra("type_operation", type_operation);
+                    intent.putExtra("type_view", TypeView.not_group);
+                    intent.putExtra("caption", caption);
+                    intent.putExtra("current_date", current_date);
+
+                    startActivity(intent);
+                }
+            });
+            ListInvoiceRecyclerView.setAdapter(listInvoiceAdapter);
+        }
+
+
+
     }
 
 
-    @Override
-    public void onClick(View view) {
-        int itemPosition = ListInvoiceRecyclerView.getChildLayoutPosition(view);
 
-        Date date_invoice = list_invoice.GetInvoice(itemPosition).date;
-        Date date_order = list_invoice.GetInvoice(itemPosition).date_order;
-        String uid_invoice = list_invoice.GetInvoice(itemPosition).uid;
-        String num_doc = list_invoice.GetInvoice(itemPosition).num_doc;
-
-        list_invoice.SelectInvoice(itemPosition);
-
-        Intent intent = new Intent(this, ItemsInvoiceActivity.class);
-        intent.putExtra("uid_invoice",uid_invoice);
-        intent.putExtra("num_doc",num_doc);
-        intent.putExtra("date_invoice",date_invoice);
-        intent.putExtra("date_order",date_order);
-        intent.putExtra("uid_sender",uid_sender);
-        intent.putExtra("uid_sender",uid_receiver);
-        intent.putExtra("type_invoice", type_invoice);
-        intent.putExtra("type_operation", type_operation);
-        intent.putExtra("type_view", TypeView.not_group);
-        intent.putExtra("caption", caption);
-        intent.putExtra("current_date", current_date);
-
-        startActivity(intent);
-    }
-    private void ShowAlert()
-    {
+    private void ShowAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Обновление");
         builder.setMessage("Идет получение данных, ждите...");
@@ -179,14 +224,12 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
         alert_dialog.hide();
     }
 
-    private void GetListInvoiceBySender()
-    {
-        MainActivity.GetRestClient().GetListInvoiceBySender(current_date, uid_sender, type_invoice, new TOnResponce<ListInvoice>() {
+    private void GetListInvoiceBySender() {
+        MainActivity.GetRestClient().GetListInvoiceBySender(current_date, uid_sender, type_operation, new TOnResponce<ListInvoice>() {
             @Override
             public void OnSuccess(TResponce<ListInvoice> responce) {
 
-                if(!responce.Success)
-                {
+                if(!responce.Success) {
                     Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -206,19 +249,49 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void OnFailure(Throwable t) {
-                Toast.makeText(getApplicationContext(), "Ошибка при получении списка накладных!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void OnFailure(String message) {
+                Toast.makeText(getApplicationContext(), "Ошибка: " + message, Toast.LENGTH_SHORT).show();
             }
         });
     }
-    private void GetListInvoiceByReceiver()
-    {
-        MainActivity.GetRestClient().GetListInvoiceByReceiver(current_date, uid_receiver, type_invoice, new TOnResponce<ListInvoice>() {
+
+    private void GetListBoxesBySender() {
+        MainActivity.GetRestClient().GetListBoxesBySender(current_date, uid_sender, type_operation, new TOnResponce<ListBox>() {
+            @Override
+            public void OnSuccess(TResponce<ListBox> responce) {
+
+                if(!responce.Success) {
+                    Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String uid ="";
+                if(list_box!= null){
+                    uid = list_box.GetUidSelected();
+                }
+
+                list_box = responce.Data_;
+
+                if(!uid.isEmpty()){
+                    list_box.SelectedByUid(uid);
+                }
+
+                InitRecyclerView();
+            }
+
+            @Override
+            public void OnFailure(String message) {
+                Toast.makeText(getApplicationContext(), "Ошибка: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void GetListInvoiceByReceiver() {
+
+        MainActivity.GetRestClient().GetListInvoiceByReceiver(current_date, uid_receiver, type_operation, new TOnResponce<ListInvoice>() {
             @Override
             public void OnSuccess(TResponce<ListInvoice> responce) {
 
-                if(!responce.Success)
-                {
+                if(!responce.Success) {
                     Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -238,8 +311,8 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void OnFailure(Throwable t) {
-                Toast.makeText(getApplicationContext(), "Ошибка при получении списка накладных!  " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void OnFailure(String message) {
+                Toast.makeText(getApplicationContext(), "Ошибка при получении списка накладных!  " + message, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -247,16 +320,14 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
     private void GetInvoicesFromServer()
     {
         ShowAlert();
-        MainActivity.GetRestClient().GetInvoicesFromServer(current_date, uid_sender, type_invoice, new TOnResponce() {
+        MainActivity.GetRestClient().GetInvoicesFromServer(current_date, uid_sender, type_operation, new TOnResponce() {
             @Override
             public void OnSuccess(TResponce responce) {
-                if (!responce.Success)
-                {
+                if (!responce.Success) {
                     HideAlert();
                     Toast.makeText(getApplicationContext(), " Ошибка! " + responce.Message, Toast.LENGTH_SHORT).show();
                 }
-                else
-                {
+                else {
                     HideAlert();
                     GetListInvoiceBySender();
                     Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
@@ -264,9 +335,9 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void OnFailure(Throwable t) {
+            public void OnFailure(String message) {
                 HideAlert();
-                Toast.makeText(getApplicationContext(), " Ошибка! " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), " Ошибка! " + message, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -274,41 +345,16 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        ItemMenu m_item;
-        MenuToolbar menu_toolbar = new MenuToolbar(menu);
-
-        m_item = new ItemMenu();
-        m_item.SetCaption("Дата");
-        m_item.SetIcon(getDrawable(R.drawable.date_calendar_24));
-        m_item.SetOnClickListren(new OnSelectItemMenu() {
-            @Override
-            public void OnSelect() {
-                SelectDate();
+        switch (type_operation){
+            case _assembly:{
+                //SetMenuForAssenbly(menu);
+                break;
             }
-        });
-        menu_toolbar.Add(m_item);
-
-        m_item = new ItemMenu();
-        m_item.SetCaption("Обновить");
-        m_item.SetIcon(getDrawable(R.drawable.reload_refresh_24));
-        m_item.SetOnClickListren(new OnSelectItemMenu() {
-            @Override
-            public void OnSelect() {
-                GetInvoicesFromServer();
+            case _accept:{
+                SetMenuForReceive(menu);
+                break;
             }
-        });
-        menu_toolbar.Add(m_item);
-
-        m_item = new ItemMenu();
-        m_item.SetCaption("Сгруппировать");
-        m_item.SetIcon(getDrawable(R.drawable.list_lines_24));
-        m_item.SetOnClickListren(new OnSelectItemMenu() {
-            @Override
-            public void OnSelect() {
-                GroupeInvoice();
-            }
-        });
-        menu_toolbar.Add(m_item);
+        }
 
         //Код с рефлексией, используемый для включения в пункты меню иконок
         if(menu.getClass().getSimpleName()
@@ -332,19 +378,76 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
         return true;
     }
 
-    private void GroupeInvoice()
+    void SetMenuForAssenbly(Menu menu)
     {
-        Intent intent = new Intent(this, ItemsInvoiceActivity.class);
-        intent.putExtra("type_invoice", type_invoice);
+        MenuHelper menu_helper = new MenuHelper(menu);
+
+        menu_helper.Add("Дата", getDrawable(R.drawable.date_calendar_24), new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                SelectDate();
+                return true;
+            }
+        });
+
+        menu_helper.Add("Обновить", getDrawable(R.drawable.reload_refresh_24), new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                GetInvoicesFromServer();
+                return true;
+            }
+        });
+
+        menu_helper.Add("Сгруппировать", getDrawable(R.drawable.list_lines_24), new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                GroupeInvoice();
+                return true;
+            }
+        });
+    }
+
+    void SetMenuForReceive(Menu menu)
+    {
+        MenuHelper menu_helper = new MenuHelper(menu);
+
+        menu_helper.Add("Дата", getDrawable(R.drawable.date_calendar_24), new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                SelectDate();
+                return true;
+            }
+        });
+
+        menu_helper.Add("Обновить", getDrawable(R.drawable.reload_refresh_24), new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                GetInvoicesFromServer();
+                return true;
+            }
+        });
+
+        menu_helper.Add("Сгруппировать", getDrawable(R.drawable.list_lines_24), new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                GroupeInvoice();
+                return true;
+            }
+        });
+    }
+
+    private void GroupeInvoice() {
+        Intent intent = new Intent(this, ItemsActivity.class);
+
         intent.putExtra("type_view", TypeView.group);
         intent.putExtra("current_date", current_date);
         intent.putExtra("caption", caption);
         intent.putExtra("uid_sender", uid_sender);
+        intent.putExtra("type_operation", type_operation);
         startActivity(intent);
     }
 
-    public void SelectDate()
-    {
+    public void SelectDate() {
         int mYear, mMonth, mDay;
         final Calendar cal = Calendar.getInstance();
         mYear = cal.get(Calendar.YEAR);
@@ -356,17 +459,17 @@ public class ListInvoiceActivity extends AppCompatActivity implements View.OnCli
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                try {
-                    String dt_str = String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth);
-                    current_date = format.parse(dt_str);
-                    SetDateInToolbar(current_date);
-                    GetListInvoiceBySender();
 
-                }
-                catch (ParseException e)
-                {
+                String dt_str = String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth);
+                try {
+                    current_date = format.parse(dt_str);
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                SetDateInToolbar(current_date);
+                GetListInvoiceBySender();
+
+
             }
         }, mYear, mMonth, mDay);
 

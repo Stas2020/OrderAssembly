@@ -15,13 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
-import com.westas.orderassembly.invoice_items.InvoiceItem;
-import com.westas.orderassembly.invoice_items.ItemsInvoiceAdapter;
-import com.westas.orderassembly.invoice_items.SwipeCallback;
+import com.westas.orderassembly.item.Item;
 
-import java.sql.Time;
 import java.util.Calendar;
-import java.util.Date;
 
 public class ScanerActivity extends AppCompatActivity implements TOnReadBarcode {
 
@@ -74,7 +70,7 @@ public class ScanerActivity extends AppCompatActivity implements TOnReadBarcode 
 
     @Override
     public void OnReadCode(String code) {
-        Item it = new Item();
+        ItemScan it = new ItemScan();
         it.code_value = code;
         it.time = Calendar.getInstance().getTime();
 

@@ -15,13 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
-import com.westas.orderassembly.invoice.TypeInvoice;
 import com.westas.orderassembly.invoice.TypeOperation;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
-
-import java.io.IOException;
-import java.util.Date;
 
 public class ListSubdivisionActivity extends AppCompatActivity implements View.OnClickListener, TOnResponce<ListSubdivision> {
 
@@ -71,10 +67,10 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
     }
 
     @Override
-    public void OnFailure(Throwable t) {
-        if (t instanceof IOException) {
+    public void OnFailure(String message) {
+
             Toast.makeText(this, "Ошибка при получении списка подразделений!", Toast.LENGTH_SHORT).show();
-        }
+
     }
 
     private void InitToolbar()
@@ -124,9 +120,8 @@ public class ListSubdivisionActivity extends AppCompatActivity implements View.O
         Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
 
         intent_activity.putExtra("caption", name);
-        intent_activity.putExtra("type_invoice", TypeInvoice.invoice_external);
         intent_activity.putExtra("uid_receiver", uid);
-        intent_activity.putExtra("type_operation", TypeOperation.assembly_);
+        intent_activity.putExtra("type_operation", TypeOperation._assembly);
         startActivity(intent_activity);
 
         //Intent intent = new Intent(this, ListTransferInvoiceActivity.class);

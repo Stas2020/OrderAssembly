@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.westas.orderassembly.R;
-import com.westas.orderassembly.invoice_items.ItemsInvoiceAdapter;
 
 public class OperationAdapter extends RecyclerView.Adapter<OperationAdapter.OperationViewHolder> {
 
@@ -25,7 +24,7 @@ public class OperationAdapter extends RecyclerView.Adapter<OperationAdapter.Oper
     @NonNull
     @Override
     public OperationViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_item_operation, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.operation, viewGroup, false);
         OperationAdapter.OperationViewHolder view_holder = new OperationAdapter.OperationViewHolder(view);
         return view_holder;
     }

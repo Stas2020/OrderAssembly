@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.westas.orderassembly.R;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.ListInvoceViewHolder> {
@@ -44,15 +43,15 @@ public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.
             super(v);
             view = v;
             date_order = view.findViewById(R.id.date_order);
-            number_invoice = view.findViewById(R.id.number_invoice);
-            cardview_of_invoice = view.findViewById(R.id.cardview_invoice);
-            img_synhronised_invoice = view.findViewById(R.id.image_synchronized_invoice);
+            number_invoice = view.findViewById(R.id.name_box);
+            cardview_of_invoice = view.findViewById(R.id.cardview_box);
+            img_synhronised_invoice = view.findViewById(R.id.img_status_box);
         }
     }
 
     @Override
     public ListInvoceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invoice, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.invoice, parent, false);
         ListInvoceViewHolder vh = new ListInvoceViewHolder(view);
         view.setOnClickListener(onClickListener);
         return vh;

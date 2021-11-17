@@ -6,7 +6,7 @@
 
     <color name="row_item_less">#40458E49</color>
     <color name="row_item_equally">#99458E49</color>
-    <color name="row_item_over">#F2458E49</color>
+    <color name="row_item_over">#458E49</color>
     <color name="row_item_default">#16455D8E</color>
 
     <color name="row_item_add">#8F9CE1</color>

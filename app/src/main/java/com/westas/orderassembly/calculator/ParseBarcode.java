@@ -1,13 +1,6 @@
 package com.westas.orderassembly.calculator;
 
-import android.widget.Toast;
-
 import com.google.gson.Gson;
-import com.westas.orderassembly.MainActivity;
-import com.westas.orderassembly.calculator.Barcode;
-import com.westas.orderassembly.invoice_items.InvoiceItem;
-import com.westas.orderassembly.rest_service.TOnResponce;
-import com.westas.orderassembly.rest_service.TResponce;
 
 import java.text.SimpleDateFormat;
 

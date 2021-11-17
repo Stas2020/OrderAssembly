@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".invoice_items.InfoInvoiceActivity">
+    tools:context=".item.InfoInvoiceActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_info_invoice"

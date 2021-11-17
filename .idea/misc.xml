@@ -23,15 +23,17 @@
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_select_operation.xml" value="0.29010416666666666" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/activity_setting.xml" value="0.2598958333333333" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/barcode.xml" value="0.2971014492753623" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/box.xml" value="0.33" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/dialog_quantity.xml" value="0.2598958333333333" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/fragment_add_item.xml" value="0.2598958333333333" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/fragment_item.xml" value="0.2598958333333333" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/fragment_scan_item.xml" value="0.2598958333333333" />
-        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/goods_of_invoice.xml" value="0.67" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/goods_of_invoice.xml" value="0.33" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/header_items_invoice.xml" value="0.67" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/invoice.xml" value="0.325" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/item_invoice.xml" value="0.5" />
-        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/item_subdivision.xml" value="0.2598958333333333" />
-        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/keyboard_for_login.xml" value="0.2598958333333333" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/item_subdivision.xml" value="0.5" />
+        <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/keyboard_for_login.xml" value="0.49733570159857904" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/scan_item.xml" value="0.36666666666666664" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/layout/toolbar_items_of_invoice.xml" value="0.3541666666666667" />
         <entry key="..\:/PROJECT_GITHUB/OrderAssembly/app/src/main/res/menu/main_menu.xml" value="0.2109375" />

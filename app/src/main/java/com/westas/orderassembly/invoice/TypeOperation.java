@@ -1,4 +1,4 @@
 package com.westas.orderassembly.invoice;
 
 
-public enum TypeOperation {assembly_, receive_}
+public enum TypeOperation {_assembly, _accept}

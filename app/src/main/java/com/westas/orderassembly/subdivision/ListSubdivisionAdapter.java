@@ -43,7 +43,7 @@ public class ListSubdivisionAdapter extends RecyclerView.Adapter<ListSubdivision
     public ListSubdivisionAdapter.ListSubdivisionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subdivision, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subdivision, parent, false);
         ListSubdivisionViewHolder vh = new ListSubdivisionViewHolder(view);
         view.setOnClickListener(list_subdivision_activity);
         return vh;

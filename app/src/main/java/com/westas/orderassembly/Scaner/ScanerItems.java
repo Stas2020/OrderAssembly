@@ -7,18 +7,18 @@ import java.util.List;
 
 public class ScanerItems {
 
-    private List<Item>items;
+    private List<ItemScan>items;
     ScanerItems()
     {
         items = new ArrayList<>();
     }
 
-    public void Add(Item item)
+    public void Add(ItemScan item)
     {
         items.add(item);
     }
 
-    public Item Get(int id)
+    public ItemScan Get(int id)
     {
         return items.get(id);
     }
