@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.google.android.material.card.MaterialCardView;
 import com.westas.orderassembly.R;
 
-import static com.westas.orderassembly.item.SatusItem.add;
+import static com.westas.orderassembly.item.StausItem.add;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;

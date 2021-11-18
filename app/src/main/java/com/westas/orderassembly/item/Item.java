@@ -5,7 +5,7 @@ package com.westas.orderassembly.item;
 import com.google.gson.annotations.SerializedName;
 
 enum SatusQuantity {less, equally, over, default_}
-enum SatusItem {add, delete, def}
+enum StausItem {add, delete, def}
 
 
 public class Item implements Comparable<Item>{
@@ -25,7 +25,7 @@ public class Item implements Comparable<Item>{
     @SerializedName("unit")
     private String unit;
     @SerializedName("status")
-    private SatusItem status;
+    private StausItem status;
     @SerializedName("synchronized")
     private boolean synchronized_;
     @SerializedName("list_package")
@@ -33,7 +33,7 @@ public class Item implements Comparable<Item>{
 
     private boolean selected = false;
 
-    public SatusItem GetStatus()
+    public StausItem GetStatus()
     {
         return status;
     }
@@ -170,7 +170,7 @@ public class Item implements Comparable<Item>{
     }
 
     private boolean CheckAdded() {
-        return status == SatusItem.add;
+        return status == StausItem.add;
     }
 }
 

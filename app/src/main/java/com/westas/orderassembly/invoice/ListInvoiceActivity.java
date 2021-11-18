@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
+import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.item.ItemsActivity;
 import com.westas.orderassembly.item.TypeView;
 import com.westas.orderassembly.menu_helper.MenuHelper;
@@ -41,7 +42,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class ListInvoiceActivity extends AppCompatActivity {
+public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBarcode {
     private Toolbar toolbar;
     private TextView caption_of_list_invoice;
     private TextView current_date_toolbar;
@@ -68,6 +69,8 @@ public class ListInvoiceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_invoice);
+
+
     }
 
     private void GetParametrs() {
@@ -84,6 +87,8 @@ public class ListInvoiceActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
+        MainActivity.GetBarcodeReader().SetListren(this);
+
         if(current_date == null) {
             current_date = new Date();
         }
@@ -91,7 +96,13 @@ public class ListInvoiceActivity extends AppCompatActivity {
         InitToolbar();
         switch (type_operation) {
             case _accept: {
-                GetListInvoiceBySender();
+                if(show_box){
+                    GetListBoxesBySender();
+                }
+                else{
+                    GetListInvoiceBySender();
+                }
+
                 break;
             }
             case _assembly: {
@@ -203,9 +214,6 @@ public class ListInvoiceActivity extends AppCompatActivity {
             });
             ListInvoiceRecyclerView.setAdapter(listInvoiceAdapter);
         }
-
-
-
     }
 
 
@@ -329,7 +337,13 @@ public class ListInvoiceActivity extends AppCompatActivity {
                 }
                 else {
                     HideAlert();
-                    GetListInvoiceBySender();
+                    if(show_box){
+                        GetListBoxesBySender();
+                    }
+                    else{
+                        GetListInvoiceBySender();
+                    }
+
                     Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -467,7 +481,13 @@ public class ListInvoiceActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 SetDateInToolbar(current_date);
-                GetListInvoiceBySender();
+                if(show_box){
+                    GetListBoxesBySender();
+                }
+                else{
+                    GetListInvoiceBySender();
+                }
+
 
 
             }
@@ -476,4 +496,39 @@ public class ListInvoiceActivity extends AppCompatActivity {
         date_pic_dialog.show();
     }
 
+
+    @Override
+    public void OnReadCode(String code) {
+        if(show_box){
+            String uid_box = code;
+            Box box = list_box.GetBoxByUid(uid_box);
+            if(box == null){
+                ShowMessage("Не нашел коробку!");
+                return;
+            }
+            String name_box = box.name;
+
+            Intent intent = new Intent(getApplicationContext(), ItemsActivity.class);
+            intent.putExtra("num_doc",name_box);
+            intent.putExtra("uid_sender",uid_sender);
+            intent.putExtra("uid_receiver",uid_receiver);
+            intent.putExtra("type_operation", type_operation);
+            intent.putExtra("type_view", TypeView.not_group);
+            intent.putExtra("caption", caption);
+            intent.putExtra("current_date", current_date);
+            intent.putExtra("uid_box", uid_box);
+            intent.putExtra("show_box", show_box);
+
+            startActivity(intent);
+        }
+    }
+
+    private void ShowMessage(String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

@@ -53,5 +53,13 @@ public class ListBox {
         }
     }
 
-
+    public Box GetBoxByUid(String uid)
+    {
+        for (Box box:list_box) {
+            if(box.uid.equals(uid)){
+               return box;
+            }
+        }
+        return null;
+    }
 }
