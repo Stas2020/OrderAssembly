@@ -20,6 +20,9 @@ public interface RestApi {
     @POST("/Service/json/GetListInvoiceBySender")
     public Call<TResponce<ListInvoice>>GetListInvoiceBySender(@Query("date") String date, @Query("uid_sender") String uid_sender, @Query("type_operation") TypeOperation type_operation);
 
+    @POST("/Service/json/GetListOpenInvoiceBySender")
+    public Call<TResponce<ListInvoice>>GetListOpenInvoiceBySender(@Query("uid_sender") String uid_sender, @Query("type_operation") TypeOperation type_operation);
+
     @POST("/Service/json/GetListInvoiceByReceiver")
     public Call<TResponce<ListInvoice>>GetListInvoiceByReceiver(@Query("date") String date, @Query("uid_receiver") String uid_sender, @Query("type_operation") TypeOperation type_operation);
 
@@ -40,9 +43,6 @@ public interface RestApi {
 
     @POST("/Service/json/CloseInvoice")
     public Call<TResponce>CloseInvoice(@Query("uid_sender") String uid_sender, @Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
-
-    @POST("/Service/json/UpdateInvoiceInExternal")
-    public Call<TResponce>UpdateInvoiceInExternal(@Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
 
     @POST("/Service/json/GetListBarcodeTemplate")
     public Call<TResponce<ListBarcodeTemplate>>GetListBarcodeTemplate();

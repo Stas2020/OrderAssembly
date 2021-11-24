@@ -88,6 +88,26 @@ public class RestClient {
         });
     }
 
+    public void GetListOpenInvoiceBySender(String uid_sender, TypeOperation type_operation, TOnResponce on_responce_) {
+
+        Call<TResponce<ListInvoice>> call_invoice = rest_api.GetListOpenInvoiceBySender(uid_sender, type_operation);
+        call_invoice.enqueue(new Callback<TResponce<ListInvoice>>() {
+            @Override
+            public void onResponse(Call<TResponce<ListInvoice>> call, Response<TResponce<ListInvoice>> response) {
+                if (response.code() == 200) {
+                    on_responce_.OnSuccess(response.body());
+                }
+                else {
+                    on_responce_.OnFailure( Integer.toString(response.code()) + " " +response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<TResponce<ListInvoice>> call, Throwable t) {
+                on_responce_.OnFailure(t.getMessage());
+            }
+        });
+    }
+
     public void GetListInvoiceByReceiver(Date date, String uid_receiver, TypeOperation type_operation, TOnResponce on_responce_) {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
         String date_str = dateFormat.format(date);
@@ -178,32 +198,6 @@ public class RestClient {
         }
     }
 
-    //Закрытие накладной
-    public void UpdateInvoiceInExternal(String uid_invoice, TypeOperation type_operation, TOnResponce on_responce_) {
-        try {
-            Call<TResponce> close_invoice = rest_api.UpdateInvoiceInExternal(uid_invoice, type_operation);
-
-            close_invoice.enqueue(new Callback<TResponce>() {
-                @Override
-                public void onResponse(Call<TResponce> call, Response<TResponce> response) {
-                    if (response.code() == 200) {
-                        on_responce_.OnSuccess(response.body());
-                    }
-                    else {
-                        on_responce_.OnFailure( Integer.toString(response.code()) + " " +response.message());
-                    }
-
-                }
-                @Override
-                public void onFailure(Call<TResponce> call, Throwable t) {
-                    on_responce_.OnFailure(t.getMessage());
-                }
-            });
-        }
-        catch(Exception e) {
-            on_responce_.OnFailure(e.getMessage());
-        }
-    }
 
     //TODO:  Получение, Подразделения
     public void GetListSubdivision(TOnResponce on_responce_) {

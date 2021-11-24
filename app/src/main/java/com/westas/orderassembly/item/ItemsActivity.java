@@ -172,6 +172,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
                 //toolbar.setBackgroundColor(R.color.items_nogroup);
                 if(show_box){
                     GetItemsOfBox();
+                    date_toolbar.setText(new SimpleDateFormat("dd.MM.yy").format(current_date));
                 }
                 else{
                     GetItemsOfInvoice();
@@ -360,7 +361,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         menu_helper.Add("Закрыть", getDrawable(R.drawable.closed_24), new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                UpdateInvoice();
+                CloseInvoice();
                 return true;
             }
         });
@@ -430,6 +431,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
             }
         };
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipe_callback);
+
         itemTouchhelper.attachToRecyclerView(ListGoodsRecyclerView);
     }
 
@@ -473,32 +475,8 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         });
     }
 
-    private void UpdateInvoice() {
-        ShowAlert("Закрытие накладной", "Идет передача данных...", false);
-
-        MainActivity.GetRestClient().UpdateInvoiceInExternal(uid_invoice, type_operation, new TOnResponce() {
-            @Override
-            public void OnSuccess(@NotNull TResponce responce) {
-                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
-                GetItemsOfInvoice();
-                HideAlert();
-            }
-
-            @Override
-            public void OnFailure(String message) {
-                Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
-                ShowAlert("Ошибка! ", message, true);
-            }
-
-        });
-    }
 
     private void PrintInvoice() {
-        if(!listItem.CheckAllItemSynchronized()) {
-            Toast.makeText(getApplicationContext(), "Ошибка! Не все данные отправлены в GESTORI.  ", Toast.LENGTH_SHORT).show();
-            AlertSound();
-            return;
-        }
 
         MainActivity.GetRestClient().PrintInvoice(uid_invoice, num_term, new TOnResponce() {
             @Override
@@ -509,6 +487,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
             @Override
             public void OnFailure(String message) {
                 Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
+                AlertSound();
             }
         });
     }
@@ -622,12 +601,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
     }
 
     private void ShowMessage(String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Alert(message);
-            }
-        });
+        runOnUiThread(() -> Alert(message));
     }
 
     @Override
@@ -679,29 +653,28 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
 
             case _assembly: {
 
-                if(uid_sender.compareTo("108") == 0) {
-                    QRCode qr_code = parseBarcode.ParseJSON(code);
-                    if (qr_code == null) {
-                        ShowMessage("Не удалось прочитать QRCode!");
-                        break;
-                    }
-                    Item item  = listItem.GetItemsByBarcode(qr_code.code);
-                    if(item == null) {
-                        ShowMessage("Не нашел товар!");
-                        break;
-                    }
-
-                    item.SetQuantity(item.GetRequiredQuantity());
-                    SelectItem(item);
-                    MovePositionToLastPlace(item);
-
-                    runOnUiThread(() -> {
-                        NotifyDataSetChangedReciclerView();
-                        ScrolToSelectPosition();
-                    });
-
-                    ChangeQuantityOnServer(item);
+                QRCode qr_code = parseBarcode.ParseJSON(code);
+                if (qr_code == null) {
+                    ShowMessage("Не удалось прочитать QRCode!");
+                    break;
                 }
+                Item item  = listItem.GetItemsByBarcode(qr_code.code);
+                if(item == null) {
+                    ShowMessage("Не нашел товар!");
+                    break;
+                }
+
+                item.SetQuantity(item.GetRequiredQuantity());
+                SelectItem(item);
+                MovePositionToLastPlace(item);
+
+                runOnUiThread(() -> {
+                    NotifyDataSetChangedReciclerView();
+                    ScrolToSelectPosition();
+                });
+
+                ChangeQuantityOnServer(item);
+
                 break;
             }
         }

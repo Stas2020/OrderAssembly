@@ -64,6 +64,7 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
     private AlertDialog alert_dialog;
     private FloatingActionButton button_switch_to_box;
     private boolean show_box = false;
+    private boolean show_open_invoice = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +101,13 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
                     GetListBoxesBySender();
                 }
                 else{
-                    GetListInvoiceBySender();
+                        if(show_open_invoice){
+                            GetListOpenInvoiceBySender();
+                        }
+                        else{
+                            GetListInvoiceBySender();
+                        }
                 }
-
                 break;
             }
             case _assembly: {
@@ -122,12 +127,12 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
         button_switch_to_box.setOnClickListener(v -> {
             if(!show_box){
                 show_box = true;
-                button_switch_to_box.setImageDrawable(getResources().getDrawable(R.drawable.box_address_64));
+                button_switch_to_box.setImageDrawable(getResources().getDrawable(R.drawable.invoice));
                 GetListBoxesBySender();
             }
             else{
                 show_box = false;
-                button_switch_to_box.setImageDrawable(getResources().getDrawable(R.drawable.invoice));
+                button_switch_to_box.setImageDrawable(getResources().getDrawable(R.drawable.box_address_64));
                 GetListInvoiceBySender();
             }
         });
@@ -145,11 +150,24 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
             }
         });
 
-        SetDateInToolbar(current_date);
+        switch (type_operation){
+            case _accept:{
+                SetDateInToolbar(current_date);
+                break;
+            }
+            case _assembly:{
+                SetDateInToolbar(new Date());
+                break;
+            }
+        }
+
     }
     private void SetDateInToolbar(Date value) {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         current_date_toolbar.setText(dateFormat.format(value));
+    }
+    private void SetDateInToolbar(String value) {
+        current_date_toolbar.setText(value);
     }
 
     private void InitRecyclerView() {
@@ -233,6 +251,8 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
     }
 
     private void GetListInvoiceBySender() {
+        show_open_invoice = false;
+        button_switch_to_box.setEnabled(true);
         MainActivity.GetRestClient().GetListInvoiceBySender(current_date, uid_sender, type_operation, new TOnResponce<ListInvoice>() {
             @Override
             public void OnSuccess(TResponce<ListInvoice> responce) {
@@ -259,6 +279,44 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
             @Override
             public void OnFailure(String message) {
                 Toast.makeText(getApplicationContext(), "Ошибка: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void GetListOpenInvoiceBySender() {
+        ShowAlert();
+        show_open_invoice = true;
+        button_switch_to_box.setEnabled(false);
+        MainActivity.GetRestClient().GetListOpenInvoiceBySender( uid_sender, type_operation, new TOnResponce<ListInvoice>() {
+            @Override
+            public void OnSuccess(TResponce<ListInvoice> responce) {
+
+                if(!responce.Success) {
+                    Toast.makeText(getApplicationContext(), responce.Message, Toast.LENGTH_SHORT).show();
+                    HideAlert();
+                    return;
+                }
+
+                String uid ="";
+                if(list_invoice!= null){
+                    uid = list_invoice.GetUidSelected();
+                }
+
+                list_invoice = responce.Data_;
+
+                if(!uid.isEmpty()){
+                    list_invoice.SelectedByUid(uid);
+                }
+
+                SetDateInToolbar("Открытые накладные");
+                InitRecyclerView();
+                HideAlert();
+            }
+
+            @Override
+            public void OnFailure(String message) {
+                Toast.makeText(getApplicationContext(), "Ошибка: " + message, Toast.LENGTH_SHORT).show();
+                HideAlert();
             }
         });
     }
@@ -448,6 +506,17 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
                 return true;
             }
         });
+
+        menu_helper.Add("Открытые накладые", getDrawable(R.drawable.padlock_open_24), new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(!show_box){
+                    GetListOpenInvoiceBySender();
+                }
+
+                return true;
+            }
+        });
     }
 
     private void GroupeInvoice() {
@@ -487,14 +556,12 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
                 else{
                     GetListInvoiceBySender();
                 }
-
-
-
             }
         }, mYear, mMonth, mDay);
 
         date_pic_dialog.show();
     }
+
 
 
     @Override

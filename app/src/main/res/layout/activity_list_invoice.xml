@@ -72,7 +72,7 @@
                 app:backgroundTint="#00BCD4"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/invoice" />
+                app:srcCompat="@drawable/box_address_32" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
