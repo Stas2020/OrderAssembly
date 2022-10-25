@@ -4,7 +4,9 @@ package com.westas.orderassembly.item;
 import android.app.Activity;
 
 
+import android.app.Application;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -14,18 +16,19 @@ import com.westas.orderassembly.R;
 
 import static com.westas.orderassembly.item.StausItem.add;
 
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapter.ItemsInvoiceViewHolder> {
+public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsInvoiceViewHolder> {
 
     private ListItem listInvoiceItem;
     private View.OnClickListener onClickListener;
     private View.OnLongClickListener onLongClickListener;
     private Activity activity;
 
-    public ItemsInvoiceAdapter(Activity _activity, ListItem _listInvoiceItem, View.OnClickListener _onClickListener, View.OnLongClickListener _onLongClickListener)
+    public ItemsAdapter(Activity _activity, ListItem _listInvoiceItem, View.OnClickListener _onClickListener, View.OnLongClickListener _onLongClickListener)
     {
         listInvoiceItem = _listInvoiceItem;
         onClickListener = _onClickListener;
@@ -45,8 +48,9 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
         public TextView name;
         public TextView quantity;
         public TextView required_quantity;
-        //public TextView unit;
-        public MaterialCardView cardview_of_goods;
+        public MaterialCardView item_cardview;
+
+
         public ItemsInvoiceViewHolder(View v) {
             super(v);
             view = v;
@@ -54,17 +58,53 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
             name = view.findViewById(R.id.name);
             quantity = view.findViewById(R.id.quantity);
             required_quantity = view.findViewById(R.id.required_quantity);
-            //unit = view.findViewById(R.id.unit);
-            cardview_of_goods = view.findViewById(R.id.cardview_of_goods);
+            item_cardview = view.findViewById(R.id.item_cardview);
+
         }
     }
 
     @Override
     public ItemsInvoiceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
+        View view_swipe_menu = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_layout, parent, false);
+
+
+
+        //ViewGroup view_group = view.findViewById(R.id.item_layout);
+        ViewGroup view_group = (ViewGroup)view;
+        view_group.addView(view_swipe_menu);
+        //view.bringToFront();
+
+
         ItemsInvoiceViewHolder vh = new ItemsInvoiceViewHolder(view);
-        view.setOnClickListener(onClickListener);
-        view.setOnLongClickListener(onLongClickListener);
+        //MaterialCardView view_item_cardview = view.findViewById(R.id.item_cardview);
+        //view_item_cardview.setOnClickListener(onClickListener);
+        //view_item_cardview.setOnLongClickListener(onLongClickListener);
+
+        //view_group.setOnClickListener(onClickListener);
+        //view_group.setOnLongClickListener(onLongClickListener);
+
+/*
+        view_group.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (v.getId()){
+                    case R.id.item_layout:{
+                        int gg = 10;
+                        break;
+                    }
+                    case R.id.button:{
+                        int gg = 0;
+                        break;
+                    }
+                }
+
+                int gg = 0;
+                return false;
+            }
+        });
+*/
         return vh;
     }
 
@@ -81,15 +121,15 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
 
         switch (listInvoiceItem.GetItems(position).GetStatusQuantity())
         {
-            case less: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_less)); break;
-            case equally: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_equally)); break;
-            case over: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_over)); break;
-            case default_: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
+            case less: holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_less)); break;
+            case equally: holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_equally)); break;
+            case over: holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_over)); break;
+            case default_: holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
         }
 
         if(listInvoiceItem.GetItems(position).GetStatus() == add)
         {
-            holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_add));
+            holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_add));
         }
 
 /*
@@ -105,11 +145,11 @@ public class ItemsInvoiceAdapter extends RecyclerView.Adapter<ItemsInvoiceAdapte
 */
         if(listInvoiceItem.CheckSelectedPosition(position))
         {
-            holder.cardview_of_goods.setStrokeWidth(4);
+            holder.item_cardview.setStrokeWidth(4);
         }
         else
         {
-            holder.cardview_of_goods.setStrokeWidth(0);
+            holder.item_cardview.setStrokeWidth(0);
         }
     }
 

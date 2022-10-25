@@ -50,6 +50,10 @@ public interface RestApi {
     @POST("/Service/json/SetQuantityItem")
     public Call<TResponce>SetQuantityItem(@Query("type_operation") TypeOperation type_operation, @Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("quantity") float quantity, @Query("barcode_item") String barcode_item);
 
+    @POST("/Service/json/SetQuantityItemInBox")
+    public Call<TResponce>SetQuantityItemInBox(@Query("type_operation") TypeOperation type_operation, @Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("uid_box") String uid_box, @Query("quantity") float quantity, @Query("barcode_item") String barcode_item);
+
+
     @POST("/Service/json/SetQuantityAndUniqueUidItem")
     public Call<TResponce>SetQuantityAndUniqueUidItem(@Query("uid_invoice") String uid_invoice, @Query("uid_item") String uid_item, @Query("quantity") float quantity, @Query("barcode_item") String barcode_item, @Query("unique_uid_item") String unique_uid_item);
 

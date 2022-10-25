@@ -28,6 +28,8 @@ public class Item implements Comparable<Item>{
     private StausItem status;
     @SerializedName("synchronized")
     private boolean synchronized_;
+    @SerializedName("uid_box")
+    private String uid_box;
     @SerializedName("list_package")
     private java.util.List<Package_> list_package;
 
@@ -124,6 +126,11 @@ public class Item implements Comparable<Item>{
     public float GetRequiredQuantity()
     {
         return required_quantity;
+    }
+
+    public String GetBoxUid()
+    {
+        return uid_box;
     }
 
     @Override

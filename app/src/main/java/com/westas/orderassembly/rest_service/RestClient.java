@@ -262,7 +262,25 @@ public class RestClient {
             }
         });
     }
-
+    //TODO:  Замена количества товара в коробке
+    public void SetQuantityItemInBox(TypeOperation type_operation, String uid_invoice,  String uid_item,  String uid_box, float quantity, String barcode_item, TOnResponce on_responce_) {
+        Call<TResponce> set_quantity_item = rest_api.SetQuantityItemInBox(type_operation, uid_invoice,uid_item,uid_box, quantity,barcode_item);
+        set_quantity_item.enqueue(new Callback<TResponce>() {
+            @Override
+            public void onResponse(Call<TResponce> call, Response<TResponce> response) {
+                if (response.code() == 200) {
+                    on_responce_.OnSuccess(response.body());
+                }
+                else {
+                    on_responce_.OnFailure( Integer.toString(response.code()) + " " +response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<TResponce> call, Throwable t) {
+                on_responce_.OnFailure(t.getMessage());
+            }
+        });
+    }
     //TODO:  Замена количества товара в накладной и присвоить уникальный GUID
     public void SetQuantityAndUniqueUidItem( String uid_invoice,  String uid_item,  float quantity, String barcode_item, String unique_uid_item, TOnResponce on_responce_) {
         Call<TResponce> set_quantity_item = rest_api.SetQuantityAndUniqueUidItem(uid_invoice,uid_item,quantity,barcode_item, unique_uid_item);

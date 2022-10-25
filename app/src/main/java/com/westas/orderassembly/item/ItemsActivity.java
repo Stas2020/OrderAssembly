@@ -4,6 +4,7 @@ package com.westas.orderassembly.item;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
 import com.westas.orderassembly.Scaner.ScanerActivity;
+import com.westas.orderassembly.UI.RecyclerTouchListener;
 import com.westas.orderassembly.WiFi.TStatusWiFi;
 import com.westas.orderassembly.WiFi.TUtilsWiFi;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
@@ -59,7 +62,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
 {
 
     private RecyclerView ListGoodsRecyclerView;
-    private ItemsInvoiceAdapter listGoodsAdapter;
+    private ItemsAdapter listGoodsAdapter;
     private ListItem listItem;
     private LinearLayoutManager linearLayoutManager;
 
@@ -417,22 +420,40 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         ListGoodsRecyclerView.setLayoutManager(linearLayoutManager);
 
         ListGoodsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        listGoodsAdapter = new ItemsInvoiceAdapter(this, listItem, this,this);
+        listGoodsAdapter = new ItemsAdapter(this, listItem, this,this);
         ListGoodsRecyclerView.setAdapter(listGoodsAdapter);
 
+        ListGoodsRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                outRect.bottom = 0;
+                outRect.top = 0;
+
+                super.getItemOffsets(outRect, view, parent, state);
+            }
+        });
+
+        RecyclerTouchListener touchListener = new RecyclerTouchListener(ListGoodsRecyclerView);
+        //ListGoodsRecyclerView.addOnItemTouchListener(touchListener);
+
+/**/
         SwipeCallback swipe_callback = new SwipeCallback()
         {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+
                 final int position = viewHolder.getAdapterPosition();
+
                 Item item = listGoodsAdapter.GetItem(position);
-                listGoodsAdapter.removeItem(position);
-                EventDeleteItemFromInvoice(item, position);
+                //listGoodsAdapter.removeItem(position);
+                //EventDeleteItemFromInvoice(item, position);
             }
         };
-        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipe_callback);
 
-        itemTouchhelper.attachToRecyclerView(ListGoodsRecyclerView);
+        //ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipe_callback);
+       // itemTouchhelper.attachToRecyclerView(ListGoodsRecyclerView);
+
+
     }
 
     private void ShowAlert(String title, String message, boolean show_cancel) {
@@ -532,7 +553,8 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         intent.putExtra("uid_invoice",uid_invoice);
         startActivity(intent);
     }
-    //Клик по Item в RecyclerView or click on button close_invoice
+
+    //Клик по Item в RecyclerView
     @Override
     public void onClick(View view) {
         selected_position = ListGoodsRecyclerView.getChildLayoutPosition(view);
@@ -742,17 +764,31 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
     }
 
     private void ChangeQuantityOnServer(Item item) {
+        if(show_box){
+            MainActivity.GetRestClient().SetQuantityItemInBox(type_operation, item.GetUidInvoice(), item.GetUid(), item.GetBoxUid(), item.GetQuantity(), item.GetBarcode(), new TOnResponce() {
+                @Override
+                public void OnSuccess(TResponce responce) {
+                    Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+                }
+                @Override
+                public void OnFailure(String message) {
+                    Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else{
+            MainActivity.GetRestClient().SetQuantityItem(type_operation, item.GetUidInvoice(), item.GetUid(), item.GetQuantity(), item.GetBarcode(), new TOnResponce() {
+                @Override
+                public void OnSuccess(TResponce responce) {
+                    Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+                }
+                @Override
+                public void OnFailure(String message) {
+                    Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
-        MainActivity.GetRestClient().SetQuantityItem(type_operation, item.GetUidInvoice(), item.GetUid(), item.GetQuantity(), item.GetBarcode(), new TOnResponce() {
-            @Override
-            public void OnSuccess(TResponce responce) {
-                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void OnFailure(String message) {
-                Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void ChangeQuantityAndUniqueUidOnServer(Item item, String unique_uid) {

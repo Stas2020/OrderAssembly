@@ -24,7 +24,9 @@
             android:name=".Scaner.ScanerActivity"
             android:exported="true" />
         <activity
-            android:name=".invoice.ListInvoiceActivity">
+            android:name=".invoice.ListInvoiceActivity"
+            android:exported="true">
+
             <intent-filter>
                 <action
                     android:name="android.intent.action.ListInvoiceActivity"
@@ -41,7 +43,9 @@
             android:name=".item.InfoInvoiceActivity"
             android:label="Информация"
             android:screenOrientation="portrait" />
-        <activity android:name=".calculator.CalculationActivity">
+        <activity
+            android:name=".calculator.CalculationActivity"
+            android:exported="true">
             <intent-filter>
                 <action
                     android:name="android.intent.action.CalculationActivity"
@@ -55,6 +59,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".setting.SettingActivity_"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SettingActivity_" />
@@ -68,6 +73,7 @@
 
         <activity
             android:name=".subdivision.ListSubdivisionActivity"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.ListSubdivisionActivity" />
@@ -77,6 +83,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
