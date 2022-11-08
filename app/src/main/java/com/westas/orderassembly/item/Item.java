@@ -1,12 +1,10 @@
 package com.westas.orderassembly.item;
 
-
-
 import com.google.gson.annotations.SerializedName;
 
-enum SatusQuantity {less, equally, over, default_}
-enum StausItem {add, delete, def}
-
+enum StatusQuantity {less, equally, over, default_}
+// для сборки заказов
+enum StatusItem {add, delete, def}
 
 public class Item implements Comparable<Item>{
 
@@ -25,7 +23,7 @@ public class Item implements Comparable<Item>{
     @SerializedName("unit")
     private String unit;
     @SerializedName("status")
-    private StausItem status;
+    private StatusItem status;
     @SerializedName("synchronized")
     private boolean synchronized_;
     @SerializedName("uid_box")
@@ -35,9 +33,20 @@ public class Item implements Comparable<Item>{
 
     private boolean selected = false;
 
-    public StausItem GetStatus()
+    @SerializedName("skip_reason")
+    private StatusSkip statusSkip = StatusSkip.none;
+    @SerializedName("skip_notes")
+    private String skipNotes;
+
+    public StatusItem GetStatus()
     {
         return status;
+    }
+    public StatusSkip GetStatusSkip(){
+        return statusSkip;
+    }
+    public String GetSkipNotes(){
+        return skipNotes;
     }
     public boolean CheckSynchronized()
     {
@@ -81,21 +90,21 @@ public class Item implements Comparable<Item>{
         return false;
     }
 
-    SatusQuantity GetStatusQuantity()
+    StatusQuantity GetStatusQuantity()
     {
-        SatusQuantity result = SatusQuantity.default_;
+        StatusQuantity result = StatusQuantity.default_;
 
         if (quantity > required_quantity && quantity != 0)
         {
-            result = SatusQuantity.over;
+            result = StatusQuantity.over;
         }
         if (quantity == required_quantity && quantity != 0)
         {
-            result = SatusQuantity.equally;
+            result = StatusQuantity.equally;
         }
         if (quantity < required_quantity && quantity != 0)
         {
-            result = SatusQuantity.less;
+            result = StatusQuantity.less;
         }
 
         return result;
@@ -148,8 +157,6 @@ public class Item implements Comparable<Item>{
         {
             return 1;
         }
-
-
 /*
         if ( (this.verify == SatusQuantity.equally || this.verify == SatusQuantity.over || this.verify == SatusQuantity.less) &&
                 (item.verify != SatusQuantity.equally || item.verify != SatusQuantity.over || item.verify != SatusQuantity.less))
@@ -169,15 +176,11 @@ public class Item implements Comparable<Item>{
             return 1;
         }
 */
-
-
         return 0;
-
-
     }
 
     private boolean CheckAdded() {
-        return status == StausItem.add;
+        return status == StatusItem.add;
     }
 }
 

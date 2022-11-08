@@ -21,17 +21,23 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".invoice.CloseInvoiceActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".item.SkipItemActivity"
+            android:label="@string/title_activity_skip_item"
+            android:exported="false"/>
+        <activity
             android:name=".Scaner.ScanerActivity"
             android:exported="true" />
         <activity
             android:name=".invoice.ListInvoiceActivity"
             android:exported="true">
-
             <intent-filter>
                 <action
                     android:name="android.intent.action.ListInvoiceActivity"
                     android:screenOrientation="portrait" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -50,7 +56,6 @@
                 <action
                     android:name="android.intent.action.CalculationActivity"
                     android:screenOrientation="portrait" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -63,21 +68,18 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SettingActivity_" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".item.ItemsActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".subdivision.ListSubdivisionActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.ListSubdivisionActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -87,7 +89,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

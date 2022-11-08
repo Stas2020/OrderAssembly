@@ -155,16 +155,21 @@ public class ListItem {
         return list.get(position).CheckSelected();
     }
 
-
-
-
-
     private TOnChangeQuantity event_change_quantity;
 
     public void SetEventOfChangeQuantity(TOnChangeQuantity value)
     {
         event_change_quantity = value;
     }
+
+    public int CountSkippedItems(){
+        int count = 0;
+        for (Item item:list)
+            if(item.GetStatusSkip() != StatusSkip.none)
+                count++;
+        return count;
+    }
+
 /*
     private void MoveAddedItemsToLastPosition()
     {

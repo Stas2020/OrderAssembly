@@ -1,15 +1,12 @@
 package com.westas.orderassembly.rest_service;
 
+import android.app.Activity;
+
 import com.westas.orderassembly.calculator.ListBarcodeTemplate;
-import com.westas.orderassembly.invoice.ListBox;
-import com.westas.orderassembly.invoice.TypeOperation;
-import com.westas.orderassembly.item.Item;
-import com.westas.orderassembly.item.ListItem;
-import com.westas.orderassembly.invoice.ListInvoice;
-import com.westas.orderassembly.invoice.ListBox;
+import com.westas.orderassembly.invoice.*;
+import com.westas.orderassembly.item.*;
 import com.westas.orderassembly.setting.Settings;
 import com.westas.orderassembly.subdivision.ListSubdivision;
-
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,9 +20,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-
-
 
 public class RestClient {
 
@@ -66,49 +60,21 @@ public class RestClient {
         rest_api= retrofit.create(RestApi.class); //Создаем объект, при помощи которого будем выполнять запросы
     }
 
-    public void GetListInvoiceBySender(Date date, String uid_sender, TypeOperation type_operation, TOnResponce on_responce_) {
+    public void GetListInvoiceBySender(Date date, String uid_sender, TypeOperation type_operation, TOnResponce<ListInvoice> on_responce_) {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
         String date_str = dateFormat.format(date);
 
         Call<TResponce<ListInvoice>> call_invoice = rest_api.GetListInvoiceBySender(date_str, uid_sender, type_operation);
-        call_invoice.enqueue(new Callback<TResponce<ListInvoice>>() {
-            @Override
-            public void onResponse(Call<TResponce<ListInvoice>> call, Response<TResponce<ListInvoice>> response) {
-                if (response.code() == 200) {
-                    on_responce_.OnSuccess(response.body());
-                }
-                else {
-                    on_responce_.OnFailure( Integer.toString(response.code()) + " " +response.message());
-                }
-            }
-            @Override
-            public void onFailure(Call<TResponce<ListInvoice>> call, Throwable t) {
-                on_responce_.OnFailure(t.getMessage());
-            }
-        });
+        ExecuteAsync(call_invoice, on_responce_);
     }
 
-    public void GetListOpenInvoiceBySender(String uid_sender, TypeOperation type_operation, TOnResponce on_responce_) {
+    public void GetListOpenInvoiceBySender(String uid_sender, TypeOperation type_operation, TOnResponce<ListInvoice> on_responce_) {
 
         Call<TResponce<ListInvoice>> call_invoice = rest_api.GetListOpenInvoiceBySender(uid_sender, type_operation);
-        call_invoice.enqueue(new Callback<TResponce<ListInvoice>>() {
-            @Override
-            public void onResponse(Call<TResponce<ListInvoice>> call, Response<TResponce<ListInvoice>> response) {
-                if (response.code() == 200) {
-                    on_responce_.OnSuccess(response.body());
-                }
-                else {
-                    on_responce_.OnFailure( Integer.toString(response.code()) + " " +response.message());
-                }
-            }
-            @Override
-            public void onFailure(Call<TResponce<ListInvoice>> call, Throwable t) {
-                on_responce_.OnFailure(t.getMessage());
-            }
-        });
+        ExecuteAsync(call_invoice, on_responce_);
     }
 
-    public void GetListInvoiceByReceiver(Date date, String uid_receiver, TypeOperation type_operation, TOnResponce on_responce_) {
+    public void GetListInvoiceByReceiver(Date date, String uid_receiver, TypeOperation type_operation, TOnResponce<ListInvoice> on_responce_) {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
         String date_str = dateFormat.format(date);
 
@@ -130,7 +96,7 @@ public class RestClient {
         });
     }
 
-    public void GetListBoxesBySender(Date date, String uid_sender, TypeOperation type_operation, TOnResponce on_responce_) {
+    public void GetListBoxesBySender(Date date, String uid_sender, TypeOperation type_operation, TOnResponce<ListBox> on_responce_) {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
         String date_str = dateFormat.format(date);
 
@@ -152,7 +118,7 @@ public class RestClient {
         });
     }
 
-    public void GetListBarcodeTemplate(TOnResponce on_responce_) {
+    public void GetListBarcodeTemplate(TOnResponce<ListBarcodeTemplate> on_responce_) {
         Call<TResponce<ListBarcodeTemplate>> call_invoice = rest_api.GetListBarcodeTemplate();
         call_invoice.enqueue(new Callback<TResponce<ListBarcodeTemplate>>() {
             @Override
@@ -172,35 +138,29 @@ public class RestClient {
     }
 
     //Закрытие накладной
-    public void CloseInvoice(String uid_sender, String uid_invoice, TypeOperation type_operation, TOnResponce on_responce_) {
+    public void CloseInvoice(String uid_sender, String uid_invoice, String claim_text, TypeOperation type_operation, TOnResponce on_responce_) {
+        //TODO: добавить claim_text
         try {
             Call<TResponce> close_invoice = rest_api.CloseInvoice(uid_sender, uid_invoice, type_operation);
-
-            close_invoice.enqueue(new Callback<TResponce>() {
-                @Override
-                public void onResponse(Call<TResponce> call, Response<TResponce> response) {
-                    if (response.code() == 200) {
-                        on_responce_.OnSuccess(response.body());
-                    }
-                    else {
-                        on_responce_.OnFailure( Integer.toString(response.code()) + " " +response.message());
-                    }
-
-                }
-                @Override
-                public void onFailure(Call<TResponce> call, Throwable t) {
-                    on_responce_.OnFailure(t.getMessage());
-                }
-            });
+            ExecuteAsync2(close_invoice, on_responce_);
         }
         catch(Exception e) {
             on_responce_.OnFailure(e.getMessage());
         }
+        //TestExecuteAsync(on_responce_);
     }
 
+    //Приёмка товара: пропустить позицию
+    //status_skip - в чём несоответствие: в количестве или в наименовании
+    //skip_notes - доп. информация к статусу status_skip=peresort
+    public void SkipItemInInvoice(String uid_invoice, String uid_item, StatusSkip status_skip, String skip_notes, TOnResponce on_responce_){
+        //TODO: добавить функцию в rest_api
+        //ExecuteAsync2(rest_api.SkipItemInInvoice(uid_invoice, uid_item, status_skip, skip_notes), on_responce_);
+        TestExecuteAsync(on_responce_);
+    }
 
     //TODO:  Получение, Подразделения
-    public void GetListSubdivision(TOnResponce on_responce_) {
+    public void GetListSubdivision(TOnResponce<ListSubdivision> on_responce_) {
         Call<TResponce<ListSubdivision>> list_subdivision = rest_api.GetListSubdivision();
         list_subdivision.enqueue(new Callback<TResponce<ListSubdivision>>() {
             @Override
@@ -246,21 +206,7 @@ public class RestClient {
     //TODO:  Замена количества товара в накладной
     public void SetQuantityItem(TypeOperation type_operation, String uid_invoice,  String uid_item,  float quantity, String barcode_item, TOnResponce on_responce_) {
         Call<TResponce> set_quantity_item = rest_api.SetQuantityItem(type_operation, uid_invoice,uid_item,quantity,barcode_item);
-        set_quantity_item.enqueue(new Callback<TResponce>() {
-            @Override
-            public void onResponse(Call<TResponce> call, Response<TResponce> response) {
-                if (response.code() == 200) {
-                    on_responce_.OnSuccess(response.body());
-                }
-                else {
-                    on_responce_.OnFailure( Integer.toString(response.code()) + " " +response.message());
-                }
-            }
-            @Override
-            public void onFailure(Call<TResponce> call, Throwable t) {
-                on_responce_.OnFailure(t.getMessage());
-            }
-        });
+        ExecuteAsync2(set_quantity_item, on_responce_);
     }
     //TODO:  Замена количества товара в коробке
     public void SetQuantityItemInBox(TypeOperation type_operation, String uid_invoice,  String uid_item,  String uid_box, float quantity, String barcode_item, TOnResponce on_responce_) {
@@ -542,4 +488,71 @@ public class RestClient {
             on_responce_.OnFailure(e.getMessage());
         }
     }
+
+
+    // Выполнение функций, возвращающих данные
+    public <T> void ExecuteAsync(Call<TResponce<T>> call_, TOnResponce<T> on_responce_){
+        call_.enqueue(new Callback<TResponce<T>>() {
+            @Override
+            public void onResponse(Call<TResponce<T>> call, Response<TResponce<T>> response) {
+                if (response.code() == 200) {
+                    on_responce_.OnSuccess(response.body());
+                }
+                else {
+                    on_responce_.OnFailure(Integer.toString(response.code()) + " " +response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<TResponce<T>> call, Throwable t) {
+                on_responce_.OnFailure(t.getMessage());
+            }
+        });
+    }
+
+    // Выполнение функций, возвращающих void
+    public void ExecuteAsync2(Call<TResponce> call_, TOnResponce on_responce_){
+        call_.enqueue(new Callback<TResponce>() {
+            @Override
+            public void onResponse(Call<TResponce> call, Response<TResponce> response) {
+                if (response.code() == 200) {
+                    on_responce_.OnSuccess(response.body());
+                }
+                else {
+                    on_responce_.OnFailure(Integer.toString(response.code()) + " " +response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<TResponce> call, Throwable t) {
+                on_responce_.OnFailure(t.getMessage());
+            }
+        });
+    }
+
+    // Для тестирования без обращения к серверу
+    void TestExecuteAsync(TOnResponce on_responce_){
+        TResponce result = new TResponce();
+        Thread t = new Thread(() -> {
+            try {
+                TestFunc();
+                result.Success = true;
+                if(on_responce_ instanceof Activity)
+                    ((Activity) on_responce_).runOnUiThread(() -> on_responce_.OnSuccess(result));
+                else
+                    on_responce_.OnSuccess(result);
+
+            } catch (Exception ex) {
+                if(on_responce_ instanceof Activity)
+                    ((Activity) on_responce_).runOnUiThread(() -> on_responce_.OnFailure(ex.getMessage()));
+                else
+                    on_responce_.OnFailure(ex.getMessage());
+            }
+        });
+        t.start();
+    }
+
+    void TestFunc() throws Exception{
+        Thread.sleep(1000);
+        //throw new Exception("Test error");
+    }
+
 }

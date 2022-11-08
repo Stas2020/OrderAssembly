@@ -1,25 +1,12 @@
 package com.westas.orderassembly.item;
 
-
 import android.app.Activity;
-
-
-import android.app.Application;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.TextView;
-
 import com.google.android.material.card.MaterialCardView;
 import com.westas.orderassembly.R;
-
-import static com.westas.orderassembly.item.StausItem.add;
-
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsInvoiceViewHolder> {
 
@@ -36,9 +23,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsInvoice
         activity = _activity;
     }
 
-    public void SetInvoices(ListItem invoices)
+    public void SetInvoices(ListItem _listInvoiceItem)
     {
-        listInvoiceItem = invoices;
+        listInvoiceItem = _listInvoiceItem;
     }
 
     public static class ItemsInvoiceViewHolder extends RecyclerView.ViewHolder {
@@ -59,7 +46,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsInvoice
             quantity = view.findViewById(R.id.quantity);
             required_quantity = view.findViewById(R.id.required_quantity);
             item_cardview = view.findViewById(R.id.item_cardview);
-
         }
     }
 
@@ -67,23 +53,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsInvoice
     public ItemsInvoiceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
-        View view_swipe_menu = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_layout, parent, false);
-
-
+        //View view_swipe_menu = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_layout, parent, false);
 
         //ViewGroup view_group = view.findViewById(R.id.item_layout);
         ViewGroup view_group = (ViewGroup)view;
-        view_group.addView(view_swipe_menu);
+        //view_group.addView(view_swipe_menu);
         //view.bringToFront();
-
 
         ItemsInvoiceViewHolder vh = new ItemsInvoiceViewHolder(view);
         //MaterialCardView view_item_cardview = view.findViewById(R.id.item_cardview);
         //view_item_cardview.setOnClickListener(onClickListener);
         //view_item_cardview.setOnLongClickListener(onLongClickListener);
 
-        //view_group.setOnClickListener(onClickListener);
-        //view_group.setOnLongClickListener(onLongClickListener);
+        view_group.setOnClickListener(onClickListener);
+        view_group.setOnLongClickListener(onLongClickListener);
 
 /*
         view_group.setOnTouchListener(new View.OnTouchListener() {
@@ -108,49 +91,43 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsInvoice
         return vh;
     }
 
-
     @Override
     public void onBindViewHolder(ItemsInvoiceViewHolder holder, int position) {
 
-        //holder.unit.setText(listInvoiceItem.GetItems(position).GetUnit());
-        holder.barcode.setText(listInvoiceItem.GetItems(position).GetBarcode());
-        holder.name.setText(listInvoiceItem.GetItems(position).GetName());
-        holder.quantity.setText(Float.toString(listInvoiceItem.GetItems(position).GetRequiredQuantity()));
-        holder.required_quantity.setText(Float.toString(listInvoiceItem.GetItems(position).GetQuantity()));
+        Item item = listInvoiceItem.GetItems(position);
+        //holder.unit.setText(item.GetUnit());
+        holder.barcode.setText(item.GetBarcode());
+        holder.name.setText(item.GetName());
+        holder.quantity.setText(Float.toString(item.GetRequiredQuantity()));
+        holder.required_quantity.setText(Float.toString(item.GetQuantity()));
+        holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, getBackgroundColor(item)));
 
-
-        switch (listInvoiceItem.GetItems(position).GetStatusQuantity())
-        {
-            case less: holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_less)); break;
-            case equally: holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_equally)); break;
-            case over: holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_over)); break;
-            case default_: holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
-        }
-
-        if(listInvoiceItem.GetItems(position).GetStatus() == add)
-        {
-            holder.item_cardview.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_add));
-        }
-
-/*
-        if (listInvoiceItem.GetItems(position).status != null)
-        {
-            switch (listInvoiceItem.GetItems(position).status)
-            {
-                case add: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_add)); break;
-                case delete: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_delete)); break;
-                //case def: holder.cardview_of_goods.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.row_item_default)); break;
-            }
-        }
-*/
         if(listInvoiceItem.CheckSelectedPosition(position))
-        {
             holder.item_cardview.setStrokeWidth(4);
-        }
         else
-        {
             holder.item_cardview.setStrokeWidth(0);
+    }
+
+    // обозначить статус позиции цветом
+    int getBackgroundColor(Item item) {
+        if(item.GetStatusSkip()!= StatusSkip.none)
+            return  R.color.row_item_delete;
+
+        switch (item.GetStatus())
+        {
+            case add: return R.color.row_item_add;
+            case delete: return R.color.row_item_delete;
+            default: break;
         }
+
+        switch (item.GetStatusQuantity())
+        {
+            case less: return R.color.row_item_less;
+            case equally: return R.color.row_item_equally;
+            case over: return R.color.row_item_over;
+            default: break;
+        }
+        return  R.color.row_item_default;
     }
 
     @Override
@@ -173,3 +150,4 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsInvoice
         notifyItemInserted(position);
     }
 }
+

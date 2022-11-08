@@ -1,6 +1,5 @@
 package com.westas.orderassembly.item;
 
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,14 +9,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 
-
-
-
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +18,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,10 +25,10 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
 import com.westas.orderassembly.Scaner.ScanerActivity;
-import com.westas.orderassembly.UI.RecyclerTouchListener;
 import com.westas.orderassembly.WiFi.TStatusWiFi;
 import com.westas.orderassembly.WiFi.TUtilsWiFi;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
+import com.westas.orderassembly.calculator.BarcodeTemplate;
 import com.westas.orderassembly.calculator.ListBarcodeTemplate;
 import com.westas.orderassembly.calculator.ParseBarcode;
 import com.westas.orderassembly.calculator.QRCode;
@@ -46,6 +37,7 @@ import com.westas.orderassembly.dialog.TCallBackDialogQuantity;
 import com.westas.orderassembly.dialog.TDialogForm;
 import com.westas.orderassembly.dialog.TDialogQuestion;
 import com.westas.orderassembly.dialog.TTypeForm;
+import com.westas.orderassembly.invoice.CloseInvoiceActivity;
 import com.westas.orderassembly.invoice.TypeOperation;
 import com.westas.orderassembly.menu_helper.MenuHelper;
 import com.westas.orderassembly.rest_service.TOnResponce;
@@ -56,7 +48,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 
 public class ItemsActivity extends AppCompatActivity implements  View.OnClickListener, View.OnLongClickListener, TOnReadBarcode, TCallBackDialogQuantity
 {
@@ -70,7 +61,6 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
     private TextView date_toolbar;
     private TextView number_invoice_toolbar;
 
-
     private TypeView type_view;
     private TypeOperation type_operation;
     private Date current_date;
@@ -81,7 +71,6 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
     private String uid_sender;
     private String uid_box;
     private boolean show_box;
-
 
     private int selected_position;
     int num_term;
@@ -213,7 +202,6 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
     }
 
 
-
     private void InitToolbar() {
         caption_toolbar = findViewById(R.id.caption_textview);
         date_toolbar = findViewById(R.id.date_textview);
@@ -225,11 +213,8 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                onBackPressed();// возврат на предыдущий activity
-            }
+        toolbar.setNavigationOnClickListener(v -> {
+            onBackPressed();// возврат на предыдущий activity
         });
     }
 
@@ -313,7 +298,6 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -324,7 +308,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
             }
             case _accept:{
                 if(!show_box)
-                SetMenuForReceive(menu);
+                    SetMenuForReceive(menu);
             }
         }
 
@@ -433,10 +417,12 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
             }
         });
 
-        RecyclerTouchListener touchListener = new RecyclerTouchListener(ListGoodsRecyclerView);
+        registerForContextMenu(ListGoodsRecyclerView);
+
+        //RecyclerTouchListener touchListener = new RecyclerTouchListener(ListGoodsRecyclerView);
         //ListGoodsRecyclerView.addOnItemTouchListener(touchListener);
 
-/**/
+/*
         SwipeCallback swipe_callback = new SwipeCallback()
         {
             @Override
@@ -448,7 +434,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
                 //listGoodsAdapter.removeItem(position);
                 //EventDeleteItemFromInvoice(item, position);
             }
-        };
+        };*/
 
         //ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipe_callback);
        // itemTouchhelper.attachToRecyclerView(ListGoodsRecyclerView);
@@ -476,26 +462,17 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         alert_dialog.hide();
     }
 
-    private void CloseInvoice() {
-        ShowAlert("Закрытие накладной", "Идет передача данных...", false);
-
-        MainActivity.GetRestClient().CloseInvoice(uid_sender, uid_invoice, type_operation, new TOnResponce() {
-            @Override
-            public void OnSuccess(@NotNull TResponce responce) {
-                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
-                GetItemsOfInvoice();
-                HideAlert();
-            }
-
-            @Override
-            public void OnFailure(String message) {
-                Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
-                ShowAlert("Ошибка! ", message, true);
-            }
-
-        });
+    private void CloseInvoice(){
+        Intent intent = new Intent(this, CloseInvoiceActivity.class);
+        intent.putExtra("caption", caption);
+        intent.putExtra("date_text", date_toolbar.getText().toString());
+        intent.putExtra("num_doc", num_doc);
+        intent.putExtra("uid_sender", uid_sender);
+        intent.putExtra("uid_invoice", uid_invoice);
+        intent.putExtra("items_count", listItem.GetSize());
+        intent.putExtra("items_skipped", listItem.CountSkippedItems());
+        startActivity(intent);
     }
-
 
     private void PrintInvoice() {
 
@@ -571,8 +548,52 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
 
     @Override
     public boolean onLongClick(View v) {
-        dialog_print_label.Show("Количество этикеток",0);
-        return false;
+        int pos = ListGoodsRecyclerView.getChildLayoutPosition(v);
+        if(selected_position!=pos){
+            selected_position = pos;
+            Item item = listItem.GetItems(selected_position);
+            SelectItem(item);
+            NotifyDataSetChangedReciclerView();
+        }
+        return false; // false - показать контекстное меню
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        MenuHelper menu_helper = new MenuHelper(menu);
+        Item item = listItem.GetItems(selected_position);
+        float qty_required = item.GetRequiredQuantity();
+        float qty = item.GetQuantity();
+
+        // для непринятых позиций
+        if(qty!=qty_required && qty_required>0) {
+            menu_helper.Add("Принято полностью", null, menuItem -> {
+                item.SetQuantity(qty_required);
+                ChangeQuantityOnServer(item);
+                MovePositionToLastPlace(item);
+                NotifyDataSetChangedReciclerView();
+                ScrolToSelectPosition();
+                return true;
+            });
+            menu_helper.Add("Несоответствие", null, menuItem -> {
+                Intent intent = new Intent(this, SkipItemActivity.class);
+                intent.putExtra("uid_invoice", uid_invoice);
+                intent.putExtra("uid_item", item.GetUid());
+                intent.putExtra("name", item.GetName());
+                intent.putExtra("qty", qty);
+                intent.putExtra("qty_required", qty_required);
+                //intent.putExtra("barcode", item.GetBarcode());
+                //mStartActivityForResult.launch(intent);
+                //startActivityForResult(intent, 0); // устаревший способ
+                startActivity(intent);
+                return true;
+            });
+        }
+
+        menu_helper.Add("Печать", null, menuItem -> {
+            dialog_print_label.Show("Количество этикеток",0);
+            return true;
+        });
     }
 
     @Override
@@ -763,46 +784,32 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         });
     }
 
+    TOnResponce showMessageOnResponce = new TOnResponce() {
+        @Override
+        public void OnSuccess(TResponce responce) {
+            Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public void OnFailure(String message) {
+            Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
+        }
+    };
+
     private void ChangeQuantityOnServer(Item item) {
         if(show_box){
-            MainActivity.GetRestClient().SetQuantityItemInBox(type_operation, item.GetUidInvoice(), item.GetUid(), item.GetBoxUid(), item.GetQuantity(), item.GetBarcode(), new TOnResponce() {
-                @Override
-                public void OnSuccess(TResponce responce) {
-                    Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
-                }
-                @Override
-                public void OnFailure(String message) {
-                    Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
-                }
-            });
+            MainActivity.GetRestClient().SetQuantityItemInBox(type_operation, item.GetUidInvoice(), item.GetUid(),
+                    item.GetBoxUid(), item.GetQuantity(), item.GetBarcode(), showMessageOnResponce);
         }
         else{
-            MainActivity.GetRestClient().SetQuantityItem(type_operation, item.GetUidInvoice(), item.GetUid(), item.GetQuantity(), item.GetBarcode(), new TOnResponce() {
-                @Override
-                public void OnSuccess(TResponce responce) {
-                    Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
-                }
-                @Override
-                public void OnFailure(String message) {
-                    Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
-                }
-            });
+            MainActivity.GetRestClient().SetQuantityItem(type_operation, item.GetUidInvoice(), item.GetUid(),
+                    item.GetQuantity(), item.GetBarcode(), showMessageOnResponce);
         }
 
     }
 
     private void ChangeQuantityAndUniqueUidOnServer(Item item, String unique_uid) {
-
-        MainActivity.GetRestClient().SetQuantityAndUniqueUidItem(item.GetUidInvoice(), item.GetUid(), item.GetQuantity(), item.GetBarcode(), unique_uid, new TOnResponce() {
-            @Override
-            public void OnSuccess(TResponce responce) {
-                Toast.makeText(getApplicationContext(),  responce.Message, Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void OnFailure(String message) {
-                Toast.makeText(getApplicationContext(), "Ошибка!  " + message, Toast.LENGTH_SHORT).show();
-            }
-        });
+        MainActivity.GetRestClient().SetQuantityAndUniqueUidItem(item.GetUidInvoice(), item.GetUid(),
+                item.GetQuantity(), item.GetBarcode(), unique_uid, showMessageOnResponce);
     }
 
 }
