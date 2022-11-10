@@ -28,7 +28,6 @@ import com.westas.orderassembly.Scaner.ScanerActivity;
 import com.westas.orderassembly.WiFi.TStatusWiFi;
 import com.westas.orderassembly.WiFi.TUtilsWiFi;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
-import com.westas.orderassembly.calculator.BarcodeTemplate;
 import com.westas.orderassembly.calculator.ListBarcodeTemplate;
 import com.westas.orderassembly.calculator.ParseBarcode;
 import com.westas.orderassembly.calculator.QRCode;
@@ -42,8 +41,6 @@ import com.westas.orderassembly.invoice.TypeOperation;
 import com.westas.orderassembly.menu_helper.MenuHelper;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -95,7 +92,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
 
         InitToolbar();
         GetListBarcodeTemplate();
-        MainActivity.GetBarcodeReader().SetListren(this);
+        MainActivity.GetBarcodeReader().SetListener(this);
 
         dialog_quantity = new TDialogForm(ItemsActivity.this, ItemsActivity.this,"Количество", TTypeForm.change);
         dialog_print_label = new TDialogForm(ItemsActivity.this, ItemsActivity.this,"Печать этикетки",TTypeForm.label);
@@ -389,13 +386,6 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
             }
         });
 
-        menu_helper.Add("Претензия", getDrawable(R.drawable.notepad_24), new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(getApplicationContext(),  "В разработке...", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
     }
 
     private void InitRecyclerView() {

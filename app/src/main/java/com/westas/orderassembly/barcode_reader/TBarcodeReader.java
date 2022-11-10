@@ -1,23 +1,17 @@
 package com.westas.orderassembly.barcode_reader;
 
-import android.app.Activity;
 import android.content.Context;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.honeywell.aidc.AidcManager;
 import com.honeywell.aidc.BarcodeFailureEvent;
 import com.honeywell.aidc.BarcodeReadEvent;
 import com.honeywell.aidc.BarcodeReader;
 import com.honeywell.aidc.InvalidScannerNameException;
-import com.honeywell.aidc.ScannerNotClaimedException;
 import com.honeywell.aidc.ScannerUnavailableException;
 import com.honeywell.aidc.TriggerStateChangeEvent;
 import com.honeywell.aidc.UnsupportedPropertyException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeReader.TriggerListener{
@@ -34,9 +28,9 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
         CreateAidcManager(context);
     }
 
-    public void SetListren(TOnReadBarcode calback)
+    public void SetListener(TOnReadBarcode callback)
     {
-        read_code_event = calback;
+        read_code_event = callback;
     }
     public void Close()
     {
@@ -54,8 +48,8 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
 
     @Override
     public void onBarcodeEvent(final BarcodeReadEvent event) {
-
-        read_code_event.OnReadCode(event.getBarcodeData());
+        if(read_code_event!=null)
+            read_code_event.OnReadCode(event.getBarcodeData());
     }
 
 

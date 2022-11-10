@@ -74,6 +74,7 @@ public class CloseInvoiceActivity extends AppCompatActivity implements TOnRespon
         else
             Toast.makeText(getApplicationContext(), "Накладная закрыта", Toast.LENGTH_SHORT).show();
 
+        //Возврат к списку накладных
         Intent intent = new Intent(this, ListInvoiceActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);

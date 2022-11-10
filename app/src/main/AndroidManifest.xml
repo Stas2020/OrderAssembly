@@ -21,13 +21,16 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".TransfersActivity"
+            android:label="@string/title_activity_transfers"
+            android:exported="false" />
+        <activity
             android:name=".invoice.CloseInvoiceActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".item.SkipItemActivity"
             android:label="@string/title_activity_skip_item"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".Scaner.ScanerActivity"
             android:exported="true" />
@@ -38,6 +41,7 @@
                 <action
                     android:name="android.intent.action.ListInvoiceActivity"
                     android:screenOrientation="portrait" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -56,6 +60,7 @@
                 <action
                     android:name="android.intent.action.CalculationActivity"
                     android:screenOrientation="portrait" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -68,6 +73,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SettingActivity_" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -80,6 +86,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.ListSubdivisionActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -89,6 +96,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

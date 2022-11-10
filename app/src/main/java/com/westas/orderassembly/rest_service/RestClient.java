@@ -34,10 +34,14 @@ public class RestClient {
 
     //TODO:  Создаем Retrofit
     public void BuildRetrofit() {
+        //HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        //interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(180, TimeUnit.SECONDS)
                 .writeTimeout(180, TimeUnit.SECONDS)
+                //.addInterceptor(interceptor)
                 .build();
 
         //Читаем настройки
@@ -156,7 +160,7 @@ public class RestClient {
     public void SkipItemInInvoice(String uid_invoice, String uid_item, StatusSkip status_skip, String skip_notes, TOnResponce on_responce_){
         //TODO: добавить функцию в rest_api
         //ExecuteAsync2(rest_api.SkipItemInInvoice(uid_invoice, uid_item, status_skip, skip_notes), on_responce_);
-        TestExecuteAsync(on_responce_);
+        TestExecuteAsync2((Activity) on_responce_, on_responce_);
     }
 
     //TODO:  Получение, Подразделения
@@ -489,6 +493,16 @@ public class RestClient {
         }
     }
 
+    public void GetTransferStatus(String UUID, TOnResponce<String> on_responce_){
+        //Call<TResponce<String>> call = rest_api.GetTransferStatus(UUID);
+        //ExecuteAsync(call, on_responce_);
+    }
+
+    public void SetTransferStatus(String UUID, String status, TOnResponce on_responce_){
+        //Call<TResponce> call = rest_api.SetTransferStatus(UUID, status);
+        //ExecuteAsync2(call, on_responce_);
+    }
+
 
     // Выполнение функций, возвращающих данные
     public <T> void ExecuteAsync(Call<TResponce<T>> call_, TOnResponce<T> on_responce_){
@@ -529,22 +543,31 @@ public class RestClient {
     }
 
     // Для тестирования без обращения к серверу
-    void TestExecuteAsync(TOnResponce on_responce_){
-        TResponce result = new TResponce();
+    public <T> void TestExecuteAsync(Activity a, T test_data, TOnResponce<T> on_responce_){
         Thread t = new Thread(() -> {
             try {
                 TestFunc();
+                TResponce<T> result = new TResponce<>();
+                result.Data_ = test_data;
                 result.Success = true;
-                if(on_responce_ instanceof Activity)
-                    ((Activity) on_responce_).runOnUiThread(() -> on_responce_.OnSuccess(result));
-                else
-                    on_responce_.OnSuccess(result);
+                a.runOnUiThread(() -> on_responce_.OnSuccess(result));
+            } catch (Exception ex) {
+                a.runOnUiThread(() -> on_responce_.OnFailure(ex.getMessage()));
+            }
+        });
+        t.start();
+    }
+
+    public void TestExecuteAsync2(Activity a, TOnResponce on_responce_){
+        Thread t = new Thread(() -> {
+            try {
+                TestFunc();
+                TResponce result = new TResponce();
+                result.Success = true;
+                a.runOnUiThread(() -> on_responce_.OnSuccess(result));
 
             } catch (Exception ex) {
-                if(on_responce_ instanceof Activity)
-                    ((Activity) on_responce_).runOnUiThread(() -> on_responce_.OnFailure(ex.getMessage()));
-                else
-                    on_responce_.OnFailure(ex.getMessage());
+                a.runOnUiThread(() -> on_responce_.OnFailure(ex.getMessage()));
             }
         });
         t.start();

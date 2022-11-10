@@ -59,7 +59,7 @@ public class SkipItemActivity extends AppCompatActivity implements TOnResponce{
     }
 
     private void InitToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_skip_item);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);

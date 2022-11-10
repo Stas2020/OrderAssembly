@@ -3,19 +3,15 @@ package com.westas.orderassembly.operations;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.*;
 
-import com.westas.orderassembly.R;
+import com.westas.orderassembly.*;
 import com.westas.orderassembly.invoice.TypeOperation;
-
+import com.westas.orderassembly.subdivision.ListSubdivisionActivity;
 
 public class SelectOperationActivity extends AppCompatActivity {
 
@@ -30,101 +26,79 @@ public class SelectOperationActivity extends AppCompatActivity {
         listOperation = new ListOperation();
         Operation operation;
 
-
         operation = new Operation();
         operation.SetCaption("Расходники");
         Operation finalOperation = operation;
-        operation.SetOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
-
-                intent_activity.putExtra("caption", "Расходники");
-                intent_activity.putExtra("uid_sender", "13821171-b44e-49a3-85f4-c39db30da32f");
-                intent_activity.putExtra("type_operation", TypeOperation._accept);
-                startActivity(intent_activity);
-            }
+        operation.SetOnClick(view -> {
+            Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+            intent_activity.putExtra("caption", "Расходники");
+            intent_activity.putExtra("uid_sender", "13821171-b44e-49a3-85f4-c39db30da32f");
+            intent_activity.putExtra("type_operation", TypeOperation._accept);
+            startActivity(intent_activity);
         });
         listOperation.Add(operation);
 
         operation = new Operation();
         operation.SetCaption("Заказ 108");
         //finalOperation = operation;
-        operation.SetOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
-                intent_activity.putExtra("caption", "Заказ 108");
-                intent_activity.putExtra("uid_sender", "108");
-                intent_activity.putExtra("type_operation", TypeOperation._accept);
-                startActivity(intent_activity);
-            }
+        operation.SetOnClick(view -> {
+            Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+            intent_activity.putExtra("caption", "Заказ 108");
+            intent_activity.putExtra("uid_sender", "108");
+            intent_activity.putExtra("type_operation", TypeOperation._accept);
+            startActivity(intent_activity);
         });
         listOperation.Add(operation);
 
         operation = new Operation();
         operation.SetCaption("Заказ 112");
-        operation.SetOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
-
-                intent_activity.putExtra("caption", "Заказ 112");
-                intent_activity.putExtra("uid_sender", "112");
-                intent_activity.putExtra("type_operation", TypeOperation._accept);
-                startActivity(intent_activity);
-            }
+        operation.SetOnClick(view -> {
+            Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+            intent_activity.putExtra("caption", "Заказ 112");
+            intent_activity.putExtra("uid_sender", "112");
+            intent_activity.putExtra("type_operation", TypeOperation._accept);
+            startActivity(intent_activity);
         });
         listOperation.Add(operation);
 
         operation = new Operation();
         operation.SetCaption("Оптиком");
         //finalOperation = operation;
-        operation.SetOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
-
-                intent_activity.putExtra("caption", "ОптиКом");
-                intent_activity.putExtra("uid_sender", "37e3514c-2ce6-11df-940d-001708578b92");
-                intent_activity.putExtra("type_operation", TypeOperation._accept);
-                startActivity(intent_activity);
-
-            }
+        operation.SetOnClick(view -> {
+            Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+            intent_activity.putExtra("caption", "ОптиКом");
+            intent_activity.putExtra("uid_sender", "37e3514c-2ce6-11df-940d-001708578b92");
+            intent_activity.putExtra("type_operation", TypeOperation._accept);
+            startActivity(intent_activity);
         });
         listOperation.Add(operation);
 
         operation = new Operation();
         operation.SetCaption("Кофе");
         //finalOperation = operation;
-        operation.SetOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
-
-                intent_activity.putExtra("caption", "Кофе");
-                intent_activity.putExtra("uid_sender", "71");
-                intent_activity.putExtra("type_operation", TypeOperation._accept);
-                startActivity(intent_activity);
-
-            }
+        operation.SetOnClick(view -> {
+            Intent intent_activity = new Intent("android.intent.action.ListInvoiceActivity");
+            intent_activity.putExtra("caption", "Кофе");
+            intent_activity.putExtra("uid_sender", "71");
+            intent_activity.putExtra("type_operation", TypeOperation._accept);
+            startActivity(intent_activity);
         });
         listOperation.Add(operation);
 
         operation = new Operation();
         operation.SetCaption("Сборка заказа");
-        operation.SetOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent ListSubdivisionActivity = new Intent("android.intent.action.ListSubdivisionActivity");
-                startActivity(ListSubdivisionActivity);
-            }
+        operation.SetOnClick(view -> {
+            Intent ListSubdivisionActivity = new Intent("android.intent.action.ListSubdivisionActivity");
+            startActivity(ListSubdivisionActivity);
         });
         listOperation.Add(operation);
 
+        operation = new Operation();
+        operation.SetCaption("Посылки");
+        operation.SetOnClick(view -> startActivity(new Intent(getApplicationContext(), TransfersActivity.class)));
+        listOperation.Add(operation);
+
         InitOperationRecyclerView(listOperation);
-
-
     }
 
     private void InitOperationRecyclerView(ListOperation listOperation)

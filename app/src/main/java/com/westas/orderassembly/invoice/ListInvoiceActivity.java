@@ -1,17 +1,13 @@
 package com.westas.orderassembly.invoice;
 
-import static com.westas.orderassembly.R.drawable.alert_32;
-
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 
-import android.service.controls.actions.FloatAction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -88,7 +84,7 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
     public void onResume() {
         super.onResume();
 
-        MainActivity.GetBarcodeReader().SetListren(this);
+        MainActivity.GetBarcodeReader().SetListener(this);
 
         if(current_date == null) {
             current_date = new Date();

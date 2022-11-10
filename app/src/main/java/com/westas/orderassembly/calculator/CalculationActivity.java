@@ -38,7 +38,7 @@ public class CalculationActivity extends AppCompatActivity implements TOnReadBar
         InitToolbar();
         InitRecyclerView();
 
-        MainActivity.GetBarcodeReader().SetListren(this);
+        MainActivity.GetBarcodeReader().SetListener(this);
     }
 
 

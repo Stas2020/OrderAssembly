@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
-import com.westas.orderassembly.item.Item;
 
 import java.util.Calendar;
 
@@ -33,7 +32,7 @@ public class ScanerActivity extends AppCompatActivity implements TOnReadBarcode 
 
         InitToolbar();
         scan_items = new ScanerItems();
-        MainActivity.GetBarcodeReader().SetListren(this);
+        MainActivity.GetBarcodeReader().SetListener(this);
 
         InitRecyclerView();
     }

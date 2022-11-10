@@ -76,7 +76,7 @@ public class ScanItemFragment extends Fragment implements TOnReadBarcode, TOnRes
         }
 
         parseBarcode = new ParseBarcode();
-        MainActivity.GetBarcodeReader().SetListren(this);
+        MainActivity.GetBarcodeReader().SetListener(this);
     }
 
     @Override
