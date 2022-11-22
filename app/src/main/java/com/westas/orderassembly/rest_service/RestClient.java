@@ -145,7 +145,7 @@ public class RestClient {
     public void CloseInvoice(String uid_sender, String uid_invoice, String claim_text, TypeOperation type_operation, TOnResponce on_responce_) {
         //TODO: добавить claim_text
         try {
-            Call<TResponce> close_invoice = rest_api.CloseInvoice(uid_sender, uid_invoice, type_operation);
+            Call<TResponce> close_invoice = rest_api.CloseInvoice(uid_sender, uid_invoice, type_operation, claim_text);
             ExecuteAsync2(close_invoice, on_responce_);
         }
         catch(Exception e) {
@@ -271,7 +271,7 @@ public class RestClient {
         });
     }
 
-    //Удаление товара из накладной
+    //TODO: Удаление товара из накладной
     public void DeleteItemFromInvoice(String uid_invoice, String uid_item , String barcode_item, TOnResponce on_responce_) {
         Call<TResponce> delete_item = rest_api.DeleteItemFromInvoice(uid_invoice,  uid_item, barcode_item);
         delete_item.enqueue(new Callback<TResponce>() {
@@ -291,7 +291,7 @@ public class RestClient {
         });
     }
 
-    //Проверка, существует ли баркод
+    //TODO: Проверка, существует ли баркод
     public void CheckItem(String barcode_item, TOnResponce on_responce_) {
         Call<TResponce<Item>> cheked_item = rest_api.CheckItem(barcode_item);
         cheked_item.enqueue(new Callback<TResponce<Item>>() {
@@ -311,7 +311,7 @@ public class RestClient {
         });
     }
 
-    //Проверка, принадлежит товар накладной
+    //TODO: Проверка, принадлежит товар накладной
     public void CheckItemByInvoice (String uid_invoice, String uid_unique_item, TOnResponce on_responce_) {
         Call<TResponce> cheked_item = rest_api.CheckItemByInvoice(uid_invoice,uid_unique_item);
         cheked_item.enqueue(new Callback<TResponce>() {
@@ -331,7 +331,7 @@ public class RestClient {
         });
     }
 
-    //список товаров в накладной
+    //TODO: список товаров в накладной
     public void GetItemsOfInvoice(String uid_invoice, TypeOperation type_operation, TOnResponce on_responce_) {
         try {
             Call<TResponce<ListItem>> invoice_items = rest_api.GetItemsOfInvoice(uid_invoice, type_operation);
@@ -358,7 +358,7 @@ public class RestClient {
         }
     }
 
-    //список товаров в накладной
+    //TODO: список товаров в накладной
     public void GetItemsOfBox(String uid_box, TypeOperation type_operation, TOnResponce on_responce_) {
         try {
             Call<TResponce<ListItem>> invoice_items = rest_api.GetItemsOfBox(uid_box, type_operation);
@@ -384,7 +384,7 @@ public class RestClient {
             on_responce_.OnFailure(e.getMessage());
         }
     }
-    //список товаров в сгрупированных накладных
+    //TODO: список товаров в сгрупированных накладных
     public void GetItemsOfInvoiceGroup(Date date, String uid_sender, TypeOperation type_operation, TOnResponce on_responce_) {
         try {
             DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
@@ -414,7 +414,7 @@ public class RestClient {
         }
     }
 
-    //Печать накладной
+    //TODO: Печать накладной
     public void PrintInvoice(String uid_invoice, int num_term , TOnResponce on_responce_) {
         try {
             Call<TResponce> print = rest_api.PrintInvoice(uid_invoice, num_term);
@@ -440,7 +440,7 @@ public class RestClient {
         }
     }
 
-    //Печать этикетки
+    //TODO: Печать этикетки
     public void PrintLabel(String uid_invoice, String uid_item, int count_label, int num_term, TOnResponce on_responce_) {
         try
         {
@@ -467,7 +467,7 @@ public class RestClient {
         }
     }
 
-    //Результат синхронизации с GESTORI
+    //TODO: Результат синхронизации с GESTORI
     public void GetResultSynchronizedInvoice(String uid_invoice, TOnResponce on_responce_) {
         try {
             Call<TResponce> result_sync_invoice = rest_api.GetResultSynchronizedInvoice(uid_invoice);

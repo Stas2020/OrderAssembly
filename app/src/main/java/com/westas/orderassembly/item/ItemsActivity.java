@@ -24,9 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
-import com.westas.orderassembly.Scaner.ScanerActivity;
-import com.westas.orderassembly.WiFi.TStatusWiFi;
-import com.westas.orderassembly.WiFi.TUtilsWiFi;
+import com.westas.orderassembly.scaner.ScanerActivity;
+import com.westas.orderassembly.wifi.TStatusWiFi;
+import com.westas.orderassembly.wifi.TUtilsWiFi;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.calculator.ListBarcodeTemplate;
 import com.westas.orderassembly.calculator.ParseBarcode;
@@ -461,6 +461,8 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         intent.putExtra("uid_invoice", uid_invoice);
         intent.putExtra("items_count", listItem.GetSize());
         intent.putExtra("items_skipped", listItem.CountSkippedItems());
+        intent.putExtra("type_operation", type_operation);
+
         startActivity(intent);
     }
 

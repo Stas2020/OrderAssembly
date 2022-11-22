@@ -33,9 +33,9 @@ public class Item implements Comparable<Item>{
 
     private boolean selected = false;
 
-    @SerializedName("skip_reason")
+    //@SerializedName("skip_reason")
     private StatusSkip statusSkip = StatusSkip.none;
-    @SerializedName("skip_notes")
+    //@SerializedName("skip_notes")
     private String skipNotes;
 
     public StatusItem GetStatus()

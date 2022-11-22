@@ -1,4 +1,4 @@
-package com.westas.orderassembly.WiFi;
+package com.westas.orderassembly.wifi;
 
 import static android.content.Context.WIFI_SERVICE;
 

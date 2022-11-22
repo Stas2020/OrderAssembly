@@ -42,7 +42,7 @@ public interface RestApi {
     public Call<TResponce<ListItem>>GetItemsOfInvoiceGroup(@Query("date") String date, @Query("uid_sender") String uid_sender, @Query("type_operation") TypeOperation type_operation);
 
     @POST("/Service/json/CloseInvoice")
-    public Call<TResponce>CloseInvoice(@Query("uid_sender") String uid_sender, @Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
+    public Call<TResponce>CloseInvoice(@Query("uid_sender") String uid_sender, @Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation, @Query("claim_text") String claim_text);
 
     @POST("/Service/json/GetListBarcodeTemplate")
     public Call<TResponce<ListBarcodeTemplate>>GetListBarcodeTemplate();
@@ -79,4 +79,18 @@ public interface RestApi {
     public Call<TResponce>GetResultSynchronizedInvoice(@Query("uid_invoice") String uid_invoice);
 
 
+    @POST("/Service/json/GetDiscriptionIncorrectItems")
+    public Call<TResponce>GetDiscriptionIncorrectItems(@Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
+
+    @POST("/Service/json/GetInfoClaim")
+    public Call<TResponce>GetInfoClaim(@Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
+
+    @POST("/Service/json/GetInfoTransferNaumen")
+    public Call<TResponce>GetInfoTransferNaumen(@Query("uid_transfer") String uid_transfer);
+
+    @POST("/Service/json/ClosedTransferNaumen")
+    public Call<TResponce>ClosedTransferNaumen(@Query("uid_transfer") String uid_transfer);
+
+    @POST("/Service/json/SendClaim")
+    public Call<TResponce>SendClaim(@Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
 }

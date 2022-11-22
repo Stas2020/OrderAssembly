@@ -1,4 +1,4 @@
-package com.westas.orderassembly.Scaner;
+package com.westas.orderassembly.scaner;
 
 
 

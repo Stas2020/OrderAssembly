@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.*;
 
 import com.westas.orderassembly.*;
 import com.westas.orderassembly.invoice.TypeOperation;
-import com.westas.orderassembly.subdivision.ListSubdivisionActivity;
+import com.westas.orderassembly.transfers.TransfersActivity;
 
 public class SelectOperationActivity extends AppCompatActivity {
 

@@ -1,6 +1,5 @@
-package com.westas.orderassembly.Scaner;
+package com.westas.orderassembly.scaner;
 
-import java.sql.Time;
 import java.util.Date;
 
 public class ItemScan {

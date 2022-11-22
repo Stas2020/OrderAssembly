@@ -1,4 +1,4 @@
-package com.westas.orderassembly;
+package com.westas.orderassembly.transfers;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 
+import com.westas.orderassembly.MainActivity;
+import com.westas.orderassembly.R;
 import com.westas.orderassembly.barcode_reader.TOnReadBarcode;
 import com.westas.orderassembly.rest_service.TOnResponce;
 import com.westas.orderassembly.rest_service.TResponce;
@@ -49,7 +51,7 @@ public class TransfersActivity extends AppCompatActivity implements TOnReadBarco
         // test
         new Thread(() -> {
             try {Thread.sleep(1000);} catch (InterruptedException ignored) {}
-            runOnUiThread(() -> ProcessBarcode("https://coffeemania.itsm365.com/sd/operator/#uuid:serviceCall$37401720"));
+            //runOnUiThread(() -> ProcessBarcode("https://coffeemania.itsm365.com/sd/operator/#uuid:serviceCall$37401720"));
         }).start();
     }
 
