@@ -1,12 +1,15 @@
 package com.westas.orderassembly.rest_service;
 
 import com.westas.orderassembly.calculator.ListBarcodeTemplate;
+import com.westas.orderassembly.invoice.Claim;
+import com.westas.orderassembly.invoice.DescriptionIncorrectItems;
 import com.westas.orderassembly.invoice.ListBox;
 import com.westas.orderassembly.invoice.TypeOperation;
 import com.westas.orderassembly.item.Item;
 import com.westas.orderassembly.item.ListItem;
 import com.westas.orderassembly.invoice.ListInvoice;
 import com.westas.orderassembly.subdivision.ListSubdivision;
+import com.westas.orderassembly.transfers.info_transfer;
 
 import retrofit2.Call;
 import retrofit2.http.POST;
@@ -78,19 +81,18 @@ public interface RestApi {
     @POST("/Service/json/GetResultSynchronizedInvoice")
     public Call<TResponce>GetResultSynchronizedInvoice(@Query("uid_invoice") String uid_invoice);
 
-
-    @POST("/Service/json/GetDiscriptionIncorrectItems")
-    public Call<TResponce>GetDiscriptionIncorrectItems(@Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
+    @POST("/Service/json/GetDescriptionIncorrectItems")
+    public Call<TResponce<DescriptionIncorrectItems>>GetDescriptionIncorrectItems(@Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
 
     @POST("/Service/json/GetInfoClaim")
-    public Call<TResponce>GetInfoClaim(@Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
-
-    @POST("/Service/json/GetInfoTransferNaumen")
-    public Call<TResponce>GetInfoTransferNaumen(@Query("uid_transfer") String uid_transfer);
-
-    @POST("/Service/json/ClosedTransferNaumen")
-    public Call<TResponce>ClosedTransferNaumen(@Query("uid_transfer") String uid_transfer);
+    public Call<TResponce<Claim>>GetInfoClaim(@Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
 
     @POST("/Service/json/SendClaim")
     public Call<TResponce>SendClaim(@Query("uid_invoice") String uid_invoice, @Query("type_operation") TypeOperation type_operation);
+
+    @POST("/Service/json/GetInfoTransferNaumen")
+    public Call<TResponce<info_transfer>>GetInfoTransferNaumen(@Query("uid_transfer") String uid_transfer);
+
+    @POST("/Service/json/ClosedTransferNaumen")
+    public Call<TResponce>ClosedTransferNaumen(@Query("uid_transfer") String uid_transfer);
 }

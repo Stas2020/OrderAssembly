@@ -203,19 +203,15 @@ public class ListInvoiceActivity extends AppCompatActivity implements TOnReadBar
                 @Override
                 public void onClick(View view) {
                     int itemPosition = ListInvoiceRecyclerView.getChildLayoutPosition(view);
-
-                    Date date_invoice = list_invoice.GetInvoice(itemPosition).date;
-                    Date date_order = list_invoice.GetInvoice(itemPosition).date_order;
-                    String uid_invoice = list_invoice.GetInvoice(itemPosition).uid;
-                    String num_doc = list_invoice.GetInvoice(itemPosition).num_doc;
-
+                    Invoice invoice = list_invoice.GetInvoice(itemPosition);
                     list_invoice.SelectInvoice(itemPosition);
 
                     Intent intent = new Intent(getApplicationContext(), ItemsActivity.class);
-                    intent.putExtra("uid_invoice",uid_invoice);
-                    intent.putExtra("num_doc",num_doc);
-                    intent.putExtra("date_invoice",date_invoice);
-                    intent.putExtra("date_order",date_order);
+                    intent.putExtra("uid_invoice",invoice.uid);
+                    intent.putExtra("num_doc",invoice.num_doc);
+                    intent.putExtra("date_invoice",invoice.date);
+                    intent.putExtra("date_order",invoice.date_order);
+                    intent.putExtra("closed_invoice", invoice.closed);
                     intent.putExtra("uid_sender",uid_sender);
                     intent.putExtra("uid_receiver",uid_receiver);
                     intent.putExtra("type_operation", type_operation);

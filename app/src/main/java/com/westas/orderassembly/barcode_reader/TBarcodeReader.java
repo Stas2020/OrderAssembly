@@ -93,9 +93,7 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
 
     private void CreateBarcodeReader(BarcodeReader reader)
     {
-
         if (reader != null) {
-
             try
             {
                 reader.claim();
@@ -104,23 +102,19 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
                 e.printStackTrace();
             }
 
-
             // register bar code event listener
             reader.addBarcodeListener(this);
 
             //register trigger state change listener
             //reader.addTriggerListener(this);
 
-
             // set the trigger mode to client control
             try
             {
                 reader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE, BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
             }
-            catch (UnsupportedPropertyException e)
+            catch (UnsupportedPropertyException ignored)
             {
-
-
             }
 
             Map<String, Object> properties = new HashMap<String, Object>();
@@ -155,10 +149,11 @@ public class TBarcodeReader implements BarcodeReader.BarcodeListener,BarcodeRead
             properties.put(BarcodeReader.PROPERTY_CENTER_DECODE, true);
             // Enable bad read response
             properties.put(BarcodeReader.PROPERTY_NOTIFICATION_BAD_READ_ENABLED, true);
+            // Do not handle links
+            properties.put(BarcodeReader.PROPERTY_DATA_PROCESSOR_LAUNCH_BROWSER, false);
+
             // Apply the settings
             reader.setProperties(properties);
-
-
         }
     }
 

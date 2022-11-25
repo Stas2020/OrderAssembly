@@ -21,15 +21,15 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".invoice.InvoiceClaimActivity"
+            android:exported="false"
+            android:label="Претензия" />
+        <activity
             android:name=".transfers.TransfersActivity"
-            android:label="@string/title_activity_transfers"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/title_activity_transfers" />
         <activity
             android:name=".invoice.CloseInvoiceActivity"
-            android:exported="false" />
-        <activity
-            android:name=".item.SkipItemActivity"
-            android:label="@string/title_activity_skip_item"
             android:exported="false" />
         <activity
             android:name=".scaner.ScanerActivity"

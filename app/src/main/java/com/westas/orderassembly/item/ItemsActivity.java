@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.westas.orderassembly.MainActivity;
 import com.westas.orderassembly.R;
+import com.westas.orderassembly.invoice.InvoiceClaimActivity;
 import com.westas.orderassembly.scaner.ScanerActivity;
 import com.westas.orderassembly.wifi.TStatusWiFi;
 import com.westas.orderassembly.wifi.TUtilsWiFi;
@@ -68,6 +69,8 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
     private String uid_sender;
     private String uid_box;
     private boolean show_box;
+    private boolean closed_invoice;
+    private String claim;
 
     private int selected_position;
     int num_term;
@@ -111,6 +114,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
             uid_sender = parametr.getString("uid_sender");
             uid_box = parametr.getString("uid_box");
             show_box = parametr.getBoolean("show_box");
+            closed_invoice = parametr.getBoolean("closed_invoice", false);
         }
 
         parseBarcode = new ParseBarcode();
@@ -246,6 +250,18 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
                 Toast.makeText(getApplicationContext(), "Ошибка при получении списка товаров в накладной!  " + message, Toast.LENGTH_SHORT).show();
             }
         });
+        // текст претензии
+        MainActivity.GetRestClient().GetInfoClaim(uid_invoice, type_operation, new TOnResponce(){
+            @Override
+            public void OnSuccess(TResponce responce) {
+                claim="";
+            }
+
+            @Override
+            public void OnFailure(String message) {
+                claim="";
+            }
+        });
     }
     private void GetItemsOfBox() {
         MainActivity.GetRestClient().GetItemsOfBox(uid_box, type_operation, new TOnResponce<ListItem>() {
@@ -300,7 +316,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
     {
         switch (type_operation){
             case _assembly:{
-                SetMenuForAssenbly(menu);
+                SetMenuForAssembly(menu);
                 break;
             }
             case _accept:{
@@ -330,60 +346,48 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
 
         return true;
     }
-    void SetMenuForAssenbly(Menu menu){
+    void SetMenuForAssembly(Menu menu){
 
         MenuHelper menu_helper = new MenuHelper(menu);
 
-        menu_helper.Add("Печать", getDrawable(R.drawable.print_24), new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                PrintInvoice();
-                return true;
-            }
+        menu_helper.Add("Печать", getDrawable(R.drawable.print_24), item -> {
+            PrintInvoice();
+            return true;
         });
 
-        menu_helper.Add("Закрыть", getDrawable(R.drawable.closed_24), new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                CloseInvoice();
-                return true;
-            }
+        menu_helper.Add("Закрыть", getDrawable(R.drawable.closed_24), item -> {
+            CloseInvoice();
+            return true;
         });
 
-        menu_helper.Add("Добавить", getDrawable(R.drawable.notepad_24), new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                AddItemToInvoice();
-                return true;
-            }
+        menu_helper.Add("Добавить", getDrawable(R.drawable.notepad_24), item -> {
+            AddItemToInvoice();
+            return true;
         });
     }
 
     void SetMenuForReceive(Menu menu){
         MenuHelper menu_helper = new MenuHelper(menu);
 
-        menu_helper.Add("Печать", getDrawable(R.drawable.print_24), new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                PrintInvoice();
-                return true;
-            }
+        menu_helper.Add("Печать", getDrawable(R.drawable.print_24), item -> {
+            PrintInvoice();
+            return true;
         });
 
-        menu_helper.Add("Закрыть", getDrawable(R.drawable.closed_24), new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                CloseInvoice();
+//        if(closed_invoice)
+            menu_helper.Add("Претензия", getDrawable(R.drawable.closed_24), item -> {
+                ShowInvoiceClaim();
                 return true;
-            }
-        });
+            });
+//        else
+//            menu_helper.Add("Закрыть", getDrawable(R.drawable.closed_24), item -> {
+//                CloseInvoice();
+//                return true;
+//            });
 
-        menu_helper.Add("Сканировать", getDrawable(R.drawable.closed_24), new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                ScanItem();
-                return true;
-            }
+        menu_helper.Add("Сканировать", getDrawable(R.drawable.closed_24), item -> {
+            ScanItem();
+            return true;
         });
 
     }
@@ -402,7 +406,6 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
                 outRect.bottom = 0;
                 outRect.top = 0;
-
                 super.getItemOffsets(outRect, view, parent, state);
             }
         });
@@ -459,10 +462,7 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         intent.putExtra("num_doc", num_doc);
         intent.putExtra("uid_sender", uid_sender);
         intent.putExtra("uid_invoice", uid_invoice);
-        intent.putExtra("items_count", listItem.GetSize());
-        intent.putExtra("items_skipped", listItem.CountSkippedItems());
         intent.putExtra("type_operation", type_operation);
-
         startActivity(intent);
     }
 
@@ -517,6 +517,16 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
         startActivity(intent);
     }
 
+    private void ShowInvoiceClaim() {
+        Intent intent = new Intent(this, InvoiceClaimActivity.class);
+        intent.putExtra("caption", caption);
+        intent.putExtra("date_text", date_toolbar.getText().toString());
+        intent.putExtra("num_doc", num_doc);
+        intent.putExtra("uid_invoice",uid_invoice);
+        intent.putExtra("type_operation", type_operation);
+        startActivity(intent);
+    }
+
     private void InfoByInvoice() {
         Intent intent = new Intent(this, InfoInvoiceActivity.class);
         intent.putExtra("uid_invoice",uid_invoice);
@@ -565,19 +575,6 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
                 MovePositionToLastPlace(item);
                 NotifyDataSetChangedReciclerView();
                 ScrolToSelectPosition();
-                return true;
-            });
-            menu_helper.Add("Несоответствие", null, menuItem -> {
-                Intent intent = new Intent(this, SkipItemActivity.class);
-                intent.putExtra("uid_invoice", uid_invoice);
-                intent.putExtra("uid_item", item.GetUid());
-                intent.putExtra("name", item.GetName());
-                intent.putExtra("qty", qty);
-                intent.putExtra("qty_required", qty_required);
-                //intent.putExtra("barcode", item.GetBarcode());
-                //mStartActivityForResult.launch(intent);
-                //startActivityForResult(intent, 0); // устаревший способ
-                startActivity(intent);
                 return true;
             });
         }
@@ -767,7 +764,6 @@ public class ItemsActivity extends AppCompatActivity implements  View.OnClickLis
                 else {
                     resultCheckItemInvoice.OnFailure();
                 }
-
             }
             @Override
             public void OnFailure(String message) {

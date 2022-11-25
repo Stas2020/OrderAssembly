@@ -15,11 +15,10 @@ import com.westas.orderassembly.rest_service.TResponce;
 
 public class TransfersActivity extends AppCompatActivity implements TOnReadBarcode {
     // префикс Naumen
-    final String prefix="https://coffeemania.itsm365.com/sd/operator/#uuid:";
-    TextView txtBarcode, txtStatus;
-    LinearLayout statusInfo;
+    final String prefix="https://coffeemania.itsm365.com/sd/operator/?anchor=uuid:serviceCall$";
+    TextView txtBarcode, txtTransferNum, txtSender, txtReceiver, txtStatus;
     Button buttonOK;
-    String UUID, status;
+    String UUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +26,13 @@ public class TransfersActivity extends AppCompatActivity implements TOnReadBarco
         setContentView(R.layout.activity_transfers);
         InitToolbar();
         txtBarcode = findViewById(R.id.txtBarcode);
+        txtTransferNum = findViewById(R.id.txtTransferNum);
+        txtSender = findViewById(R.id.txtSender);
+        txtReceiver = findViewById(R.id.txtReceiver);
         txtStatus = findViewById(R.id.txtStatus);
-        statusInfo = findViewById(R.id.statusInfo);
         buttonOK = findViewById(R.id.buttonOK);
         buttonOK.setOnClickListener(this::buttonOK_Click);
 
-        statusInfo.setVisibility(View.INVISIBLE);
         buttonOK.setVisibility(View.INVISIBLE);
     }
 
@@ -48,11 +48,6 @@ public class TransfersActivity extends AppCompatActivity implements TOnReadBarco
     protected void onResume() {
         super.onResume();
         MainActivity.GetBarcodeReader().SetListener(this);
-        // test
-        new Thread(() -> {
-            try {Thread.sleep(1000);} catch (InterruptedException ignored) {}
-            //runOnUiThread(() -> ProcessBarcode("https://coffeemania.itsm365.com/sd/operator/#uuid:serviceCall$37401720"));
-        }).start();
     }
 
     @Override
@@ -68,11 +63,11 @@ public class TransfersActivity extends AppCompatActivity implements TOnReadBarco
 
     void ProcessBarcode(String barcode){
         //Пример ссылки в бирке:
-        //https://coffeemania.itsm365.com/sd/operator/#uuid:serviceCall$37401720
-        //UUID = serviceCall$37401720
+        //https://coffeemania.itsm365.com/sd/operator/?anchor=uuid:serviceCall$37401720
+        //UUID = 37401720
         txtBarcode.setText(barcode);
-        statusInfo.setVisibility(View.INVISIBLE);
         buttonOK.setVisibility(View.INVISIBLE);
+        CleanInfo();
 
         boolean isValidBarcode = barcode.length()>prefix.length() && barcode.indexOf(prefix)==0;
         if(!isValidBarcode) {
@@ -80,28 +75,43 @@ public class TransfersActivity extends AppCompatActivity implements TOnReadBarco
             return;
         }
         UUID=barcode.substring(prefix.length());
-
-        statusInfo.setVisibility(View.VISIBLE);
-        txtStatus.setText("...");
-        //MainActivity.GetRestClient().GetTransferStatus(UUID, new TOnResponce<String>() {
-        MainActivity.GetRestClient().TestExecuteAsync(this, "inprogress", new TOnResponce<String>() {
+        txtBarcode.setText(UUID);
+        txtTransferNum.setText("...");
+        MainActivity.GetRestClient().GetInfoTransferNaumen(UUID, new TOnResponce<info_transfer>() {
             @Override
-            public void OnSuccess(TResponce<String> responce) {
-                status=responce.Data_;
+            public void OnSuccess(TResponce<info_transfer> responce) {
+                info_transfer data=responce.Data_;
+                if(data==null) {
+                    txtTransferNum.setText("-");
+                    ShowMessage("Заявка не найдена: "+UUID);
+                    return;
+                }
+                //String status="inprogress";
+                String status=data.state;
+                txtTransferNum.setText(String.valueOf(data.num_transfer));
+                txtSender.setText(data.sender_name);
+                txtReceiver.setText(data.receiver_name);
                 txtStatus.setText(GetStatusDescription(status));
-                if(status!="inprogress" && status!="transit" && status!="loss")
-                    ShowMessage("Статус заявки не может быть изменён");
-                else {
+                if("inprogress".equals(status) || "transit".equals(status) || "loss".equals(status)) {
                     buttonOK.setVisibility(View.VISIBLE);
                     buttonOK.setEnabled(true);
-                }
+                } else
+                    ShowMessage("Статус заявки не может быть изменён");
             }
 
             @Override
             public void OnFailure(String message) {
+                CleanInfo();
                 ShowMessage(message);
             }
         });
+    }
+
+    void CleanInfo(){
+        txtTransferNum.setText("");
+        txtSender.setText("");
+        txtReceiver.setText("");
+        txtStatus.setText("");
     }
 
     String GetStatusDescription(String status){
@@ -113,6 +123,8 @@ public class TransfersActivity extends AppCompatActivity implements TOnReadBarco
                 return "Потеря";
             case "resolved":
                 return "Выполнено";
+            case "closed":
+                return "Выполнено";
             default:
                 return status;
         }
@@ -120,11 +132,12 @@ public class TransfersActivity extends AppCompatActivity implements TOnReadBarco
 
     public void buttonOK_Click(View v){
         buttonOK.setEnabled(false);
-        //MainActivity.GetRestClient().SetTransferStatus(UUID, "inprogress", new TOnResponce() {
-        MainActivity.GetRestClient().TestExecuteAsync2(this, new TOnResponce() {
+        MainActivity.GetRestClient().TestExecuteAsync(this, new TOnResponce() {
+        //MainActivity.GetRestClient().ClosedTransferNaumen(UUID, new TOnResponce() {
             @Override
             public void OnSuccess(TResponce responce) {
                 txtStatus.setText("Выполнено");
+                txtBarcode.setText("Отсканируйте следующую бирку");
                 buttonOK.setVisibility(View.INVISIBLE);
                 ShowMessage("Груз принят");
             }

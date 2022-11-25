@@ -1,14 +1,10 @@
 package com.westas.orderassembly.item;
 
-
-
 import com.google.gson.annotations.SerializedName;
-
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 
 public class ListItem {
     @SerializedName("list_item")
@@ -22,22 +18,12 @@ public class ListItem {
 
     public void SortingItemByCode()
     {
-        Collections.sort(list, new Comparator<Item>() {
-            @Override
-            public int compare(Item invoiceItem, Item t1) {
-                return invoiceItem.GetBarcode().compareTo(t1.GetBarcode());
-            }
-        });
+        Collections.sort(list, Comparator.comparing(Item::GetBarcode));
     }
 
     public void SortingItemByName()
     {
-        Collections.sort(list, new Comparator<Item>() {
-            @Override
-            public int compare(Item invoiceItem, Item t1) {
-                return invoiceItem.GetName().compareTo(t1.GetName());
-            }
-        });
+        Collections.sort(list, Comparator.comparing(Item::GetName));
     }
 
     public  void  MovePositionToLastPlace(Item item)
@@ -160,14 +146,6 @@ public class ListItem {
     public void SetEventOfChangeQuantity(TOnChangeQuantity value)
     {
         event_change_quantity = value;
-    }
-
-    public int CountSkippedItems(){
-        int count = 0;
-        for (Item item:list)
-            if(item.GetStatusSkip() != StatusSkip.none)
-                count++;
-        return count;
     }
 
 /*
